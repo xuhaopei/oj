@@ -47,7 +47,7 @@ export default {
   methods: {
     submit () {
       this.$refs.form.validate().then((result) => {
-        console.log('form valid: ', result)
+        // console.log('form valid: ', result)
       });
     },
     clear () {

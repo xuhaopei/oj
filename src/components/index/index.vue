@@ -1,7 +1,10 @@
 <template>
   <div class="nopm fullwh main">
     <div class="nopm fullwh index">
-      <code-editor></code-editor>
+      <div style="width: 1000px;">
+
+        <code-editor></code-editor>
+      </div>
     </div>
   </div>
 </template>
