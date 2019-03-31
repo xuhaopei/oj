@@ -4,7 +4,7 @@
       <mu-button @click="showAside" icon slot="left">
         <mu-icon value="menu"></mu-icon>
       </mu-button>
-        Title
+        {{$store.state.userInfo.name}}
       <mu-button flat @click="showLogin" slot="right">
         <span style="font-size: 150%;">登录</span>
       </mu-button>

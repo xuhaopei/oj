@@ -1,4 +1,4 @@
 const types = {
-  CHANGE_BLOCK_SIZE: 'BLOCK_SIZE',
+  SET_USER_INFO: 'SET_USER_INFO',
 }
 export default types
