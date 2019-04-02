@@ -1,7 +1,7 @@
 <template>
   <div class="nopm fullwh index center-div">
     <div class="center-item">
-      <div v-show="false" class="row1">
+      <div v-show="true" class="row1">
         <div class="carousel-div">
           <div :class="`${ready?'':'skeleton-screen'} fullwh`">
             <div v-if="ready" class="fullwh">
@@ -38,14 +38,10 @@
       </div>
       <div class="row2">
         <div class="current-div">
-          <div :class="`${ready?'':'skeleton-screen'} fullwh`">
-            <div v-if="ready" class="fullwh">
-            </div>
-          </div>
+          <dynamic class="fullwh"></dynamic>
         </div>
         <div class="announcement-div">
-          <div :class="`${ready?'':'skeleton-screen'} fullwh`">
-          </div>
+          <notice></notice>
         </div>
       </div>
     </div>
@@ -54,6 +50,9 @@
 
 <script>
 import codeEditor from '../common/codeEditor.vue'
+import copyright from '../common/copyright.vue'
+import dynamic from './dynamic.vue'
+import notice from './notice.vue'
 import img from '../../assets/carousel.jpg'
 export default {
   name: 'index',
@@ -61,11 +60,16 @@ export default {
   },
   components: {
     codeEditor,
+    copyright,
+    dynamic,
+    notice,
   },
   data () {
     return {
       img: img,
-      ready: false
+      ready: false,
+      data: {
+      }
     }
   },
   methods: {
@@ -79,7 +83,7 @@ export default {
     }
   },
   created () {
-    // this.init()
+    this.init()
   }
 }
 </script>
@@ -88,13 +92,7 @@ export default {
   .index {
     /* width: 100vw;
     height: 100vh; */
-    overflow-y: auto;
     padding: 20px;
-  }
-  .center {
-    display: flex;
-    width: 500px;
-    height: 100px;
   }
   .index {
     display: flex;

@@ -18,7 +18,6 @@ Vue.prototype.$types = types
 Vue.use(router)
 Vue.use(MuseUI)
 Vue.config.productionTip = false
-
 new Vue({
   render: h => h(App),
   router,

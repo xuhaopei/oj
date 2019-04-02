@@ -16,6 +16,7 @@ export default new Vuex.Store({
 	},
 	actions: {
 		async getUserInfo ({commit, state}, data) {
+			data
 			const sleep = (ms) => {
 				return new Promise(resolve => setTimeout(resolve, ms))
 			}

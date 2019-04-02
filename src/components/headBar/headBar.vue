@@ -1,6 +1,6 @@
 <template>
   <div class="nopm fullwh headBar">
-    <mu-appbar style="width: 100%;" color="primary">
+    <mu-appbar :z-depth='0' style="width: 1200px;background-color: #222222;" color="primary">
       <mu-button @click="showAside" icon slot="left">
         <mu-icon value="menu"></mu-icon>
       </mu-button>
@@ -56,5 +56,8 @@ export default {
 <style scoped>
   .headBar {
     height: 65px;
+    display: flex;
+    justify-content: center;
+    background-color: #222222;
   }
 </style>

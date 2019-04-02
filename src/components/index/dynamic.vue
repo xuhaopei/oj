@@ -1,0 +1,93 @@
+<template>
+  <div class="nopm fullwh dynamic center-div">
+    <mu-list v-if="!ready" textline="two-line">
+      <mu-list-item class="dynamic-list" v-for="(item, idx) in data.noneList" :key="idx" avatar button :ripple="true">
+        <mu-list-item-action>
+          <mu-avatar>
+            <img :src="noneava">
+          </mu-avatar>
+        </mu-list-item-action>
+        <mu-list-item-content>
+          <mu-list-item-title style="height: 14px;width: 100px;margin-bottom: 5px;" class="skeleton-screen"></mu-list-item-title>
+          <mu-list-item-sub-title class="sub-title skeleton-screen" style="height: 14px;">
+          </mu-list-item-sub-title>
+        </mu-list-item-content>
+      </mu-list-item>
+    </mu-list>
+    <mu-list v-else textline="two-line">
+      <mu-list-item class="" v-for="(item, idx) in data.list" :key="idx" avatar button :ripple="true">
+        <mu-list-item-action>
+          <mu-avatar>
+            <img :src="item.avatar">
+          </mu-avatar>
+        </mu-list-item-action>
+        <mu-list-item-content>
+          <mu-list-item-title>{{item.name}}</mu-list-item-title>
+          <mu-list-item-sub-title class="sub-title">
+            <span>{{item.time}}</span>
+            <span>提交&nbsp;{{item.commitCount}}</span>
+            <span>通过&nbsp;{{item.accessCount}}</span>
+            <span>AC&nbsp;{{item.status}}</span>
+          </mu-list-item-sub-title>
+        </mu-list-item-content>
+      </mu-list-item>
+    </mu-list>
+  </div>
+</template>
+
+<script>
+import img from '../../assets/carousel.jpg'
+import noneava from '../../assets/noneava.png'
+export default {
+  name: 'dynamic',
+  props: {
+  },
+  components: {
+  },
+  data () {
+    return {
+      img: img,
+      noneava: noneava,
+      ready: false,
+      data: {
+        list: [],
+        noneList: [1, 2, 3, 4, 5]
+      }
+    }
+  },
+  methods: {
+    async init () {
+      
+			const sleep = (ms) => {
+				return new Promise(resolve => setTimeout(resolve, ms))
+      }
+      await sleep(2000)
+
+      for (let i = 0; i<10; i++) {
+        this.data.list.push({
+          avatar: img,
+          name: '用户名',
+          time: 'Jan 17, 2014',
+          commitCount: 1,
+          accessCount: 1,
+          status: '100%',
+        })
+      }
+      this.ready = true
+    }
+  },
+  created () {
+    this.init()
+  }
+}
+</script>
+
+<style scoped>
+  .sub-title {
+    width: 100%;
+    display: flex;
+  }
+  .sub-title span{
+    margin-right: 10px;
+  }
+</style>
