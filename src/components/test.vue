@@ -1,5 +1,5 @@
 <template>
-  <div class="nopm fullwh test center-div">
+  <div class="test center-div">
   </div>
 </template>
 

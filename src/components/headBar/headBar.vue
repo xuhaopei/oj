@@ -1,6 +1,6 @@
 <template>
-  <div class="nopm fullwh headBar">
-    <mu-appbar :z-depth='0' style="width: 1200px;background-color: #222222;" color="primary">
+  <div class="headBar">
+    <mu-appbar :z-depth='0' style="width: 1200px;background-color: #222222;margin-right: 16px;" color="primary">
       <mu-button @click="showAside" icon slot="left">
         <mu-icon value="menu"></mu-icon>
       </mu-button>

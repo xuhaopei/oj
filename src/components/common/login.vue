@@ -1,5 +1,5 @@
 <template>
-  <div class="nopm fullwh login">
+  <div class="login">
     <mu-container>
       <mu-form ref="form" :model="validateForm" class="mu-demo-form">
         <mu-form-item label="用户名" label-float help-text="请填写用户名" prop="username" :rules="nameRules">

@@ -1,26 +1,36 @@
 <template>
-  <div class="nopm fullwh notice center-div">
-    <mu-container>
-      <mu-expansion-panel>
-        <div slot="header">Panel 1</div>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.
-        <mu-button slot="action" flat>Cancel</mu-button>
-        <mu-button slot="action" flat color="primary">Save</mu-button>
-      </mu-expansion-panel>
-      <mu-expansion-panel>
-        <div slot="header">Panel 2</div>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.
-      </mu-expansion-panel>
-      <mu-expansion-panel>
-        <div slot="header">Panel 3</div>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex, sit amet blandit leo lobortis eget.
-      </mu-expansion-panel>
-    </mu-container>
+  <div class="fullwh center-div">
+    <mu-list v-if="!ready" textline="two-line">
+      <mu-sub-header>最近提交列表</mu-sub-header>
+      <mu-list-item class="notice-list" v-for="(item, idx) in data.noneList" :key="idx" avatar button :ripple="true">
+        <mu-list-item-action>
+          <mu-avatar>
+            <img :src="noneava">
+          </mu-avatar>
+        </mu-list-item-action>
+        <mu-list-item-content>
+          <mu-list-item-title style="height: 14px;width: 100px;margin-bottom: 5px;" class="skeleton-screen"></mu-list-item-title>
+          <mu-list-item-sub-title class="sub-title skeleton-screen" style="height: 14px;">
+          </mu-list-item-sub-title>
+        </mu-list-item-content>
+      </mu-list-item>
+    </mu-list>
+    <mu-list v-else textline="two-line">
+      <mu-sub-header>公告</mu-sub-header>
+      <mu-list-item class="" v-for="(item, idx) in data.list" :key="idx" avatar button :ripple="true">
+
+        <mu-list-item-title>通知</mu-list-item-title>
+        <mu-list-item-action>
+          <mu-icon value="info"></mu-icon>
+        </mu-list-item-action>
+      </mu-list-item>
+    </mu-list>
   </div>
 </template>
 
 <script>
 import img from '../../assets/carousel.jpg'
+import noneava from '../../assets/noneava.png'
 export default {
   name: 'notice',
   props: {
@@ -30,9 +40,11 @@ export default {
   data () {
     return {
       img: img,
-      ready: true,
+      noneava: noneava,
+      ready: false,
       data: {
         list: [],
+        noneList: [1, 2, 3,]
       }
     }
   },
@@ -64,7 +76,11 @@ export default {
 </script>
 
 <style scoped>
-  .notice {
-    
+  .sub-title {
+    width: 100%;
+    display: flex;
+  }
+  .sub-title span{
+    margin-right: 10px;
   }
 </style>

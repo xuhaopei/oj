@@ -1,5 +1,5 @@
 <template>
-  <div class="nopm fullwh copyright">
+  <div class="copyright">
     <a class="ca" href="">联系我们</a>
   </div>
 </template>

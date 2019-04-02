@@ -1,6 +1,6 @@
 <template>
-  <div class="nopm fullwh main">
-    <div class="nopm fullwh index">
+  <div class="main">
+    <div class="index">
       <div style="width: 1000px;">
 
         <code-editor></code-editor>

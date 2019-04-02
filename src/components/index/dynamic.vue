@@ -1,6 +1,7 @@
 <template>
-  <div class="nopm fullwh dynamic center-div">
+  <div class="fullwh center-div">
     <mu-list v-if="!ready" textline="two-line">
+      <mu-sub-header>最近提交列表</mu-sub-header>
       <mu-list-item class="dynamic-list" v-for="(item, idx) in data.noneList" :key="idx" avatar button :ripple="true">
         <mu-list-item-action>
           <mu-avatar>
@@ -15,6 +16,7 @@
       </mu-list-item>
     </mu-list>
     <mu-list v-else textline="two-line">
+      <mu-sub-header>最近提交列表</mu-sub-header>
       <mu-list-item class="" v-for="(item, idx) in data.list" :key="idx" avatar button :ripple="true">
         <mu-list-item-action>
           <mu-avatar>
@@ -51,7 +53,7 @@ export default {
       ready: false,
       data: {
         list: [],
-        noneList: [1, 2, 3, 4, 5]
+        noneList: [1, 2, 3,]
       }
     }
   },

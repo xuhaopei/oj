@@ -1,5 +1,5 @@
 <template>
-  <div v-if="ready" class="nopm fullwh codeEdit">
+  <div v-if="ready" class="codeEdit">
     <div class='option' style="width: 450px;">
       <mu-select class="language" label="语言" v-model="cmOptions.mode" full-width>
         <mu-option v-for="(option,index) in optionsLanguage" :key="index" :label="option.label" :value="option.value"></mu-option>

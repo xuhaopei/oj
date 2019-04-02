@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <div class="nopm fullwh app-main">
+    <div class="app-main">
       <headBar></headBar>
-      <router-view class="nopm view"></router-view>
+      <router-view></router-view>
     </div>
   </div>
 </template>
@@ -41,18 +41,18 @@ export default {
 #app {
   width: 100vw;
   height: 100vh;
-  overflow-y: scroll;
 }
-.nopm {
-  padding: 0px;
-  margin: 0px;
+#app-main {
+  display: flex;
+  flex-direction: column;
 }
 .fullwh {
-  width: 100%;
   height: 100%;
+  width: 100%;
 }
-.view {
-  
+.main-view {
+  overflow-y: scroll;
+  height: calc(100vh - 64px);
 }
 .center-div {
   display: flex;
@@ -71,10 +71,6 @@ export default {
   width: calc((100vw - 1200px)/2);
   right: 0px;
   min-width: 200px;
-}
-.app-main {
-  display: flex;
-  flex-direction: column;
 }
 .skeleton-screen {
   background-color: #ebecf0;
