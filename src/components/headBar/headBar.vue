@@ -4,7 +4,12 @@
       <mu-button @click="showAside" icon slot="left">
         <mu-icon value="menu"></mu-icon>
       </mu-button>
+      <!-- <span style="font-size: 150%;" slot="left">
         {{$store.state.userInfo.name}}
+      </span> -->
+      <mu-button flat @click="$router.push({name: 'allProblems'})" slot="left">
+        <span style="font-size: 150%;">题目列表</span>
+      </mu-button>
       <mu-button flat @click="showLogin" slot="right">
         <span style="font-size: 150%;">登录</span>
       </mu-button>

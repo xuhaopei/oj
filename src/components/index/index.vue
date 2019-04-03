@@ -17,6 +17,7 @@
           <notice></notice>
         </div>
       </div>
+      <copyright></copyright>
     </div>
   </div>
 </template>

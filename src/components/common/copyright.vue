@@ -1,12 +1,20 @@
 <template>
-  <div class="copyright">
-    <a class="ca" href="">联系我们</a>
+  <div class="bottom">
+    <div class="row">
+      <span>版权说明</span>
+    </div>
+    <div class="row">
+      <span>版权说明</span>
+    </div>
+    <div class="row">
+      <span>版权说明</span>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'copyright',
+  name: 'bottom',
   props: {
   },
   components: {
@@ -17,16 +25,20 @@ export default {
   },
   methods: {
   },
+  created () {
+  }
 }
 </script>
 
 <style scoped>
-  .copyright {
+  .bottom {
+    width: 100%;
   }
-  .ca {
-    color: #8590a6;
+  .bottom .row {
+    display: flex;
+    justify-content: center;
   }
-  .ca:hover {
-    color: #175199;
+  .bottom .row span {
+    color: #737373;
   }
 </style>
