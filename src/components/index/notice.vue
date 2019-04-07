@@ -67,7 +67,7 @@ export default {
     font-size: 150%;
   }
   .notice-li-unready {
-    height: 14px;
+    height: 23px;
     width: 100%;
     margin-bottom: 6px;
   }
