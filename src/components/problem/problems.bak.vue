@@ -1,7 +1,18 @@
 <template>
   <div class="problems">
     <div class="content">
-      <displayContent></displayContent>
+      <div class="bar">
+        <!-- <mu-tabs :value.sync="active" inverse style="background-color: #fafafa;" indicator-color='#000000' text-color="#757575" full-width> -->
+        <mu-tabs :value.sync="active" color="#2c5477" indicator-color="#000000" full-width>
+          <mu-tab>描述</mu-tab>
+          <mu-tab>参考方法</mu-tab>
+          <mu-tab>提交历史</mu-tab>
+          <mu-tab>讨论</mu-tab>
+        </mu-tabs>
+      </div>
+      <div class="display" v-if="active===1">
+
+      </div>
     </div>
     <div class="code">
       <codeEditor></codeEditor>
@@ -11,7 +22,6 @@
 
 <script>
 import codeEditor from '../common/codeEditor.vue'
-import displayContent from './displayContent.vue'
 export default {
   name: 'problems',
   props: {
@@ -19,7 +29,6 @@ export default {
   },
   components: {
     codeEditor,
-    displayContent,
   },
   data () {
     return {
@@ -37,9 +46,11 @@ export default {
       }
       await sleep(2000)
       this.ready = true
-    },
+    }
   },
   created () {
+    console.log(this.id);
+    
     this.init()
   }
 }

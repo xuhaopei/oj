@@ -1,12 +1,17 @@
 <template>
   <div v-if="ready" class="codeEdit">
-    <div class='option' style="width: 450px;">
-      <mu-select class="language" label="语言" v-model="cmOptions.mode" full-width>
-        <mu-option v-for="(option,index) in optionsLanguage" :key="index" :label="option.label" :value="option.value"></mu-option>
-      </mu-select>
-      <mu-select class="language" label="主题颜色" v-model="cmOptions.theme" full-width>
-        <mu-option v-for="(option,index) in optionsTheme" :key="index" :label="option.label" :value="option.value"></mu-option>
-      </mu-select>
+    <div class='_codeEditor-option'>
+      <div style="display: flex; width: 450px;">
+        <mu-select class="_codeEditor-language" label="语言" v-model="cmOptions.mode" full-width>
+          <mu-option v-for="(option,index) in optionsLanguage" :key="index" :label="option.label" :value="option.value"></mu-option>
+        </mu-select>
+        <mu-select class="_codeEditor-language" label="主题颜色" v-model="cmOptions.theme" full-width>
+          <mu-option v-for="(option,index) in optionsTheme" :key="index" :label="option.label" :value="option.value"></mu-option>
+        </mu-select>
+      </div>
+      <div style="display: flex; ">
+        <mu-button color="success">提交</mu-button>
+      </div>
     </div>
     <div>
       <codemirror v-model="code" :options="cmOptions"></codemirror>
@@ -73,18 +78,23 @@ export default {
   },
   created () {
     this.ready = true
-    console.log(this.cmOptions);
-    
   }
 }
 </script>
 
-<style scoped>
-  .option {
+<style>
+  .codeEdit ._codeEditor-option {
     display: flex;
+    width: 100%;
+    align-items: center;
   }
-  .language {
+  .codeEdit ._codeEditor-language {
     width: 200px;
     margin-right: 50px;
+  }
+
+  .CodeMirror {
+    border: 1px solid #eee;
+    height: calc(100vh - 200px);
   }
 </style>

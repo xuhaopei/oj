@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import index from '../components/index/index.vue'
 import problems from '../components/problem/problems.vue'
+import history from '../components/problem/history.vue'
 import allProblems from '../components/problem/allProblems.vue'
 import test from '../components/test.vue'
 
@@ -12,9 +13,6 @@ const defalutRouter = [
     path: '/',
     name: 'index',
     component: index,
-    // children: [
-    //   { path: '5', component: h2 },
-    // ]
   },
   {
     path: '/allProblems',
@@ -26,6 +24,9 @@ const defalutRouter = [
     name: 'problems',
     component: problems,
     props: true,
+    children: [
+      { path: 'history', component: history },
+    ]
   },
   {
     path: '/test',
