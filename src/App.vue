@@ -61,7 +61,7 @@ export default {
 .center-div .center-item {
   flex-basis: 1200px;
 }
-.center-div .left-item {
+/* .center-div .left-item {
   background-color: rebeccapurple;
 }
 .center-div .right-item {
@@ -71,7 +71,7 @@ export default {
   width: calc((100vw - 1200px)/2);
   right: 0px;
   min-width: 200px;
-}
+} */
 .skeleton-screen {
   background-color: #ebecf0;
 }

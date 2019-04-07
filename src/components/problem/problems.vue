@@ -2,12 +2,16 @@
   <div class="problems">
     <div class="content">
       <div class="bar">
-        <mu-tabs :value.sync="active2" class="left" color="#2c5477" indicator-color="#8815a1" full-width>
+        <!-- <mu-tabs :value.sync="active" inverse style="background-color: #fafafa;" indicator-color='#000000' text-color="#757575" full-width> -->
+        <mu-tabs :value.sync="active" color="#2c5477" indicator-color="#000000" full-width>
           <mu-tab>描述</mu-tab>
           <mu-tab>参考方法</mu-tab>
           <mu-tab>提交历史</mu-tab>
           <mu-tab>讨论</mu-tab>
         </mu-tabs>
+      </div>
+      <div class="display" v-if="active===1">
+
       </div>
     </div>
     <div class="code">
@@ -30,7 +34,8 @@ export default {
     return {
       ready: false,
       data: {
-      }
+      },
+      active: 0,
     }
   },
   methods: {
@@ -66,5 +71,9 @@ export default {
   .problems .code {
     width: 50%;
   }
-
+  .problems .display {
+    overflow-y: scroll;
+    width: 100%;
+    height: calc(100% - 48px);
+  }
 </style>
