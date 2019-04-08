@@ -8,15 +8,12 @@ import store from './store'
 // muse ui
 import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
-// material icon
-import { VuePlugin } from 'vuera'
-
-Vue.use(VuePlugin)
-
+import 'muse-ui-loading/dist/muse-ui-loading.css'
+import Loading from 'muse-ui-loading'
 Vue.prototype.$types = types
-
 Vue.use(router)
 Vue.use(MuseUI)
+Vue.use(Loading)
 Vue.config.productionTip = false
 new Vue({
   render: h => h(App),

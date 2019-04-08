@@ -42,7 +42,7 @@ export default {
     }
   },
   created () {
-    console.log(this.id);
+    // console.log(this.id);
     
     this.init()
   }

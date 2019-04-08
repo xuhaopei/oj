@@ -1,6 +1,6 @@
 <template>
   <div class="codeProblemsList">
-    <mu-data-table :loading="!ready" style='width: 100%;' :columns="columns" :sort.sync="sort" @sort-change="handleSortChange" :data="data.list">
+    <mu-data-table :loading="!ready" style='width: 100%;' :columns="columns" @sort-change="handleSortChange" :data="data.list">
       <template slot-scope="scope">
         <td>{{scope.row.id}}</td>
         <td>
@@ -9,6 +9,7 @@
         <td><span class="accept">{{scope.row.accept}}%</span></td>
       </template>
     </mu-data-table>
+    <mu-pagination style="margin-top: 10px;"  v-if="ready" raised circle :total="1000" :current.sync="data.page"></mu-pagination>
     <!-- <div v-else style='width: 100%;'>
       <div v-for="item in data.noneList" :key="item" class="skeleton-screen none">
 
@@ -32,7 +33,8 @@ export default {
       ready: false,
       data: {
         list: [],
-        noneList: [1, 2, 3, 4, 5]
+        noneList: [1, 2, 3, 4, 5],
+        page: 1,
       },
 
       columns: [
@@ -84,6 +86,8 @@ export default {
 <style scoped>
   .codeProblemsList {
     display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   .codeProblemsList .none{
     height: 40px;

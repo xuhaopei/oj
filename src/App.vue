@@ -30,9 +30,9 @@ export default {
     // this.init()
   },
   mounted() {
-    window.onresize = () => {
-      console.log('r');
-    }
+    // window.onresize = () => {
+    //   // console.log('r');
+    // }
 },
 }
 </script>

@@ -9,13 +9,17 @@
           <mu-option v-for="(option,index) in optionsTheme" :key="index" :label="option.label" :value="option.value"></mu-option>
         </mu-select>
       </div>
-      <div style="display: flex; ">
-        <mu-button color="success">提交</mu-button>
+      <div style="display: flex;align-items: center;">
+        <mu-button color="success" data-mu-loading-size='24' v-loading="committing" @click="commit">提交</mu-button>
       </div>
     </div>
     <div>
       <codemirror v-model="code" :options="cmOptions"></codemirror>
     </div>
+    <mu-snackbar :color='snackbar.color' position="bottom-end" :open.sync="snackbar.open">
+      {{snackbar.msg}}
+      <!-- <mu-button flat slot="action" color="secondary" @click="normal.open = false">Close</mu-button> -->
+    </mu-snackbar>
   </div>
 </template>
 
@@ -41,6 +45,12 @@ export default {
     return {
       ready: false,
       code: '',
+      snackbar: {
+        open: false,
+        msg: '',
+        color: 'success', // error warning  info
+      },
+      committing: false,
       cmOptions: {
         tabSize: 4,
         mode: 'text/x-c++src',
@@ -75,6 +85,26 @@ export default {
     }
   },
   methods: {
+    async commit () {
+      this.committing = true
+      
+			const sleep = (ms) => {
+				return new Promise(resolve => setTimeout(resolve, ms))
+      }
+      await sleep(2000)
+      this.committing = false
+      // this.snackbar = { ...this.snackbar, ...{
+
+      // }}
+      this.snackbar = {
+        open: true,
+        msg: '测试通过',
+        color: 'success'
+      }
+      setTimeout(() => {
+        this.snackbar.open = false;
+      }, 1500);
+    }
   },
   created () {
     this.ready = true
@@ -92,9 +122,14 @@ export default {
     width: 200px;
     margin-right: 50px;
   }
+  /* .codeEdit ._slider {
+    width: 200px;
+    margin-right: 50px;
+  } */
 
   .CodeMirror {
     border: 1px solid #eee;
     height: calc(100vh - 200px);
+    font-size: 20px;
   }
 </style>
