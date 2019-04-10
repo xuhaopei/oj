@@ -20,7 +20,7 @@ export default new Vuex.Store({
 			const sleep = (ms) => {
 				return new Promise(resolve => setTimeout(resolve, ms))
 			}
-			await sleep(2000)
+			await sleep(1000)
 			let _d = state.userInfo
 			_d = {..._d, ...{
 				name: '123'

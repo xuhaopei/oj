@@ -35,7 +35,7 @@ export default {
 			const sleep = (ms) => {
 				return new Promise(resolve => setTimeout(resolve, ms))
       }
-      await sleep(2000)
+      await sleep(1000)
 
       for (let i = 0; i<20; i++) {
         this.data.list.push({

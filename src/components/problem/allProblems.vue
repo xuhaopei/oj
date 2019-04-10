@@ -14,6 +14,12 @@
           </div>
         </div>
         <div class="display-item-right">
+          <div class="filter-row">
+            <mu-button color="primary">筛选</mu-button>
+          </div>
+          <div class="filter-row">
+            <mu-text-field  v-model="filter.keyword" style="width: 100%;" placeholder="关键字" ></mu-text-field>
+          </div>
         </div>
       </div>
       <copyright v-if="ready"></copyright>
@@ -37,6 +43,9 @@ export default {
       ready: false,
       data: {
       },
+      filter: {
+        keyword: '',
+      },
       active: 0,
     }
   },
@@ -46,7 +55,7 @@ export default {
 			// const sleep = (ms) => {
 			// 	return new Promise(resolve => setTimeout(resolve, ms))
       // }
-      // await sleep(2000)
+      // await sleep(1000)
       this.ready = true
     }
   },
@@ -62,12 +71,19 @@ export default {
   }
   .allProblems .display {
     display: flex;
+    width: 100%;
   }
   .allProblems .display .display-item-left{
     width: 75%;
   }
   .allProblems .display .display-item-right{
     width: 25%;
+    padding-left: 20px;
+    padding-top: 40px;
+  }
+  .allProblems .display .display-item-right .filter-row {
+    display: flex;
+    margin-bottom: 20px;
   }
   .t {
     
