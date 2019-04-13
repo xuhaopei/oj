@@ -55,7 +55,7 @@ export default {
 
     for (let i = 0; i < 20; i++) {
       this.data.list.push({
-        id: '2',
+        id: i,
         title: '这是问题的题目',
         accept: '80',
       })

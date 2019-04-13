@@ -20,6 +20,16 @@
           <div class="filter-row">
             <mu-text-field  v-model="filter.keyword" style="width: 100%;" placeholder="关键字" ></mu-text-field>
           </div>
+          <div class="filter-row-tag">
+            <div>
+              <mu-chip @click="handleTagClick(item)" class="item" :color="`${item.selected?'#bebebe':'#868282'}`" 
+                :text-color="`${item.selected?'#000000':'ffffff'}`"
+                v-for="(item, idx) in filter.tag" :key='idx' 
+                round :ripple='false'>
+                <span class="tag-content">{{item.tag}}</span><mu-badge :content="`${item.count}`" color="#61a9a7"></mu-badge>
+              </mu-chip>
+            </div>
+          </div>
         </div>
       </div>
       <copyright v-if="ready"></copyright>
@@ -45,6 +55,7 @@ export default {
       },
       filter: {
         keyword: '',
+        tag: [],
       },
       active: 0,
     }
@@ -56,7 +67,24 @@ export default {
 			// 	return new Promise(resolve => setTimeout(resolve, ms))
       // }
       // await sleep(1000)
+      let t = ['数组', '排序', '动态规划', '树', '图', '动态规划', '树', '图', '数组', '排序', '动态规划', '树', '图', 
+      '数组', '排序', '数组', '排序', '动态规划', '树', '图', ]
+      let selected = false
+      for (let idx = 0; idx < t.length; idx++) {
+        const element = t[idx]
+        this.filter.tag.push({
+          id: idx,
+          tag: element,
+          selected: selected,
+          count: 100,
+        })
+        selected = !selected
+      }
       this.ready = true
+    },
+    async handleTagClick (data) {
+      console.log(data);
+      
     }
   },
   created () {
@@ -85,9 +113,21 @@ export default {
     display: flex;
     margin-bottom: 20px;
   }
+  .allProblems .display .display-item-right .filter-row-tag {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .allProblems .display .display-item-right .filter-row-tag .item {
+    margin-right: 5px;
+    margin-bottom: 5px;
+  }
+  .allProblems .display .display-item-right .filter-row-tag .item .tag-content {
+    margin-right: 5px;
+  }
   .t {
     
-    background-color: #ffffff
+    background-color: #bebebe
   }
   .show-problems {
     padding-top: 20px;
