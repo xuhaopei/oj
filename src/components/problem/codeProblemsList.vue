@@ -23,20 +23,14 @@ import codeEditor from '../common/codeEditor.vue'
 export default {
   name: 'codeProblemsList',
   props: {
-    id: String,
+    data: Object,
+    ready: Boolean,
   },
   components: {
     codeEditor,
   },
   data () {
     return {
-      ready: false,
-      data: {
-        list: [],
-        noneList: [1, 2, 3, 4, 5],
-        page: 1,
-      },
-
       columns: [
           { title: '序号', width: 50, id: 'id' },
           { title: '标题', id: 'title', width: 350, },
@@ -47,32 +41,21 @@ export default {
   },
   methods: {
     async init () {
-      
-			const sleep = (ms) => {
-				return new Promise(resolve => setTimeout(resolve, ms))
-      }
-      await sleep(1000)
+			// const sleep = (ms) => {
+			// 	return new Promise(resolve => setTimeout(resolve, ms))
+      // }
+      // await sleep(1000)
 
-    for (let i = 0; i < 20; i++) {
-      this.data.list.push({
-        id: i,
-        title: '这是问题的题目',
-        accept: '80',
-      })
-    }
-      this.ready = true
+      // this.ready = true
     },
     handleSortChange () {
 
     },
     toProblem (data) {
-      console.log('in');
-      console.log(data);
-      
       this.$router.push({
         name: 'problems',
         params: {
-          id: data.id,
+          id: `${data.id}`,
         }
       })
     }
