@@ -10,6 +10,7 @@ import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
 import 'muse-ui-loading/dist/muse-ui-loading.css'
 import Loading from 'muse-ui-loading'
+
 Vue.prototype.$types = types
 Vue.use(router)
 Vue.use(MuseUI)
@@ -20,4 +21,3 @@ new Vue({
   router,
   store,
 }).$mount('#app')
-

@@ -17,7 +17,7 @@
         </div>
         <div class="display-item-right">
           <div class="filter-row">
-            <mu-button color="primary">筛选</mu-button>
+            <mu-button @click="screen" color="primary">筛选</mu-button>
             <mu-select @change="getData" class="pageSizeSelect" label="" v-model="filter.pageSize" full-width>
               <mu-option v-for="(option,index) in filter.pageSizeOption" :key="index" :label="option.label" :value="option.value"></mu-option>
             </mu-select>
@@ -130,29 +130,51 @@ export default {
         })
       }
     },
-    async getData() {
+    async screen () {			
+      this.$store.dispatch('n', {
+				method: 'get',
+				url: '',
+				params: {
+					
+				}
+			})
+    },
+    async getData () {
       switch (this.active) {
-        case 0:
+        case 0: {
           this.data.codeProblemsList.list = []
           this.subReady.codeProblemsList = false
-			const sleep = (ms) => {
-				return new Promise(resolve => setTimeout(resolve, ms))
-      }
-      await sleep(1000)
-          let t = []
-          for (let i = 0; i < 20; i++) {
-            t.push({
-              id: i,
-              title: '这是问题的题目',
-              accept: '80',
-            })
-          }
-          this.data.codeProblemsList.list = t
+          // const sleep = (ms) => {
+          //   return new Promise(resolve => setTimeout(resolve, ms))
+          // }
+          // await sleep(1000)
+          // let t = []
+          // for (let i = 0; i < 20; i++) {
+          //   t.push({
+          //     id: i,
+          //     title: '这是问题的题目',
+          //     accept: '80',
+          //   })
+          // }
+          // this.data.codeProblemsList.list = t
+          await this.$store.dispatch('n', {
+            method: 'get',
+            url: '/problems',
+            params: {
+              pageNum: this.data.codeProblemsList.page,
+              page_size: this.filter.pageSize,
+            }
+          })
+          if (!this.$store.state.n.success) return
+          this.data.codeProblemsList.list = this.$store.state.n.data.data
+          console.log('this.data.codeProblemsList.list', this.data.codeProblemsList.list);
+          
           this.$nextTick(function () {
             this.subReady.codeProblemsList = true
           })
           //this.subReady.codeProblemsList = true
           break;
+        }
       
         default:
           break;

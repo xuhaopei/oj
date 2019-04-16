@@ -4,6 +4,9 @@
       <headBar></headBar>
       <router-view></router-view>
     </div>
+    <mu-snackbar position="top" :color='$store.state.n.msgColor' :open="$store.state.n.showMsg">
+      {{$store.state.n.msg}}
+    </mu-snackbar>
   </div>
 </template>
 
@@ -16,7 +19,7 @@ export default {
   },
   data () {
     return {
-      ready: false
+      ready: false,
     }
   },
   methods: {

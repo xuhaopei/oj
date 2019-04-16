@@ -19,7 +19,6 @@
 </template>
 
 <script>
-import codeEditor from '../common/codeEditor.vue'
 export default {
   name: 'codeProblemsList',
   props: {
@@ -27,7 +26,6 @@ export default {
     ready: Boolean,
   },
   components: {
-    codeEditor,
   },
   data () {
     return {
