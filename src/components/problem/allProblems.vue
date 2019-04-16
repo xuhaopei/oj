@@ -18,6 +18,9 @@
         <div class="display-item-right">
           <div class="filter-row">
             <mu-button color="primary">筛选</mu-button>
+            <mu-select @change="getData" class="pageSizeSelect" label="" v-model="filter.pageSize" full-width>
+              <mu-option v-for="(option,index) in filter.pageSizeOption" :key="index" :label="option.label" :value="option.value"></mu-option>
+            </mu-select>
           </div>
           <div class="filter-row">
             <mu-text-field  v-model="filter.keyword" style="width: 100%;" placeholder="关键字" ></mu-text-field>
@@ -72,6 +75,21 @@ export default {
       filter: {
         keyword: '',
         tag: [],
+        pageSize: 20,
+        pageSizeOption: [
+          {
+            label: '每页20项',
+            value: 20,
+          },
+          {
+            label: '每页30项',
+            value: 30,
+          },
+          {
+            label: '每页50项',
+            value: 50,
+          },
+        ],
       },
       active: 0,
     }
@@ -174,6 +192,10 @@ export default {
   .allProblems .display .display-item-right .filter-row {
     display: flex;
     margin-bottom: 20px;
+  }
+  .allProblems .display .display-item-right .filter-row .pageSizeSelect {
+    width: 100px;
+    margin-left: 20px;
   }
   .allProblems .display .display-item-right .filter-row-tag {
     display: flex;
