@@ -43,23 +43,15 @@
     </div>
     <div class="description-main" v-else>
       <div class="description-nodata-item">
-        <div class="skeleton-screen nodata-title">
-          
-        </div>
-        <div class="skeleton-screen nodata-context">
-
-        </div>
+        <div class="skeleton-screen nodata-title"></div>
+        <div class="skeleton-screen nodata-context"></div>
+        <div class="skeleton-screen nodata-context"></div>
+        <div class="skeleton-screen nodata-context-half"></div>
       </div>
       <div class="description-nodata-item">
-        <div class="skeleton-screen nodata-title">
-          
-        </div>
-        <div class="skeleton-screen nodata-context">
-
-        </div>
-        <div class="skeleton-screen nodata-context">
-
-        </div>
+        <div class="skeleton-screen nodata-title"></div>
+        <div class="skeleton-screen nodata-context"></div>
+        <div class="skeleton-screen nodata-context"></div>
       </div>
     </div>
   </div>
@@ -137,6 +129,11 @@ export default {
   .nodata-context {
     height: 21px;
     width: 100%;
+    margin-bottom: 20px;
+  }
+  .nodata-context-half {
+    height: 21px;
+    width: 50%;
     margin-bottom: 20px;
   }
 </style>

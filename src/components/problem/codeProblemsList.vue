@@ -11,9 +11,7 @@
     </mu-data-table>
     <mu-pagination style="margin-top: 10px;"  v-if="ready" raised circle :total="1000" :current.sync="data.page"></mu-pagination>
     <!-- <div v-else style='width: 100%;'>
-      <div v-for="item in data.noneList" :key="item" class="skeleton-screen none">
-
-      </div>
+      <div v-for="item in data.noneList" :key="item" class="skeleton-screen none"></div>
     </div> -->
   </div>
 </template>
