@@ -41,6 +41,27 @@
         </div>
       </div>
     </div>
+    <div class="description-main" v-else>
+      <div class="description-nodata-item">
+        <div class="skeleton-screen nodata-title">
+          
+        </div>
+        <div class="skeleton-screen nodata-context">
+
+        </div>
+      </div>
+      <div class="description-nodata-item">
+        <div class="skeleton-screen nodata-title">
+          
+        </div>
+        <div class="skeleton-screen nodata-context">
+
+        </div>
+        <div class="skeleton-screen nodata-context">
+
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -54,9 +75,9 @@ export default {
   },
   data () {
     return {
-      data: d.data,
+      data: null,
       d: d,
-      ready: true,
+      ready: false,
     }
   },
   methods: {
@@ -77,9 +98,7 @@ export default {
     }
   },
   created () {
-    console.log(this.data);
-    
-    // this.init()
+    this.init()
   }
 }
 </script>
@@ -105,5 +124,19 @@ export default {
     width: 100%;
     font-size: 1em;
     color: #495060;
+  }
+  .description-main .description-nodata-item {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  .nodata-title {
+    height: 31px;
+    width: 120px;
+    margin-bottom: 20px;
+  }
+  .nodata-context {
+    height: 21px;
+    width: 100%;
+    margin-bottom: 20px;
   }
 </style>
