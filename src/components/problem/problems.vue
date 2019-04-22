@@ -4,13 +4,15 @@
       <div class="displayContent">
         <mu-bottom-nav color='#222222' :value.sync="active">
           <mu-bottom-nav-item :to="`/problems/${$route.params.id}`" :value="0" title="描述" icon="description"></mu-bottom-nav-item>
-          <mu-bottom-nav-item :to="`/problems/${$route.params.id}/history`" :value="1" title="参考答案" icon="question_answer"></mu-bottom-nav-item>
-          <mu-bottom-nav-item :to="`/problems/${$route.params.id}/history`" :value="2" title="提交历史" icon="history"></mu-bottom-nav-item>
+          <mu-bottom-nav-item :to="`/problems/${$route.params.id}/history`" :value="1" title="提交历史" icon="history"></mu-bottom-nav-item>
+          <mu-bottom-nav-item :to="`/problems/${$route.params.id}/history`" :value="2" title="参考答案" icon="question_answer"></mu-bottom-nav-item>
           <mu-bottom-nav-item :to="`/problems/${$route.params.id}/history`" :value="3" title="讨论" icon="insert_comment"></mu-bottom-nav-item>
         </mu-bottom-nav>
         <div style="width: 100%;height: calc(100% - 56px);">
-            <description v-show="active===0"></description>
-          <router-view v-show="active!==0"></router-view>
+          <description v-show="active===0"></description>
+        </div>
+        <div style="width: 100%;height: calc(100% - 56px);">
+          <router-view v-show="active===1"></router-view>
         </div>
       </div>
     </div>
