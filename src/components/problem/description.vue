@@ -78,7 +78,7 @@ export default {
 			const sleep = (ms) => {
 				return new Promise(resolve => setTimeout(resolve, ms))
       }
-      await sleep(1000)
+      await sleep(2000)
       await Promise.all([
         this.getData(),
       ])
