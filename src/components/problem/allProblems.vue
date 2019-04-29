@@ -157,17 +157,17 @@ export default {
           //   })
           // }
           // this.data.codeProblemsList.list = t
-          await this.$store.dispatch('n', {
-            method: 'get',
-            url: '/problems',
-            params: {
-              pageNum: this.data.codeProblemsList.page,
-              page_size: this.filter.pageSize,
-            }
-          })
+          // await this.$store.dispatch('n', {
+          //   method: 'get',
+          //   url: '/problems',
+          //   params: {
+          //     pageNum: this.data.codeProblemsList.page,
+          //     page_size: this.filter.pageSize,
+          //   }
+          // })
           if (!this.$store.state.n.success) return
           this.data.codeProblemsList.list = this.$store.state.n.data.data
-          console.log('this.data.codeProblemsList.list', this.data.codeProblemsList.list);
+          // console.log('this.data.codeProblemsList.list', this.data.codeProblemsList.list);
           
           this.$nextTick(function () {
             this.subReady.codeProblemsList = true

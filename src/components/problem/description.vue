@@ -3,32 +3,32 @@
     <div v-if="ready" class='description-main'>
       <div class="description-item">
         <div>
-          <h2>描述</h2>
+          <h2>{{data.title}}</h2>
         </div>
-        <div v-for="(item, idx) in data.problem.description.ops" :key='idx'>
-          {{item.insert}}
+        <div>
+          {{data.description.insert}}
         </div>
       </div>
       <div class="description-item">
         <div>
           <h2>输入规范</h2>
         </div>
-        <div v-for="(item, idx) in data.problem.input_format.ops" :key='idx'>
-          {{item.insert}}
+        <div>
+          {{data.inputFormat.insert}}
         </div>
       </div>
       <div class="description-item">
         <div>
           <h2>输出规范</h2>
         </div>
-        <div v-for="(item, idx) in data.problem.output_format.ops" :key='idx'>
-          {{item.insert}}
+        <div>
+          {{data.outputFormat.insert}}
         </div>
       </div>
       <div class="description-item">
         <h2 style='margin-bottom: 0px;'>样例</h2>
         <div class="sample">
-          <div v-for="(item, idx) in data.problem.samples" :key='idx'>
+          <div v-for="(item, idx) in data.samples" :key='idx'>
             <h5 >输入</h5>
             <div class="res">
               <span>{{item.input}}</span>
@@ -75,18 +75,26 @@ export default {
   methods: {
     async init () {
       
-			const sleep = (ms) => {
-				return new Promise(resolve => setTimeout(resolve, ms))
-      }
-      await sleep(1000)
+			// const sleep = (ms) => {
+			// 	return new Promise(resolve => setTimeout(resolve, ms))
+      // }
+      // await sleep(1000)
       await Promise.all([
         this.getData(),
       ])
       this.ready = true
     },
     async getData () {
-      this.$route.params.id
-      this.data = d.data
+      
+      await this.$store.dispatch('n', {
+        method: 'get',
+        url: `/programProblem/${this.$route.params.id}`,
+        params: {
+        }
+      })
+      if (!this.$store.state.n.success) return
+      this.data = this.$store.state.n.data.programProblem
+      // this.data = d.data
     }
   },
   created () {
