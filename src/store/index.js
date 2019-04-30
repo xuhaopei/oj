@@ -9,7 +9,8 @@ export default new Vuex.Store({
 			isLogin: false,
 			name: ''
 		},
-		n: {
+		n: {},
+		nTemplate: {
 			success: null,
 			data: null,
 			showMsg: false,
@@ -22,10 +23,10 @@ export default new Vuex.Store({
 			state.userInfo = data
 		},
 		[types.SET_N_DATA] (state, data) {
-			state.n = data
+			state.n[data.flag] = data.res
 		},
-		[types.TOGGLE_MSG] (state) {
-			state.n.showMsg = !state.n.showMsg
+		[types.TOGGLE_MSG] (state, flag) {
+			state.n[flag].showMsg = !state.n.showMsg
 		},
 	},
 	actions: {
@@ -43,12 +44,12 @@ export default new Vuex.Store({
 		},
 		async n ({commit, state}, data) {
 			// this.$store.dispatch('n', {
+			// 	flag: flag,
 			// 	method: 'get',
-			// 	url: '',
+			// 	url: `/path/${this.$route.params.id}`,
 			// 	params: {
-
 			// 	}
-			// })
+			// }),
 			let d = null
 			try {
 				d = await axios[data.method](data.url, {
@@ -56,28 +57,36 @@ export default new Vuex.Store({
 				})
 			} catch (error) {
 				commit(types.SET_N_DATA, {
-					...state.n, ...{
-					success: false,
-					showMsg: true,
-					msg: '网络错误',
-				}})
-				setTimeout(commit(types.TOGGLE_MSG), 2000)
+					res: {...state.nTemplate, ...{
+						success: false,
+						showMsg: true,
+						msg: '网络错误',
+					}},
+					flag: data.flag,
+				})
+				setTimeout(commit(types.TOGGLE_MSG, data.flag), 2000)
 				return
 			}
 			if (d.data.status === 200) {
 				commit(types.SET_N_DATA, {
-					...state.n, ...{
-					success: true,
-					data: d.data.data,
-				}})
+					res: {
+						...state.nTemplate, ...{
+						success: true,
+						data: d.data.data,
+					}},
+					flag: data.flag
+				})
 			} else {
 				commit(types.SET_N_DATA, {
-					...state.n, ...{
-					success: false,
-					showMsg: true,
-					msg: d.data.message,
-				}})
-				setTimeout(commit(types.TOGGLE_MSG), 2000)
+					res: {
+						...state.nTemplate, ...{
+							success: false,
+							showMsg: true,
+							msg: d.data.message,
+					}},
+					flag: data.flag
+				})
+				setTimeout(commit(types.TOGGLE_MSG, data.flag), 2000)
 			}
 		},
 	},

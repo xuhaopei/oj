@@ -3,10 +3,10 @@
     <div v-if="ready" class='description-main'>
       <div class="description-item">
         <div>
-          <h2>{{data.title}}</h2>
+          <h2>{{data.detail.title}}</h2>
         </div>
         <div>
-          {{data.description.insert}}
+          {{data.detail.description.insert}}
         </div>
       </div>
       <div class="description-item">
@@ -14,7 +14,7 @@
           <h2>输入规范</h2>
         </div>
         <div>
-          {{data.inputFormat.insert}}
+          {{data.detail.inputFormat.insert}}
         </div>
       </div>
       <div class="description-item">
@@ -22,13 +22,13 @@
           <h2>输出规范</h2>
         </div>
         <div>
-          {{data.outputFormat.insert}}
+          {{data.detail.outputFormat.insert}}
         </div>
       </div>
       <div class="description-item">
         <h2 style='margin-bottom: 0px;'>样例</h2>
         <div class="sample">
-          <div v-for="(item, idx) in data.samples" :key='idx'>
+          <div v-for="(item, idx) in data.detail.samples" :key='idx'>
             <h5 >输入</h5>
             <div class="res">
               <span>{{item.input}}</span>
@@ -67,7 +67,10 @@ export default {
   },
   data () {
     return {
-      data: null,
+      data: {
+        detail: null,
+        tag: [],
+      },
       d: d,
       ready: false,
     }
@@ -85,15 +88,28 @@ export default {
       this.ready = true
     },
     async getData () {
+      await Promise.all([
+        this.$store.dispatch('n', {
+          flag: 0,
+          method: 'get',
+          url: `/programProblem/${this.$route.params.id}`,
+          params: {
+          }
+        }),
+        this.$store.dispatch('n', {
+          flag: 1,
+          method: 'get',
+          url: `/programProblem/tags/${this.$route.params.id}`,
+          params: {
+          }
+        }),
+      ])
+      if (!this.$store.state.n[0].success) return
+      this.data.detail = this.$store.state.n[0].data.programProblem
+
+      if (!this.$store.state.n[0].success) return
+      this.data.tag = this.$store.state.n[1].data
       
-      await this.$store.dispatch('n', {
-        method: 'get',
-        url: `/programProblem/${this.$route.params.id}`,
-        params: {
-        }
-      })
-      if (!this.$store.state.n.success) return
-      this.data = this.$store.state.n.data.programProblem
       // this.data = d.data
     }
   },
