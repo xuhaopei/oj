@@ -38,4 +38,5 @@ const defalutRouter = [
 export default new Router({
   routes: defalutRouter,
   mode: 'history',
+  linkActiveClass: '',
 })

@@ -11,6 +11,10 @@ import 'muse-ui/dist/muse-ui.css'
 import 'muse-ui-loading/dist/muse-ui-loading.css'
 import Loading from 'muse-ui-loading'
 
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+Vue.use(ElementUI);
+
 Vue.prototype.$types = types
 Vue.use(router)
 Vue.use(MuseUI)

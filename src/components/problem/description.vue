@@ -3,7 +3,13 @@
     <div v-if="ready" class='description-main'>
       <div class="description-item">
         <div>
-          <h2>{{data.detail.title}}</h2>
+          <h2 style="margin-bottom: 0px;">{{data.detail.title}}</h2>
+          <div class="tag-list">
+            <el-button type="primary" plain size="mini" class="tag-item" small 
+              v-for="(item, idx) in data.tag" :key='idx' round>
+              {{item.tag_name}}
+            </el-button>
+          </div>
         </div>
         <div>
           {{data.detail.description.insert}}
@@ -132,6 +138,13 @@ export default {
   .description-main .sample {
     padding: 5px 10px;
     border-left: 2px solid #2d8cf0;
+  }
+  .tag-list {
+    display: flex;
+    padding: 10px;
+  }
+  .tag-item:hover {
+    background-color: #ffffff;
   }
   .description-main .sample .res {
     margin: 5px 0;
