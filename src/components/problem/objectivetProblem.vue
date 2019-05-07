@@ -113,7 +113,7 @@ export default {
       if (!this.$store.state.n[0].success) return
       this.data.detail = this.$store.state.n[0].data.programProblem
 
-      if (!this.$store.state.n[1].success) return
+      if (!this.$store.state.n[0].success) return
       this.data.tag = this.$store.state.n[1].data
       
       // this.data = d.data

@@ -4,9 +4,9 @@
       <headBar></headBar>
       <router-view></router-view>
     </div>
-    <mu-snackbar position="top" :color='$store.state.n.msgColor' :open="$store.state.n.showMsg">
+    <!-- <mu-snackbar position="top" :color='$store.state.n.msgColor' :open="$store.state.n.showMsg">
       {{$store.state.n.msg}}
-    </mu-snackbar>
+    </mu-snackbar> -->
   </div>
 </template>
 
@@ -20,6 +20,21 @@ export default {
   data () {
     return {
       ready: false,
+    }
+  },
+  computed: {
+    needShowMsg () {
+      return this.$store.state.msg
+    }
+  },
+  watch: {
+    needShowMsg (newVal, oldVal) {
+      console.log('in watch', newVal);
+      this.$message({
+        title: newVal.title,
+        message: newVal.message,
+        type: newVal.type,
+      });      
     }
   },
   methods: {

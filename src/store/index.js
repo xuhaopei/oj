@@ -10,6 +10,11 @@ export default new Vuex.Store({
 			name: ''
 		},
 		n: {},
+		msg: {
+			type: null,
+			message: null,
+			title: null,
+		},
 		nTemplate: {
 			success: null,
 			data: null,
@@ -27,6 +32,9 @@ export default new Vuex.Store({
 		},
 		[types.TOGGLE_MSG] (state, flag) {
 			state.n[flag].showMsg = !state.n.showMsg
+		},
+		[types.SET_MSG] (state, data) {
+			state.msg = data
 		},
 	},
 	actions: {
@@ -57,14 +65,19 @@ export default new Vuex.Store({
 				})
 			} catch (error) {
 				commit(types.SET_N_DATA, {
-					res: {...state.nTemplate, ...{
-						success: false,
-						showMsg: true,
-						msg: '网络错误',
+					res: {
+						...state.nTemplate, ...{
+							success: false,
+							showMsg: true,
+							msg: '',
 					}},
-					flag: data.flag,
+					flag: data.flag
 				})
-				setTimeout(commit(types.TOGGLE_MSG, data.flag), 2000)
+				commit(types.SET_MSG, {...state.msg, ...{
+					type: 'error',
+					message: '网络错误',
+				}},)
+				// setTimeout(commit(types.TOGGLE_MSG, data.flag), 2000)
 				return
 			}
 			if (d.data.status === 200) {
@@ -86,7 +99,11 @@ export default new Vuex.Store({
 					}},
 					flag: data.flag
 				})
-				setTimeout(commit(types.TOGGLE_MSG, data.flag), 2000)
+				commit(types.SET_MSG, {...state.msg, ...{
+					type: 'error',
+					message: d.data.msg,
+				}},)
+				// setTimeout(commit(types.TOGGLE_MSG, data.flag), 2000)
 			}
 		},
 	},

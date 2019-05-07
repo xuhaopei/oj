@@ -1,19 +1,50 @@
 <template>
   <div class="history">
-    <mu-data-table :loading="!ready" style='width: 100%;' :columns="columns" 
-      @sort-change="handleSortChange" :data="data.list">
-      <template slot-scope="scope">
-        <td>{{scope.row.date}}</td>
-        <td>
-          <span class="accepted table-link" @click="toHistoryDetail(scope.row)" v-if="scope.row.status===1">Accepted</span>
-          <span class="unaccepted table-link" @click="toHistoryDetail(scope.row)" v-if="scope.row.status===2">Error</span>
-        </td>
-        <td>{{scope.row.runtime}}ms</td>
-        <td>{{scope.row.memory}}mb</td>
-        <td>{{scope.row.language}}</td>
-        <td><span class="accept">{{scope.row.accept}}%</span></td>
-      </template>
-    </mu-data-table>
+  <template>
+    <div style="overflow-y: scorll;width: 100%;">
+      <el-table
+        :data="data.list"
+        border
+        style="width: 100%">
+        <el-table-column
+          label="时间"
+          width="180">
+          <template slot-scope="scope">
+            <span>{{scope.row.date}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="状态">
+          <template slot-scope="scope">
+            <span class="accepted table-link" @click="toHistoryDetail(scope.row)" v-if="scope.row.status===1">Accepted</span>
+            <span class="unaccepted table-link" @click="toHistoryDetail(scope.row)" v-if="scope.row.status===2">Error</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="runtime"
+          label="用时">
+          <template slot-scope="scope">
+            <span>{{scope.row.runtime}}ms</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="内存">
+          <template slot-scope="scope">
+            <span>{{scope.row.memory}}mb</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="语言">
+          <template slot-scope="scope">
+            <span>{{scope.row.language}}</span>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+  </template>
     <mu-pagination style="margin-top: 10px;margin-bottom: 20px;"  v-if="ready" raised circle :total="1000" :current.sync="data.page"></mu-pagination>
   </div>
 </template>
@@ -31,24 +62,16 @@ export default {
       data: {
         list: [],
       },
-      columns: [
-          // { title: '时间', id: 'time', width: 350, },
-          { title: '时间', id: 'date', width: 180},
-          { title: '状态', id: 'status', },
-          { title: '用时', id: 'runtime', },
-          { title: '内存', id: 'memory', },
-          { title: '语言', id: 'language', },
-          // { title: 'Calories', name: 'calories', width: 126, align: 'center', sortable: true },
-      ],
     }
   },
   methods: {
     async init () {
       
-			const sleep = (ms) => {
-				return new Promise(resolve => setTimeout(resolve, ms))
-      }
-      await sleep(1000)
+			// const sleep = (ms) => {
+			// 	return new Promise(resolve => setTimeout(resolve, ms))
+      // }
+      // await sleep(1000)
+      await this.getData()
       let t = []
       for (let i = 0; i < 10; i++) {
         t.push({
@@ -62,6 +85,19 @@ export default {
       }
       this.data.list = t
       this.ready = true
+    },
+    async getData () {
+      await Promise.all([
+        this.$store.dispatch('n', {
+          flag: 2,
+          method: 'get',
+          url: `/submissions/problem/${this.$route.params.id}`,
+          params: {
+          }
+        }),
+      ])
+      if (!this.$store.state.n[0].success) return
+      this.data.list = this.$store.state.n[2].data
     },
     handleSortChange () {
 
@@ -83,7 +119,9 @@ export default {
     align-items: center;
     justify-content: space-between;
     height: 100%;
-    overflow-y: scroll;
+    padding: 20px;
+    padding-bottom: 0px;
+    /* overflow-y: scroll; */
   }
   .accepted {
     color: #009688;

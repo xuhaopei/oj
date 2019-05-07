@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import index from '../components/index/index.vue'
 import problems from '../components/problem/problems.vue'
+import objectivetProblem from '../components/problem/objectivetProblem.vue'
 import history from '../components/problem/history.vue'
 import allProblems from '../components/problem/allProblems.vue'
 import test from '../components/test.vue'
@@ -27,6 +28,15 @@ const defalutRouter = [
     children: [
       { path: 'history', component: history },
     ]
+  },
+  {
+    path: '/objectivetProblem/:id',
+    name: 'objectivetProblem',
+    component: objectivetProblem,
+    props: true,
+    // children: [
+    //   { path: 'history', component: history },
+    // ]
   },
   {
     path: '/test',
