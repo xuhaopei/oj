@@ -10,7 +10,7 @@
         </mu-select>
       </div>
       <div style="display: flex;align-items: center;">
-        <mu-button color="success" data-mu-loading-size='24' v-loading="committing" @click="commit">提交</mu-button>
+        <mu-button color="success"  data-mu-loading-size='24' v-loading="committing" @click="commit">提交</mu-button>
       </div>
     </div>
     <div>

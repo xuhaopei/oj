@@ -15,7 +15,11 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI);
 
+// 测试环境
+import testenv from './testenv.js'
+
 Vue.prototype.$types = types
+Vue.prototype.$_env = testenv
 Vue.use(router)
 Vue.use(MuseUI)
 Vue.use(Loading)

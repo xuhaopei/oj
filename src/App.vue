@@ -28,8 +28,7 @@ export default {
     }
   },
   watch: {
-    needShowMsg (newVal, oldVal) {
-      console.log('in watch', newVal);
+    needShowMsg (newVal) {
       this.$message({
         title: newVal.title,
         message: newVal.message,
