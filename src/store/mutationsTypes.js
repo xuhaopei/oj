@@ -3,5 +3,8 @@ const types = {
   SET_N_DATA: 'SET_N_DATA',
   TOGGLE_MSG: 'TOGGLE_MSG',
   SET_MSG: 'SET_MSG',
+  SUBMISSION: {
+    SET_SUBMISSION_DETAIL_QUERY_PARAM: 'SET_SUBMISSION_DETAIL_QUERY_PARAM',
+  }
 }
 export default types

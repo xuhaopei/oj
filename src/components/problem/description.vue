@@ -134,6 +134,7 @@ export default {
     /* display: flex; */
     padding-left: 20px;
     padding-right: 20px;
+    padding-bottom: 30px;
   }
   .description-main .sample {
     padding: 5px 10px;

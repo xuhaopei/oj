@@ -6,6 +6,7 @@ import objectivetProblem from '../components/problem/objectivetProblem.vue'
 import history from '../components/problem/history.vue'
 import allProblems from '../components/problem/allProblems.vue'
 import test from '../components/test.vue'
+import submissionsDetail from '../components/problem/submissionsDetail.vue'
 
 Vue.use(Router);
 
@@ -37,6 +38,12 @@ const defalutRouter = [
     // children: [
     //   { path: 'history', component: history },
     // ]
+  },
+  {
+    path: '/submissions/detail/:id',
+    name: 'submissionsDetail',
+    component: submissionsDetail,
+    props: true,
   },
   {
     path: '/test',

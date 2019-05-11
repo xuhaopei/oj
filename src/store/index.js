@@ -22,6 +22,14 @@ export default new Vuex.Store({
 			msg: '',
 			msgColor: 'error',
 		},
+		submission: {
+			params: {
+				subUserId: null,
+				pid: null,
+				subId: null,
+				sourceCode: null,
+			}
+		}
 	},
 	mutations: {
 		[types.SET_USER_INFO] (state, data) {
@@ -35,6 +43,9 @@ export default new Vuex.Store({
 		},
 		[types.SET_MSG] (state, data) {
 			state.msg = data
+		},
+		[types.SUBMISSION.SET_SUBMISSION_DETAIL_QUERY_PARAM] (state, data) {
+			state.submission.params = {...state.submission.params, ...data}
 		},
 	},
 	actions: {

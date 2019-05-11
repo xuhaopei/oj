@@ -1,23 +1,6 @@
 <template>
   <div v-if="ready" class="history">
-    <!-- <div style="overflow-y: scroll;width: 100%;"> -->
     <div style="width: 100%;">
-
-<!-- eid	11
-gid	0
-gmtCreate	1555933736000
-gmtModified	1555933736000
-lang	PYTHON27
-memory	123
-pid	1
-queryableTime	1555933736000
-sourceCode	0
-status	AC
-subId	17
-submitTime	1555933736000
-uid	1
-usingTime	3 -->
-
       <el-table
         :data="data.list"
         border
@@ -33,8 +16,8 @@ usingTime	3 -->
           prop="name"
           label="状态">
           <template slot-scope="scope">
-            <span class="accepted table-link" @click="toHistoryDetail(scope.row)" v-if="scope.row.status==='AC'">Accepted</span>
-            <span class="unaccepted table-link" @click="toHistoryDetail(scope.row)" v-if="scope.row.status===2">Error</span>
+            <span class="accepted table-link" @click="toSubmissionsDetail(scope.row)" v-if="scope.row.status==='AC'">Accepted</span>
+            <span class="unaccepted table-link" @click="toSubmissionsDetail(scope.row)" v-if="scope.row.status===2">Error</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -58,6 +41,13 @@ usingTime	3 -->
             <span>{{scope.row.lang}}</span>
           </template>
         </el-table-column>
+        <el-table-column
+          prop="name"
+          label="分数">
+          <template slot-scope="scope">
+            <span>{{scope.row.score}}</span>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <div class="bottom-control">
@@ -74,6 +64,11 @@ usingTime	3 -->
     <h3>待讨论1: 这里可以把页面选择放底部</h3>
     <h3>待讨论2: 两个时间用哪些算</h3>
   </div>
+  <div v-else class="history">
+    <div style="height: 100%;width: 100%;">
+      <div v-for="item in data.unready" :key='item' class="skeleton-screen skeleton-item"></div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -89,6 +84,7 @@ export default {
       data: {
         list: [],
         total: null,
+        unready: [0, 1, 2, 3, 4, 5],
       },
       params: {
         pageNum: 1,
@@ -158,8 +154,14 @@ export default {
     handleSortChange () {
 
     },
-    toHistoryDetail () {
-
+    toSubmissionsDetail (data) {
+      // this.$store.commit(this.$types.SUBMISSION.SET_SUBMISSION_DETAIL_QUERY_PARAM, {
+			// 	subUserId: this.$_env.testUserInfo.uid,
+			// 	pid: this.$route.params.id,
+			// 	subId: data.subId,
+			// 	sourceCode: data.sourceCode,
+      // })
+      window.open(`/submissions/detail/9?subUserId=`, '_blank')
     },
   },
   created () {
@@ -197,5 +199,10 @@ export default {
     padding-bottom: 10px;
     justify-content: center;
     display: flex;
+  }
+  .skeleton-item {
+    height: 36px;
+    width: 100%;
+    margin-bottom: 10px;
   }
 </style>
