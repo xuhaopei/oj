@@ -161,7 +161,9 @@ export default {
 			// 	subId: data.subId,
 			// 	sourceCode: data.sourceCode,
       // })
-      window.open(`/submissions/detail/9?subUserId=`, '_blank')
+      let url = `/submissions/detail/${this.$route.params.id}?subUser_id=${this.$_env.testUserInfo.uid}`
+      url += `&sub_id=${data.sub_id}&token=${this.$_env.testUserInfo.token}`
+      window.open( url, '_blank')
     },
   },
   created () {

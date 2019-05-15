@@ -9,7 +9,18 @@
         <td><span class="accept">{{scope.row.accept}}%</span></td>
       </template>
     </mu-data-table>
-    <mu-pagination style="margin-top: 10px;"  v-if="ready" raised circle :total="1000" :current.sync="data.page"></mu-pagination>
+
+    <div class="bottom-control">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="params.pageNum"
+        :page-sizes="options.pageSize"
+        :page-size="100"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="data.total">
+      </el-pagination>
+    </div>
     <!-- <div v-else style='width: 100%;'>
       <div v-for="item in data.noneList" :key="item" class="skeleton-screen none"></div>
     </div> -->

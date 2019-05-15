@@ -22,11 +22,19 @@ export default {
   },
   methods: {
     async init () {
-      
-			const sleep = (ms) => {
-				return new Promise(resolve => setTimeout(resolve, ms))
-      }
-      await sleep(1000)
+      await Promise.all([
+        this.$store.dispatch('n', {
+          flag: 1,
+          method: 'get',
+          url: `/program-sub-detail`,
+          params: {
+            subUser_id: this.$route.query.subUser_id,
+            pid: this.$route.params.id,
+            sub_id: this.$route.query.sub_id,
+            token: this.$route.query.token,
+          }
+        }),
+      ])
       this.ready = true
     },
   },

@@ -10,16 +10,85 @@
             <mu-tab>选择</mu-tab>
           </mu-tabs>
           <div class="show-problems">
-            <codeProblemsList
-             v-if="active===0" :ready='subReady.codeProblemsList' :data='data.codeProblemsList'>
-            </codeProblemsList>
+            <div v-if="active===0">
+              <div v-if='subReady.codeProblemsList'>
+                <div style="width: 100%;">
+                  <el-table
+                    :data="data.codeProblemsList.list"
+                    border
+                    style="width: 100%">
+                    <el-table-column
+                      label="题目"
+                      width="180">
+                      <template slot-scope="scope">
+                        <span>{{scope.row.title}}</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="runtime"
+                      label="提交时间">
+                      <template slot-scope="scope">
+                        <span>{{scope.row.submit_times}}ms</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="name"
+                      label="状态">
+                      <template slot-scope="scope">
+                        <span class="accepted table-link" @click="toSubmissionsDetail(scope.row)" v-if="scope.row.status==='AC'">Accepted</span>
+                        <span class="unaccepted table-link" @click="toSubmissionsDetail(scope.row)" v-if="scope.row.status===2">Error</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="name"
+                      label="通过时间">
+                      <template slot-scope="scope">
+                        <span>{{scope.row.ac_times}}</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="name"
+                      label="难度">
+                      <template slot-scope="scope">
+                        <span>{{ ((d) => {
+                            switch (d) {
+                              case 2: {
+                                return '简单'
+                              }
+                              case 3: {
+                                return '困难'
+                              }
+                            }
+                          })(scope.row.difficult) }}</span>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </div>
+                <div class="bottom-control">
+                  <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="params.pageNum"
+                    :page-sizes="options.pageSize"
+                    :page-size="100"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="data.total">
+                  </el-pagination>
+                </div>
+              </div>
+              <div v-else class="history">
+                <div style="height: 100%;width: 100%;">
+                  <div v-for="item in data.unready" :key='item' class="skeleton-screen skeleton-item"></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="display-item-right">
           <div class="filter-row">
             <mu-button @click="screen" color="primary">筛选</mu-button>
-            <mu-select @change="getData" class="pageSizeSelect" label="" v-model="filter.pageSize" full-width>
-              <mu-option v-for="(option,index) in filter.pageSizeOption" :key="index" :label="option.label" :value="option.value"></mu-option>
+            <mu-select @change="getData" class="pageSizeSelect" label="" v-model="data.difficult" full-width>
+              <mu-option v-for="(option,index) in options.difficult" :key="index" :label="option.label" :value="option.value"></mu-option>
             </mu-select>
           </div>
           <div class="filter-row">
@@ -66,30 +135,60 @@ export default {
         filter: false,
       },
       data: {
+        tags: [],
+        unready: [0, 1, 2, 3, 4, 5],
+        difficult: 1,
         codeProblemsList: {
           list: [],
           page: 1,
+          total: null,
         },
         noneFilter: [1, 2, 3, 4, 5, ]
+      },
+      options: {
+        pageNum: [
+          {
+            label: '20条',
+            value: 20,
+          },
+          {
+            label: '50条',
+            value: 50,
+          },
+        ],
+        pageSize: [20, 50],
+        difficult: [
+          {
+            label: '全部难度',
+            value: 1,
+          },
+          {
+            label: '简单',
+            value: 2,
+          },
+          {
+            label: '中等',
+            value: 3,
+          },
+          {
+            label: '困难',
+            value: 4,
+          },
+        ]
+      },
+      params: {
+        program: {
+          page_num: 1,
+          page_size: 20,
+          difficult: null,
+          query: null,
+          tagList: null,
+          uid: this.$_env.testUserInfo.uid,
+        }
       },
       filter: {
         keyword: '',
         tag: [],
-        pageSize: 20,
-        pageSizeOption: [
-          {
-            label: '每页20项',
-            value: 20,
-          },
-          {
-            label: '每页30项',
-            value: 30,
-          },
-          {
-            label: '每页50项',
-            value: 50,
-          },
-        ],
       },
       active: 0,
     }
@@ -156,17 +255,25 @@ export default {
           //     accept: '80',
           //   })
           // }
-          // this.data.codeProblemsList.list = t
-          // await this.$store.dispatch('n', {
-          //   method: 'get',
-          //   url: '/problems',
-          //   params: {
-          //     pageNum: this.data.codeProblemsList.page,
-          //     page_size: this.filter.pageSize,
-          //   }
-          // })
-          if (!this.$store.state.n.success) return
-          this.data.codeProblemsList.list = this.$store.state.n.data.data
+          await Promise.all([
+            this.$store.dispatch('n', {
+              flag: 0,
+              method: 'get',
+              url: `/programProblems`,
+              params: {
+                page_num: this.params.program.page_num,
+                page_size: this.params.program.page_size,
+                difficult: this.params.program.difficult,
+                query: this.params.program.query,
+                tagList: this.params.program.tagList,
+                uid: this.$_env.testUserInfo.uid,
+              }
+            }),
+          ])
+          if (!this.$store.state.n[0].success) return
+          
+          this.data.codeProblemsList.list = this.$store.state.n[0].data.data
+          this.data.codeProblemsList.total = this.$store.state.n[0].data.total
           // console.log('this.data.codeProblemsList.list', this.data.codeProblemsList.list);
           
           this.$nextTick(function () {
@@ -187,7 +294,13 @@ export default {
         }
       }
       this.getData()
-    }
+    },
+    async handleSizeChange(val) {
+
+    },
+    async handleCurrentChange(val) {
+
+    },
   },
   created () {
     this.init()
@@ -242,5 +355,17 @@ export default {
   }
   .show-problems {
     padding-top: 20px;
+  }
+  .bottom-control {
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    justify-content: center;
+    display: flex;
+  }
+  .skeleton-item {
+    height: 36px;
+    width: 100%;
+    margin-bottom: 10px;
   }
 </style>
