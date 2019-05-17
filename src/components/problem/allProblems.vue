@@ -13,15 +13,16 @@
             <div v-if="active===0">
               <div v-if='subReady.codeProblemsList'>
                 <div style="width: 100%;">
+                  
+                    <!-- row-style="background-color: #bebebe;" -->
                   <el-table
                     :data="data.codeProblemsList.list"
-                    border
                     style="width: 100%">
                     <el-table-column
                       label="题目"
                       width="180">
                       <template slot-scope="scope">
-                        <span>{{scope.row.title}}</span>
+                        <el-button type="text" @click="toProblem(scope.row)">{{scope.row.title}}</el-button>
                       </template>
                     </el-table-column>
                     <el-table-column
@@ -50,16 +51,7 @@
                       prop="name"
                       label="难度">
                       <template slot-scope="scope">
-                        <span>{{ ((d) => {
-                            switch (d) {
-                              case 2: {
-                                return '简单'
-                              }
-                              case 3: {
-                                return '困难'
-                              }
-                            }
-                          })(scope.row.difficult) }}</span>
+                        <el-tag size='small' :type="scope.row._difficultFlag">{{scope.row._difficult}}</el-tag>
                       </template>
                     </el-table-column>
                   </el-table>
@@ -68,11 +60,11 @@
                   <el-pagination
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
-                    :current-page="params.pageNum"
+                    :current-page="params.program.page_num"
                     :page-sizes="options.pageSize"
                     :page-size="100"
                     layout="total, sizes, prev, pager, next, jumper"
-                    :total="data.total">
+                    :total="data.codeProblemsList.total">
                   </el-pagination>
                 </div>
               </div>
@@ -96,12 +88,18 @@
           </div>
           <div class="filter-row-tag">
             <div v-if="subReady.filter">
-              <mu-chip @click="handleTagClick(item)" class="item" :color="`${item.selected?'#bebebe':'#868282'}`" 
-                :text-color="`${item.selected?'#000000':'ffffff'}`"
+              <!-- <mu-chip @click="handleTagClick(item)" class="item" :color="`${item.deleted==0?'#ffffff':'#e6e6e6'}`" 
+                :text-color="`${item.selected?'#2d8cf0':'#333333'}`"
                 v-for="(item, idx) in filter.tag" :key='idx' 
                 round :ripple='false'>
-                <span class="tag-content">{{item.tag}}</span><mu-badge :content="`${item.count}`" color="#61a9a7"></mu-badge>
-              </mu-chip>
+                <span class="tag-content">{{item.tag_name}}</span><mu-badge :content="`${item.used_times}`" color="#61a9a7"></mu-badge>
+              </mu-chip> :type="`${item.deleted==0?'primary':'s'}`"-->
+              <el-badge class="tag-badge" v-for="(item, idx) in filter.tag" :key='idx' :value="item.used_times" type="primary">
+                <el-tag :class="`${item.deleted==0?'tag-unselected':'tag-selected'}`"
+                  >
+                  {{item.tag_name}}
+                </el-tag>
+              </el-badge>
             </div>
             <div class='filter-row-tag' v-else>
               <div v-for="item in data.noneFilter" :key='item' 
@@ -136,7 +134,7 @@ export default {
       },
       data: {
         tags: [],
-        unready: [0, 1, 2, 3, 4, 5],
+        unready: [0, 1, 2, 3],
         difficult: 1,
         codeProblemsList: {
           list: [],
@@ -146,16 +144,16 @@ export default {
         noneFilter: [1, 2, 3, 4, 5, ]
       },
       options: {
-        pageNum: [
-          {
-            label: '20条',
-            value: 20,
-          },
-          {
-            label: '50条',
-            value: 50,
-          },
-        ],
+        // pageNum: [
+        //   {
+        //     label: '20条',
+        //     value: 20,
+        //   },
+        //   {
+        //     label: '50条',
+        //     value: 50,
+        //   },
+        // ],
         pageSize: [20, 50],
         difficult: [
           {
@@ -212,22 +210,43 @@ export default {
       }
       await sleep(1000)
       this.subReady.filter = false
-      let t = ['数组', '排序', '动态规划', '树', '图', '动态规划', '树', '图', '数组', '排序', '动态规划', '树', '图', 
-      '数组', '排序', '数组', '排序', '动态规划', '树', '图', ]
-      let selected = false
-      for (let idx = 0; idx < t.length; idx++) {
-        const element = t[idx]
-        this.filter.tag.push({
-          id: idx,
-          tag: element,
-          selected: selected,
-          count: 100,
-        })
-        selected = !selected
-        this.$nextTick(function () {
-           this.subReady.filter = true
-        })
-      }
+      // let t = ['数组', '排序', '动态规划', '树', '图', '动态规划', '树', '图', '数组', '排序', '动态规划', '树', '图', 
+      // '数组', '排序', '数组', '排序', '动态规划', '树', '图', ]
+      // let selected = false
+      // for (let idx = 0; idx < t.length; idx++) {
+      //   const element = t[idx]
+      //   this.filter.tag.push({
+      //     id: idx,
+      //     tag: element,
+      //     selected: selected,
+      //     count: 100,
+      //   })
+      //   selected = !selected
+      // }
+
+// deleted	0
+// gmt_create	1556267773000
+// gmt_modified	1556270597000
+// program_tag_id	13
+// tag_name	二叉树
+// used_times	1
+
+      await Promise.all([
+        this.$store.dispatch('n', {
+          flag: 1,
+          method: 'get',
+          url: `/program-tags`,
+          params: {
+          }
+        }),
+      ])
+      this.filter.tag = this.$store.state.n[1].data
+      console.log(this.$store.state.n[1].data);
+      
+      
+      this.$nextTick(function () {
+          this.subReady.filter = true
+      })
     },
     async screen () {			
       this.$store.dispatch('n', {
@@ -243,23 +262,11 @@ export default {
         case 0: {
           this.data.codeProblemsList.list = []
           this.subReady.codeProblemsList = false
-          // const sleep = (ms) => {
-          //   return new Promise(resolve => setTimeout(resolve, ms))
-          // }
-          // await sleep(1000)
-          // let t = []
-          // for (let i = 0; i < 20; i++) {
-          //   t.push({
-          //     id: i,
-          //     title: '这是问题的题目',
-          //     accept: '80',
-          //   })
-          // }
           await Promise.all([
             this.$store.dispatch('n', {
               flag: 0,
               method: 'get',
-              url: `/programProblems`,
+              url: `/program-problems`,
               params: {
                 page_num: this.params.program.page_num,
                 page_size: this.params.program.page_size,
@@ -271,15 +278,30 @@ export default {
             }),
           ])
           if (!this.$store.state.n[0].success) return
-          
+          for (const i of this.$store.state.n[0].data.data) {
+            let _difficult, _difficultFlag
+            switch (i.difficult) {
+              case 1: {
+                _difficult = '简单'
+                _difficultFlag = 'success'
+              }
+              case 2: {
+                _difficult = '中等'
+                _difficultFlag = ''
+              }
+              case 3: {
+                _difficult = '困难'
+                _difficultFlag = 'danger'
+              }
+            }
+            i._difficult = _difficult
+            i._difficultFlag = _difficultFlag
+          }
           this.data.codeProblemsList.list = this.$store.state.n[0].data.data
           this.data.codeProblemsList.total = this.$store.state.n[0].data.total
-          // console.log('this.data.codeProblemsList.list', this.data.codeProblemsList.list);
-          
           this.$nextTick(function () {
             this.subReady.codeProblemsList = true
           })
-          //this.subReady.codeProblemsList = true
           break;
         }
       
@@ -301,6 +323,19 @@ export default {
     async handleCurrentChange(val) {
 
     },
+    problemsRowClass () {
+      console.log('in');
+      
+      return 'problems-row'
+    },
+    toProblem (data) {
+      this.$router.push({
+        name: 'problems',
+        params: {
+          id: `${data.program_problem_id}`,
+        }
+      })
+    }
   },
   created () {
     this.init()
@@ -366,6 +401,30 @@ export default {
   .skeleton-item {
     height: 36px;
     width: 100%;
+    margin-bottom: 20px;
+  }
+  .el-table__body tr:hover {
+    background-color: rgb(10, 11, 12);
+  }
+  .accepted {
+    color: #009688;
+  }
+  .unaccepted {
+    color: #c62928;
+  }
+  .tag-badge {
     margin-bottom: 10px;
+    margin-right: 20px;
+  }
+  .tag-unselected {
+    color: #2d8cf0;
+    background-color: #ffffff;
+  }
+  .tag-unselected:hover {
+    cursor: pointer;
+  }
+  .tag-selected {
+    color: #333333;
+    background-color: #e6e6e6;
   }
 </style>

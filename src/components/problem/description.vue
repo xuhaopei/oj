@@ -20,7 +20,7 @@
           <h2>输入规范</h2>
         </div>
         <div>
-          {{data.detail.inputFormat.insert}}
+          {{data.detail.input_format.insert}}
         </div>
       </div>
       <div class="description-item">
@@ -28,7 +28,7 @@
           <h2>输出规范</h2>
         </div>
         <div>
-          {{data.detail.outputFormat.insert}}
+          {{data.detail.output_format.insert}}
         </div>
       </div>
       <div class="description-item">
@@ -98,20 +98,20 @@ export default {
         this.$store.dispatch('n', {
           flag: 0,
           method: 'get',
-          url: `/programProblem/${this.$route.params.id}`,
+          url: `/program-problem/${this.$route.params.id}`,
           params: {
           }
         }),
         this.$store.dispatch('n', {
           flag: 1,
           method: 'get',
-          url: `/programProblem/tags/${this.$route.params.id}`,
+          url: `/program-problem/tags/${this.$route.params.id}`,
           params: {
           }
         }),
       ])
       if (!this.$store.state.n[0].success) return
-      this.data.detail = this.$store.state.n[0].data.programProblem
+      this.data.detail = this.$store.state.n[0].data.program_problem
 
       if (!this.$store.state.n[1].success) return
       this.data.tag = this.$store.state.n[1].data

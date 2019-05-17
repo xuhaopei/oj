@@ -62,18 +62,14 @@ export default new Vuex.Store({
 			commit(types.SET_USER_INFO, _d)
 		},
 		async n ({commit, state}, data) {
-			// this.$store.dispatch('n', {
-			// 	flag: flag,
-			// 	method: 'get',
-			// 	url: `/path/${this.$route.params.id}`,
-			// 	params: {
-			// 	}
-			// }),
 			let d = null
 			try {
+				
 				d = await axios[data.method](data.url, {
 					params: data.params
 				})
+				
+				
 			} catch (error) {
 				commit(types.SET_N_DATA, {
 					res: {

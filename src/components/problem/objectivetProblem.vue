@@ -98,14 +98,14 @@ export default {
         this.$store.dispatch('n', {
           flag: 0,
           method: 'get',
-          url: `/programProblem/${this.$route.params.id}`,
+          url: `/program-problem/${this.$route.params.id}`,
           params: {
           }
         }),
         this.$store.dispatch('n', {
           flag: 1,
           method: 'get',
-          url: `/programProblem/tags/${this.$route.params.id}`,
+          url: `/program-problem/tags/${this.$route.params.id}`,
           params: {
           }
         }),
