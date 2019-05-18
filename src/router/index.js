@@ -7,6 +7,8 @@ import history from '../components/problem/history.vue'
 import allProblems from '../components/problem/allProblems.vue'
 import test from '../components/test.vue'
 import submissionsDetail from '../components/problem/submissionsDetail.vue'
+import quizList from '../components/quiz/quizList.vue'
+import quiz from '../components/quiz/quiz.vue'
 
 Vue.use(Router);
 
@@ -20,6 +22,17 @@ const defalutRouter = [
     path: '/allProblems',
     name: 'allProblems',
     component: allProblems,
+  },
+  {
+    path: '/quizList',
+    name: 'quizList',
+    component: quizList,
+  },
+  {
+    path: '/quiz/:id',
+    name: 'quiz',
+    component: quiz,
+    props: true,
   },
   {
     path: '/problems/:id',

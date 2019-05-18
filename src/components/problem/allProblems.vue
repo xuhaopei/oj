@@ -295,11 +295,20 @@ export default {
       }
       this.getData()
     },
-    async handleSizeChange(val) {
 
+    async handleSizeChange(val) {
+      this.params.page_size = val
+      await Promise.all([
+        this.getData(),
+        this.getFilterTag(),
+      ])
     },
     async handleCurrentChange(val) {
-
+      this.params.page_num = val
+      await Promise.all([
+        this.getData(),
+        this.getFilterTag(),
+      ])
     },
     problemsRowClass () {
       return 'problems-row'

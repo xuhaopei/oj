@@ -76,7 +76,7 @@ export default {
             "sourceCode": this.data.codeInfo.code
           }
         }),
-      ]) 
+      ])
 // int main() {
 //   return 0;
 // }

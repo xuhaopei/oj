@@ -13,6 +13,9 @@
       <mu-button flat @click="$router.push({name: 'allProblems'})" slot="left">
         <span style="font-size: 150%;">题目列表</span>
       </mu-button>
+      <mu-button flat @click="$router.push({name: 'quizList'})" slot="left">
+        <span style="font-size: 150%;">考试中心</span>
+      </mu-button>
       <mu-button flat @click="showLogin" slot="right">
         <span style="font-size: 150%;">登录</span>
       </mu-button>
