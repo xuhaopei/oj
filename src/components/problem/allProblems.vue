@@ -26,13 +26,6 @@
                       </template>
                     </el-table-column>
                     <el-table-column
-                      prop="runtime"
-                      label="提交时间">
-                      <template slot-scope="scope">
-                        <span>{{scope.row.submit_times}}ms</span>
-                      </template>
-                    </el-table-column>
-                    <el-table-column
                       prop="name"
                       label="状态">
                       <template slot-scope="scope">
@@ -41,12 +34,26 @@
                       </template>
                     </el-table-column>
                     <el-table-column
-                      prop="name"
-                      label="通过时间">
+                      prop="runtime"
+                      label="提交次数">
                       <template slot-scope="scope">
-                        <span>{{scope.row.ac_times}}</span>
+                        <span>{{scope.row.submit_times}}次</span>
                       </template>
                     </el-table-column>
+                    <el-table-column
+                      prop="name"
+                      label="通过次数">
+                      <template slot-scope="scope">
+                        <span>{{scope.row.ac_times}}次</span>
+                      </template>
+                    </el-table-column>
+                    <!-- <el-table-column
+                      prop="name"
+                      label="通过率">
+                      <template slot-scope="scope">
+                        <span>{{ scope.row.ac_times / scope.row.submit_times}}%</span>
+                      </template>
+                    </el-table-column> -->
                     <el-table-column
                       prop="name"
                       label="难度">
@@ -78,7 +85,7 @@
         </div>
         <div class="display-item-right">
           <div class="filter-row">
-            <mu-button @click="screen" color="primary">筛选</mu-button>
+            <mu-button v-loading="subReady.screen" @click="screen" color="primary">筛选</mu-button>
             <mu-select @change="getData" class="pageSizeSelect" label="" v-model="data.difficult" full-width>
               <mu-option v-for="(option,index) in options.difficult" :key="index" :label="option.label" :value="option.value"></mu-option>
             </mu-select>
@@ -131,6 +138,7 @@ export default {
       subReady: {
         codeProblemsList: false,
         filter: false,
+        screen: false,
       },
       data: {
         tags: [],
@@ -249,13 +257,16 @@ export default {
       })
     },
     async screen () {			
-      this.$store.dispatch('n', {
-				method: 'get',
-				url: '',
-				params: {
+      // this.$store.dispatch('n', {
+			// 	method: 'get',
+			// 	url: '',
+			// 	params: {
 					
-				}
-			})
+			// 	}
+      // })
+      this.subReady.screen = true
+      await this.getData()
+      this.subReady.screen = false
     },
     async getData () {
       switch (this.active) {
@@ -271,9 +282,9 @@ export default {
                 page_num: this.params.program.page_num,
                 page_size: this.params.program.page_size,
                 difficult: this.params.program.difficult,
-                query: this.params.program.query,
+                query: this.filter.keyword,
                 tagList: this.params.program.tagList,
-                uid: this.$_env.testUserInfo.uid,
+                // uid: this.$_env.testUserInfo.uid,
               }
             }),
           ])

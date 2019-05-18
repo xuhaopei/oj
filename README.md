@@ -48,3 +48,18 @@ this.$store.state.n[flag].data
 ``` this.$store.state.n ```是一个保存返回数据的对象
 
 ``` flag ``` 指定 ``` this.$store.state.n ``` 中的哪一部分数据。当有多个并发请求时，通过指定 ``` flag ``` 来区分获取到的数据
+
+
+### 代理说明
+
+在 [vue.config.js][1] 文件里进行配置
+
+**设置后端服务器的地址**
+
+``` module.exports.devServer.proxy ```
+
+**设置本地项目使用的端口**
+``` module.exports.devServer.port ```
+
+
+  [1]: /vue.config.js

@@ -8,8 +8,8 @@ import store from './store'
 // muse ui
 import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
-import 'muse-ui-loading/dist/muse-ui-loading.css'
-import Loading from 'muse-ui-loading'
+// import 'muse-ui-loading/dist/muse-ui-loading.css'
+// import Loading from 'muse-ui-loading'
 
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
@@ -22,7 +22,7 @@ Vue.prototype.$types = types
 Vue.prototype.$_env = testenv
 Vue.use(router)
 Vue.use(MuseUI)
-Vue.use(Loading)
+// Vue.use(Loading)
 Vue.config.productionTip = false
 new Vue({
   render: h => h(App),
