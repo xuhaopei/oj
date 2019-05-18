@@ -19,41 +19,40 @@
                     :data="data.codeProblemsList.list"
                     style="width: 100%">
                     <el-table-column
-                      label="题目"
-                      width="180">
-                      <template slot-scope="scope">
-                        <el-button type="text" @click="toProblem(scope.row)">{{scope.row.title}}</el-button>
-                      </template>
-                    </el-table-column>
-                    <el-table-column
+                      width="70"
+                      v-if="this.$_env.testUserInfo.uid!==null"
                       prop="name"
                       label="状态">
                       <template slot-scope="scope">
-                        <span class="accepted table-link" @click="toSubmissionsDetail(scope.row)" v-if="scope.row.status==='AC'">Accepted</span>
-                        <span class="unaccepted table-link" @click="toSubmissionsDetail(scope.row)" v-if="scope.row.status===2">Error</span>
+                        <span class="accepted table-link" v-if="scope.row.status==='AC'">
+                          <i class="el-icon-check" style="color: rgb(25, 190, 107);"></i>
+                        </span>
+                        <span class="unaccepted table-link" v-if="scope.row.status===2">
+                          <i class="el-icon-minus" style="color: rgb(255, 153, 0);"></i>
+                        </span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      label="标题"
+                      width="350">
+                      <template slot-scope="scope">
+                        <el-button type="text" @click="toProblem(scope.row)">{{scope.row.title}}</el-button>
                       </template>
                     </el-table-column>
                     <el-table-column
                       prop="runtime"
                       label="提交次数">
                       <template slot-scope="scope">
-                        <span>{{scope.row.submit_times}}次</span>
+                        <span>{{scope.row.submit_times}}</span>
                       </template>
                     </el-table-column>
                     <el-table-column
                       prop="name"
-                      label="通过次数">
-                      <template slot-scope="scope">
-                        <span>{{scope.row.ac_times}}次</span>
-                      </template>
-                    </el-table-column>
-                    <!-- <el-table-column
-                      prop="name"
                       label="通过率">
                       <template slot-scope="scope">
-                        <span>{{ scope.row.ac_times / scope.row.submit_times}}%</span>
+                        <span>{{ scope.row._percentage }}%</span>
                       </template>
-                    </el-table-column> -->
+                    </el-table-column>
                     <el-table-column
                       prop="name"
                       label="难度">
@@ -152,16 +151,6 @@ export default {
         noneFilter: [1, 2, 3, 4, 5, ]
       },
       options: {
-        // pageNum: [
-        //   {
-        //     label: '20条',
-        //     value: 20,
-        //   },
-        //   {
-        //     label: '50条',
-        //     value: 50,
-        //   },
-        // ],
         pageSize: [20, 50],
         difficult: [
           {
@@ -218,27 +207,6 @@ export default {
       }
       await sleep(1000)
       this.subReady.filter = false
-      // let t = ['数组', '排序', '动态规划', '树', '图', '动态规划', '树', '图', '数组', '排序', '动态规划', '树', '图', 
-      // '数组', '排序', '数组', '排序', '动态规划', '树', '图', ]
-      // let selected = false
-      // for (let idx = 0; idx < t.length; idx++) {
-      //   const element = t[idx]
-      //   this.filter.tag.push({
-      //     id: idx,
-      //     tag: element,
-      //     selected: selected,
-      //     count: 100,
-      //   })
-      //   selected = !selected
-      // }
-
-// deleted	0
-// gmt_create	1556267773000
-// gmt_modified	1556270597000
-// program_tag_id	13
-// tag_name	二叉树
-// used_times	1
-
       await Promise.all([
         this.$store.dispatch('n', {
           flag: 1,
@@ -284,13 +252,13 @@ export default {
                 difficult: this.params.program.difficult,
                 query: this.filter.keyword,
                 tagList: this.params.program.tagList,
-                // uid: this.$_env.testUserInfo.uid,
+                uid: this.$_env.testUserInfo.uid,
               }
             }),
           ])
           if (!this.$store.state.n[0].success) return
           for (const i of this.$store.state.n[0].data.data) {
-            let _difficult, _difficultFlag
+            let _difficult, _difficultFlag, _percentage
             switch (i.difficult) {
               case 1: {
                 _difficult = '简单'
@@ -307,6 +275,10 @@ export default {
             }
             i._difficult = _difficult
             i._difficultFlag = _difficultFlag
+            i._percentage = (i.ac_times / i.submit_times)
+            console.log(i._percentage);
+            
+            i._percentage = i._percentage!==NaN?'0.00':i._percentage.toFixed(2)
           }
           this.data.codeProblemsList.list = this.$store.state.n[0].data.data
           this.data.codeProblemsList.total = this.$store.state.n[0].data.total
