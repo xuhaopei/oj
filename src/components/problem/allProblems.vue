@@ -217,9 +217,6 @@ export default {
         }),
       ])
       this.filter.tag = this.$store.state.n[1].data
-      console.log(this.$store.state.n[1].data);
-      
-      
       this.$nextTick(function () {
           this.subReady.filter = true
       })
@@ -276,8 +273,6 @@ export default {
             i._difficult = _difficult
             i._difficultFlag = _difficultFlag
             i._percentage = (i.ac_times / i.submit_times)
-            console.log(i._percentage);
-            
             i._percentage = i._percentage!==NaN?'0.00':i._percentage.toFixed(2)
           }
           this.data.codeProblemsList.list = this.$store.state.n[0].data.data
@@ -307,8 +302,6 @@ export default {
 
     },
     problemsRowClass () {
-      console.log('in');
-      
       return 'problems-row'
     },
     toProblem (data) {

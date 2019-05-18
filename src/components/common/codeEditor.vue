@@ -1,4 +1,16 @@
 <template>
+  <!-- 使用说明 
+
+    参数:
+    codeInfo: Object,
+    上层组件使用 .sync 修饰符, 当点击提交按钮时, 相关的内容会同步到上层组件
+
+    commitFlag: Number,
+    传入的数字, 不关心是什么, 点击提交按钮时会更新该值, 然后上层组件通过监听改变量来执行提交代码操作
+
+    committing: Boolean,
+    提交按钮是否显示加载动画, 用于点击提交后的反馈
+  -->
   <div v-if="ready" class="codeEdit">
     <div class='_codeEditor-option'>
       <div style="display: flex; width: 450px;">
@@ -10,11 +22,11 @@
         </mu-select>
       </div>
       <div style="display: flex;align-items: center;">
-        <mu-button color="success"  data-mu-loading-size='24' v-loading="committing" @click="commit">提交</mu-button>
+        <mu-button color="success" data-mu-loading-size='24' v-loading="committing" @click="commit">提交</mu-button>
       </div>
     </div>
     <div>
-      <codemirror v-model="code" :options="cmOptions"></codemirror>
+      <codemirror v-model="codeInfo.code" :options="cmOptions"></codemirror>
     </div>
     <mu-snackbar :color='snackbar.color' position="bottom-end" :open.sync="snackbar.open">
       {{snackbar.msg}}
@@ -37,6 +49,9 @@ import 'codemirror/theme/base16-light.css'
 export default {
   name: 'codeEdit',
   props: {
+    codeInfo: Object,
+    commitFlag: Number,
+    committing: Boolean,
   },
   components: {
     codemirror,
@@ -44,13 +59,11 @@ export default {
   data () {
     return {
       ready: false,
-      code: '',
       snackbar: {
         open: false,
         msg: '',
         color: 'success', // error warning  info
       },
-      committing: false,
       cmOptions: {
         tabSize: 4,
         mode: 'text/x-c++src',
@@ -86,25 +99,24 @@ export default {
   },
   methods: {
     async commit () {
-      this.committing = true
-      
-			const sleep = (ms) => {
-				return new Promise(resolve => setTimeout(resolve, ms))
+      switch (this.cmOptions.mode) {
+        case 'text/x-c++src': {
+          this.codeInfo.lang = 'C++'
+          break
+        }
+        case 'text/x-java': {
+          this.codeInfo.lang = 'JAVA8'
+          break
+        }
+        case 'text/x-python': {
+          this.codeInfo.lang = 'PYTHON27'
+          break
+        }
       }
-      await sleep(1000)
-      this.committing = false
-      // this.snackbar = { ...this.snackbar, ...{
-
-      // }}
-      this.snackbar = {
-        open: true,
-        msg: '测试通过',
-        color: 'success'
-      }
-      setTimeout(() => {
-        this.snackbar.open = false;
-      }, 1500);
-    }
+      this.$emit('update:codeInfo', this.codeInfo)
+      this.commitFlag += 1
+      this.$emit('update:commitFlag', this.commitFlag)
+    },
   },
   created () {
     this.ready = true

@@ -17,7 +17,7 @@
       </div>
     </div>
     <div class="code">
-      <codeEditor></codeEditor>
+      <codeEditor :codeInfo.sync='data.codeInfo' :commitFlag.sync='needCommit' :committing='subReady.committing'></codeEditor>
     </div>
   </div>
 </template>
@@ -40,17 +40,51 @@ export default {
     return {
       ready: false,
       data: {
+        codeInfo: {
+          code: '',
+          lang: '',
+        },
       },
+      subReady: {
+        committing: false,
+      },
+      needCommit: 1,
       active: 0,
+    }
+  },
+  watch: {
+
+    // 提交试题
+    needCommit: async function () {
+      this.subReady.committing = true
+      console.log('in sub', this.data.codeInfo);
+			// const sleep = (ms) => {
+			// 	return new Promise(resolve => setTimeout(resolve, ms))
+      // }
+      // await sleep(2000)
+     
+      await Promise.all([
+        this.$store.dispatch('n', {
+          flag: 0,
+          method: 'post',
+          url: `/code/user`,
+          params: {
+            "examinationId": 0,
+            "groupId": 0,
+            "lang": this.data.codeInfo.lang,
+            "pid": this.$route.params.id,
+            "sourceCode": this.data.codeInfo.code
+          }
+        }),
+      ]) 
+// int main() {
+//   return 0;
+// }
+      this.subReady.committing = false
     }
   },
   methods: {
     async init () {
-      
-			const sleep = (ms) => {
-				return new Promise(resolve => setTimeout(resolve, ms))
-      }
-      await sleep(1000)
       this.ready = true
     },
   },
