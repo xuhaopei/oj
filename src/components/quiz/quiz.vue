@@ -7,7 +7,7 @@
 
       </div>
     </div>
-  <mu-snackbar snack.position="snack.postition" :open.sync="snack.open" :color='snack.type'>
+  <mu-snackbar style="margin: 8px 0;" snack.position="snack.postition" :open.sync="snack.open" :color='snack.type'>
     <mu-icon left :value="snack.icon"></mu-icon>
     {{snack.msg}}
   </mu-snackbar>
@@ -79,6 +79,9 @@ export default {
       }
       this.data.pageArray[this.currentPage-1].status=1
       this.ready = true
+    },
+    async getData () {
+
     },
     test () {
       console.log(this.data.pageArray, this.currentPage)
