@@ -1,18 +1,16 @@
 <template>
   <div class="quiz main-view center-div">
     <div v-if="ready" class="center-item">
-      <div >
-        <page-btn v-if="refresh.pageBtn" :pages.sync="data.pageArray" :currentPage.sync="currentPage"></page-btn>
-        <!-- <el-pagination
-          background
-          layout="prev, pager, next"
-          :page-size="1"
-          :pager-count="50"
-          :total="50">
-        </el-pagination> -->
-        <el-button @click="test">test</el-button>
+      <page-btn v-if="refresh.pageBtn" :pages.sync="data.pageArray" :currentPage.sync="currentPage"></page-btn>
+      <!-- <el-button @click="test">test</el-button> -->
+      <div>
+
       </div>
     </div>
+  <mu-snackbar snack.position="snack.postition" :open.sync="snack.open" :color='snack.type'>
+    <mu-icon left :value="snack.icon"></mu-icon>
+    {{snack.msg}}
+  </mu-snackbar>
   </div>
 </template>
 
@@ -28,9 +26,15 @@ export default {
   data () {
     return {
       ready: false,
+      snack: {
+        msg: '',
+        type: '',
+        open: false,
+        icon: '',
+        position: 'bottom',
+      },
       data: {
         list: [],
-        total: 20,
         pageArray: [],
       },
       params: {
@@ -46,10 +50,26 @@ export default {
   },
   methods: {
     async init () {
-			// const sleep = (ms) => {
-			// 	return new Promise(resolve => setTimeout(resolve, ms))
-      // }
-      // await sleep(1000)
+			const sleep = (ms) => {
+				return new Promise(resolve => setTimeout(resolve, ms))
+      }
+      this.snack = {
+        msg: '获取题目元数据中',
+        type: '',
+        open: true,
+        icon: 'info',
+        position: 'bottom',
+      }
+      await sleep(1000)
+      this.snack = {
+        msg: '加载题目',
+        type: '',
+        open: true,
+        icon: 'info',
+        position: 'bottom',
+      }
+      await sleep(1000)
+      this.snack.open = false
       const pageCount = 50;
       for (let i = 1; i <= pageCount; i++) {
         this.data.pageArray.push({
@@ -69,6 +89,9 @@ export default {
     currentPage: async function (newd, oldd) {
       this.refresh.pageBtn = false
       this.data.pageArray[oldd-1].status = 2
+      // todo: 获取题目数据, 改变状态
+      // todo: 与后端同步数据, 改变状态
+
       this.data.pageArray[newd-1].status = 1
       this.$nextTick(function () {
         this.refresh.pageBtn = true
