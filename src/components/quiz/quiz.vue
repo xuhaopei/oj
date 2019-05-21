@@ -1,17 +1,29 @@
 <template>
   <div class="quiz main-view center-div">
-    <div class="center-item">
-      <h1>ojoojoi</h1>
+    <div v-if="ready" class="center-item">
+      <div >
+        <page-btn v-if="refresh.pageBtn" :pages.sync="data.pageArray" :currentPage.sync="currentPage"></page-btn>
+        <!-- <el-pagination
+          background
+          layout="prev, pager, next"
+          :page-size="1"
+          :pager-count="50"
+          :total="50">
+        </el-pagination> -->
+        <el-button @click="test">test</el-button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import pageBtn from './pageBtn.vue'
 export default {
   name: 'quiz',
   props: {
   },
   components: {
+    pageBtn,
   },
   data () {
     return {
@@ -19,44 +31,49 @@ export default {
       data: {
         list: [],
         total: 20,
+        pageArray: [],
       },
       params: {
-        page_size: 10,
-        page_num: 1,
+
       },
+      currentPage: 1,
       options: {
-        pageSize: [20, 50],
       },
+      refresh: {
+        pageBtn: true,
+      }
     }
   },
   methods: {
     async init () {
-			const sleep = (ms) => {
-				return new Promise(resolve => setTimeout(resolve, ms))
-      }
-      await sleep(1000)
-      let temp = []
-      let s = true
-      for (let i = 0; i < 10; i++) {
-        s = !s
-        temp.push({
-          id: i,
-          title: '期末考试',
-          time: '60分钟',
-          status: s?1:0,
+			// const sleep = (ms) => {
+			// 	return new Promise(resolve => setTimeout(resolve, ms))
+      // }
+      // await sleep(1000)
+      const pageCount = 50;
+      for (let i = 1; i <= pageCount; i++) {
+        this.data.pageArray.push({
+          page: i,
+          status: 2,
         })
       }
-      this.data.list = temp
+      this.data.pageArray[this.currentPage-1].status=1
       this.ready = true
     },
-    async handleSizeChange(val) {
-      this.params.page_size = val
-      await this.init()
+    test () {
+      console.log(this.data.pageArray, this.currentPage)
     },
-    async handleCurrentChange(val) {
-      this.params.page_num = val
-      await this.init()
-    },
+  },
+
+  watch: {
+    currentPage: async function (newd, oldd) {
+      this.refresh.pageBtn = false
+      this.data.pageArray[oldd-1].status = 2
+      this.data.pageArray[newd-1].status = 1
+      this.$nextTick(function () {
+        this.refresh.pageBtn = true
+      })
+    }
   },
   created () {
     this.init()
@@ -77,5 +94,9 @@ export default {
     height: 36px;
     width: 100%;
     margin-bottom: 20px;
+  }
+  .pagination ul{
+    display: flex;
+    flex-wrap: wrap;
   }
 </style>

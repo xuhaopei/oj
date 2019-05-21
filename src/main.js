@@ -10,9 +10,10 @@ import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
 // import 'muse-ui-loading/dist/muse-ui-loading.css'
 // import Loading from 'muse-ui-loading'
+import Helpers from 'muse-ui/lib/Helpers'
 
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
 Vue.use(ElementUI);
 
 // 测试环境
@@ -20,6 +21,8 @@ import testenv from './testenv.js'
 
 Vue.prototype.$types = types
 Vue.prototype.$_env = testenv
+
+Vue.use(Helpers)
 Vue.use(router)
 Vue.use(MuseUI)
 // Vue.use(Loading)
