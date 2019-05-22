@@ -64,7 +64,6 @@
 </template>
 
 <script>
-import d from '../../dummyData/description.json'
 export default {
   name: 'description',
   props: {
@@ -77,7 +76,6 @@ export default {
         detail: null,
         tag: [],
       },
-      d: d,
       ready: false,
     }
   },
