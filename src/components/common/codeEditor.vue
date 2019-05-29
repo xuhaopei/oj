@@ -109,7 +109,7 @@ export default {
           break
         }
         case 'text/x-python': {
-          this.codeInfo.lang = 'PYTHON27'
+          this.codeInfo.lang = 'PYTHON35'
           break
         }
       }

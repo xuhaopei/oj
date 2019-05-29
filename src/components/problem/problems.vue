@@ -53,7 +53,6 @@ export default {
     }
   },
   watch: {
-
     // 提交试题
     needCommit: async function () {
       this.subReady.committing = true
@@ -62,7 +61,19 @@ export default {
 			// 	return new Promise(resolve => setTimeout(resolve, ms))
       // }
       // await sleep(2000)
-     
+
+
+          // params: {
+          //   "examinationId": 0,
+          //   "groupId": 0,
+          //   "pid": this.$route.params.id,
+          //   "lang": this.data.codeInfo.lang,
+          //   "source_code": this.data.codeInfo.code,
+          //   "time_limit": "3",
+          //   "memory_limit": "128",
+          //   "test_cases": [
+          //   ]  
+          // }
       await Promise.all([
         this.$store.dispatch('n', {
           flag: 0,
