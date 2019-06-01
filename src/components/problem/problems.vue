@@ -19,6 +19,10 @@
     <div class="code">
       <codeEditor :codeInfo.sync='data.codeInfo' :commitFlag.sync='needCommit' :committing='subReady.committing'></codeEditor>
     </div>
+    <mu-snackbar style="margin: 8px 0;" snack.position="snack.postition" :open.sync="snack.open" :color='snack.type'>
+      <mu-icon left :value="snack.icon"></mu-icon>
+      {{snack.msg}}
+    </mu-snackbar>
   </div>
 </template>
 
@@ -44,9 +48,19 @@ export default {
           code: '',
           lang: '',
         },
+        judgementResId: '',
+        judgementProcess: null,
+        judgementRes: null,
       },
       subReady: {
         committing: false,
+      },
+      snack: {
+        msg: '',
+        type: '',
+        open: false,
+        icon: '',
+        position: 'bottom',
       },
       needCommit: 1,
       active: 0,
@@ -56,24 +70,6 @@ export default {
     // 提交试题
     needCommit: async function () {
       this.subReady.committing = true
-      console.log('in sub', this.data.codeInfo);
-			// const sleep = (ms) => {
-			// 	return new Promise(resolve => setTimeout(resolve, ms))
-      // }
-      // await sleep(2000)
-
-
-          // params: {
-          //   "examinationId": 0,
-          //   "groupId": 0,
-          //   "pid": this.$route.params.id,
-          //   "lang": this.data.codeInfo.lang,
-          //   "source_code": this.data.codeInfo.code,
-          //   "time_limit": "3",
-          //   "memory_limit": "128",
-          //   "test_cases": [
-          //   ]  
-          // }
       await Promise.all([
         this.$store.dispatch('n', {
           flag: 0,
@@ -92,6 +88,9 @@ export default {
           }
         }),
       ])
+      this.data.judgementResId = this.$store.state.n[0].data
+      this.showJudgementProcess()
+
 // int main() {
 //   return 0;
 // }
@@ -99,9 +98,83 @@ export default {
     }
   },
   methods: {
-    async init () {
+    async init() {
       this.ready = true
     },
+    async showJudgementProcess() {
+			const sleep = (ms) => {
+				return new Promise(resolve => setTimeout(resolve, ms))
+      }
+      await Promise.all([
+        this.$store.dispatch('n', {
+          flag: 1,
+          method: 'get',
+          url: `/code/${this.data.judgementResId}`,
+          params: {
+          }
+        }),
+      ])
+      this.data.judgementProcess = this.$store.state.n[1].data
+      switch (this.data.judgementProcess.status) {
+        case '正在判卷':{
+          this.snack = {
+            msg: '正在判卷',
+            type: '',
+            open: true,
+            icon: 'info',
+            position: 'bottom',
+          }
+          await sleep(1000)
+          this.showJudgementProcess()
+          break
+        }
+        case '保存中':{
+          this.snack = {
+            msg: '判卷完成',
+            type: '',
+            open: true,
+            icon: 'info',
+            position: 'bottom',
+          }
+          this.showJudgementRes()
+          await sleep(100)
+          this.snack.open = false
+          break
+        }
+        default:
+          break
+      }
+    },
+    async showJudgementRes() {
+      console.log('in');
+      
+      await Promise.all([
+        this.$store.dispatch('n', {
+          flag: 1,
+          method: 'get',
+          url: `/code/${this.data.judgementResId}`,
+          params: {
+          }
+        }),
+      ])
+      this.data.judgementProcess = this.$store.state.n[1].data
+      switch (this.data.judgementProcess.status) {
+        case '正在判卷':{
+          this.snack = {
+            msg: '正在判卷',
+            type: '',
+            open: true,
+            icon: 'info',
+            position: 'bottom',
+          }
+          await sleep(1000)
+          this.showJudgementProcess()
+          break
+        }
+        default:
+          break
+      }
+    }
   },
   created () {
     switch (this.$route.path.split('/')[3]) {
