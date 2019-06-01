@@ -64,12 +64,24 @@ export default new Vuex.Store({
 		async n ({commit, state}, data) {
 			let d = null
 			try {
+				switch (data.method) {
+					case 'get':{
+						d = await axios.get(data.url, {
+							params: data.params,
+						}, {headers: data.headers})
+						break
+					}
+					case 'post':{
+						d = await axios.post(data.url, data.params, 
+							{headers: data.headers})
+						break
+					}
 				
-				d = await axios[data.method](data.url, {
-					params: data.params
-				})
-				
-				
+					default:
+						break
+				}
+
+
 			} catch (error) {
 				commit(types.SET_N_DATA, {
 					res: {

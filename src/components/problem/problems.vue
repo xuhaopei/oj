@@ -79,12 +79,16 @@ export default {
           flag: 0,
           method: 'post',
           url: `/code/user`,
+          headers: {
+            authorization: this.$_env.testUserInfo.token
+          },
           params: {
-            "examinationId": 0,
-            "groupId": 0,
+            "examination_id": 0,
+            "group_id": 0,
             "lang": this.data.codeInfo.lang,
-            "pid": this.$route.params.id,
-            "sourceCode": this.data.codeInfo.code
+            // "pid": this.$route.params.id,
+            "pid": this.$_env.testUserInfo.testUserCodePid,
+            "source_code": this.data.codeInfo.code
           }
         }),
       ])
