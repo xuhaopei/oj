@@ -110,6 +110,8 @@ export default {
       ])
       if (!this.$store.state.n[0].success) return
       this.data.detail = this.$store.state.n[0].data.program_problem
+      // 把描述数据保存到store中
+      this.$store.commit(this.$types.PROBLEM.SET_DESCRIPTION, this.data.detail)
 
       if (!this.$store.state.n[1].success) return
       this.data.tag = this.$store.state.n[1].data

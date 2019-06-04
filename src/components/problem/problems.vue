@@ -12,7 +12,10 @@
           <description v-show="active===0"></description>
         </div>
         <div v-show="active===1" style="width: 100%;height: calc(100% - 56px);">
-          <router-view ></router-view>
+          <router-view></router-view>
+        </div>
+        <div v-show="active===2" style="width: 100%;height: calc(100% - 56px);">
+          
         </div>
       </div>
     </div>
@@ -43,6 +46,7 @@ export default {
   data () {
     return {
       ready: false,
+      showProblemSubmissions: false,
       data: {
         codeInfo: {
           code: '',
@@ -52,6 +56,7 @@ export default {
         judgementProcess: null,
         judgementRes: null,
       },
+      submissionsResIdToProblemSubmissions: '',
       subReady: {
         committing: false,
       },
@@ -62,6 +67,8 @@ export default {
         icon: '',
         position: 'bottom',
       },
+      notification: ``,
+      retryGettingJudgementTime: 1000,
       needCommit: 1,
       active: 0,
     }
@@ -118,17 +125,29 @@ export default {
       switch (this.data.judgementProcess.status) {
         case '正在判卷':{
           this.snack = {
-            msg: '正在判卷',
+            msg: '判卷中',
             type: '',
             open: true,
             icon: 'info',
             position: 'bottom',
           }
-          await sleep(1000)
+          await sleep(this.retryGettingJudgementTime)
           this.showJudgementProcess()
           break
         }
         case '保存中':{
+          this.snack = {
+            msg: '保存结果中',
+            type: '',
+            open: true,
+            icon: 'info',
+            position: 'bottom',
+          }
+          await sleep(this.retryGettingJudgementTime)
+          this.showJudgementProcess()
+          break
+        }
+        case '完成':{
           this.snack = {
             msg: '判卷完成',
             type: '',
@@ -136,6 +155,14 @@ export default {
             icon: 'info',
             position: 'bottom',
           }
+          // 如果当前在看非历史页面，则跳转
+          if (this.active !== 1) {
+            this.active = 1
+            this.$router.push({
+              path: `/problems/${this.$route.params.id}/history`
+            })
+          }
+          this.$store.commit(this.$types.PROBLEM.SET_CURRENT_SUBMISSION_RES_ID, this.data.judgementProcess.id)
           this.showJudgementRes()
           await sleep(100)
           this.snack.open = false
@@ -146,34 +173,24 @@ export default {
       }
     },
     async showJudgementRes() {
-      console.log('in');
-      
-      await Promise.all([
-        this.$store.dispatch('n', {
-          flag: 1,
-          method: 'get',
-          url: `/code/${this.data.judgementResId}`,
-          params: {
-          }
-        }),
-      ])
-      this.data.judgementProcess = this.$store.state.n[1].data
-      switch (this.data.judgementProcess.status) {
-        case '正在判卷':{
-          this.snack = {
-            msg: '正在判卷',
-            type: '',
-            open: true,
-            icon: 'info',
-            position: 'bottom',
-          }
-          await sleep(1000)
-          this.showJudgementProcess()
-          break
-        }
-        default:
-          break
-      }
+      // 当没有最终结果前，每隔${this.retryGettingJudgementTime}获取一次数据，并调用本身
+      // await Promise.all([
+      //   this.$store.dispatch('n', {
+      //     flag: 1,
+      //     method: 'get',
+      //     url: `/code/${this.data.judgementResId}`,
+      //     params: {
+      //     }
+      //   }),
+      // ])
+      // this.data.judgementProcess = this.$store.state.n[1].data
+      // switch (this.data.judgementProcess.status) {
+      //   case '1':{
+      //     break
+      //   }
+      //   default:
+      //     break
+      // }
     }
   },
   created () {

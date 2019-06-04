@@ -61,8 +61,8 @@
         :total="data.total">
       </el-pagination>
     </div>
-    <h3>待讨论1: 这里可以把页面选择放底部</h3>
-    <h3>待讨论2: 两个时间用哪些算</h3>
+    <!-- <h3>待讨论1: 这里可以把页面选择放底部</h3>
+    <h3>待讨论2: 两个时间用哪些算</h3> -->
   </div>
   <div v-else class="history">
     <div style="height: 100%;width: 100%;">
@@ -72,11 +72,13 @@
 </template>
 
 <script>
+import problemSubmissions from './problemSubmissions.vue'
 export default {
   name: 'history',
   props: {
   },
   components: {
+    problemSubmissions,
   },
   data () {
     return {
@@ -176,6 +178,7 @@ export default {
   .history {
     display: flex;
     flex-direction: column;
+    /* justify-content: space-between; */
     align-items: center;
     height: 100%;
     padding: 20px;

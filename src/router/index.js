@@ -4,6 +4,7 @@ import index from '../components/index/index.vue'
 import problems from '../components/problem/problems.vue'
 import objectivetProblem from '../components/problem/objectivetProblem.vue'
 import history from '../components/problem/history.vue'
+import problemSubmissions from '../components/problem/problemSubmissions.vue'
 import allProblems from '../components/problem/allProblems.vue'
 import test from '../components/test.vue'
 import submissionsDetail from '../components/problem/submissionsDetail.vue'
@@ -41,6 +42,7 @@ const defalutRouter = [
     props: true,
     children: [
       { path: 'history', component: history },
+      { path: 'submissions', component: problemSubmissions },
     ]
   },
   {

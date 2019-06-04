@@ -29,7 +29,11 @@ export default new Vuex.Store({
 				subId: null,
 				sourceCode: null,
 			}
-		}
+		},
+		problem: {
+			description: {},
+			subId: '',
+		},
 	},
 	mutations: {
 		[types.SET_USER_INFO] (state, data) {
@@ -46,6 +50,12 @@ export default new Vuex.Store({
 		},
 		[types.SUBMISSION.SET_SUBMISSION_DETAIL_QUERY_PARAM] (state, data) {
 			state.submission.params = {...state.submission.params, ...data}
+		},
+		[types.PROBLEM.SET_DESCRIPTION] (state, data) {
+			state.problem.description = {...state.problem.description, ...data}
+		},
+		[types.PROBLEM.SET_CURRENT_SUBMISSION_RES_ID] (state, data) {
+			state.problem.subId = {...state.problem.subId, ...data}
 		},
 	},
 	actions: {
