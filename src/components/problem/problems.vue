@@ -97,10 +97,6 @@ export default {
       ])
       this.data.judgementResId = this.$store.state.n[0].data
       this.showJudgementProcess()
-
-// int main() {
-//   return 0;
-// }
       this.subReady.committing = false
     }
   },
@@ -162,7 +158,9 @@ export default {
               path: `/problems/${this.$route.params.id}/history`
             })
           }
-          this.$store.commit(this.$types.PROBLEM.SET_CURRENT_SUBMISSION_RES_ID, this.data.judgementProcess.id)
+          this.$nextTick(function () {
+            this.$store.commit(this.$types.PROBLEM.SET_CURRENT_SUBMISSION_RES_ID, this.data.judgementProcess.id)
+          })
           this.showJudgementRes()
           await sleep(100)
           this.snack.open = false

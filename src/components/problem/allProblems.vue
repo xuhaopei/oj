@@ -218,7 +218,7 @@ export default {
       ])
       this.filter.tag = this.$store.state.n[1].data
       this.$nextTick(function () {
-          this.subReady.filter = true
+        this.subReady.filter = true
       })
     },
     async screen () {			

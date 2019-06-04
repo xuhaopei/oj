@@ -1,5 +1,6 @@
 <template>
   <div v-if="ready" class="history">
+    <problemSubmissions :data='componentProblemSubmissionsData' v-if="showComponentProblemSubmissions"></problemSubmissions>
     <div style="width: 100%;">
       <el-table
         :data="data.list"
@@ -82,6 +83,8 @@ export default {
   },
   data () {
     return {
+      showComponentProblemSubmissions: false,
+      componentProblemSubmissionsData: null,
       ready: false,
       data: {
         list: [],
@@ -157,16 +160,26 @@ export default {
 
     },
     toSubmissionsDetail (data) {
-      // this.$store.commit(this.$types.SUBMISSION.SET_SUBMISSION_DETAIL_QUERY_PARAM, {
-			// 	subUserId: this.$_env.testUserInfo.uid,
-			// 	pid: this.$route.params.id,
-			// 	subId: data.subId,
-			// 	sourceCode: data.sourceCode,
-      // })
       let url = `/submissions/detail/${this.$route.params.id}?subUser_id=${this.$_env.testUserInfo.uid}`
       url += `&sub_id=${data.sub_id}&token=${this.$_env.testUserInfo.token}`
       window.open( url, '_blank')
     },
+  },  
+  computed: {
+    // 计算属性的 getter
+    showSubmission() {
+      return this.$store.state.problem.subId
+    }
+  },
+  watch: {
+    // 提交试题
+    showSubmission: async function () {
+      // 保存submissionId，设置problemSubmissions可见
+      this.componentProblemSubmissionsData = {
+        id: this.$store.state.problem.subId,
+      }
+      this.showComponentProblemSubmissions = true
+    }
   },
   created () {
     this.init()
