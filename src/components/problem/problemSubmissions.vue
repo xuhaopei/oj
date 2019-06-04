@@ -1,6 +1,6 @@
 <template>
   <div class="submissionsDetail">
-    <h2>iiiiiiii</h2>
+    <h2>in</h2>
   </div>
 </template>
 
@@ -8,7 +8,7 @@
 export default {
   name: 'submissionsDetail',
   props: {
-    id: String,
+    data: Object,
   },
   components: {
   },
@@ -24,14 +24,10 @@ export default {
     async init () {
       await Promise.all([
         this.$store.dispatch('n', {
-          flag: 1,
+          flag: 3,
           method: 'get',
-          url: `/program-sub-detail`,
+          url: `/code/${this.data.id}`,
           params: {
-            subUser_id: this.$route.query.subUser_id,
-            pid: this.$route.params.id,
-            sub_id: this.$route.query.sub_id,
-            token: this.$route.query.token,
           }
         }),
       ])

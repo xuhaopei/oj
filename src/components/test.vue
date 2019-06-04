@@ -1,30 +1,33 @@
 <template>
   <div v-if="ready" class="test center-div">
-    <codeEditor style="width: 100%;" :codeInfo.sync='data.codeInfo' ></codeEditor>
+    <!-- <codeEditor style="width: 100%;" :codeInfo.sync='data.codeInfo' ></codeEditor> -->
+    <problemSubmissions :data='data'></problemSubmissions>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-
-import codeEditor from './common/codeEditor.vue'
+import problemSubmissions from './problem/problemSubmissions.vue'
+//import codeEditor from './common/codeEditor.vue'
 export default {
   name: 'test',
   props: {
   },
   components: {
-    codeEditor,
+    problemSubmissions
+    //codeEditor,
     // displayContent,
   },
   data () {
     return {
       data: {
-        codeInfo: {
-          code: '',
-          lang: 'java',
-        },
+        // codeInfo: {
+        //   code: '',
+        //   lang: 'java',
+        // },
+        id: 'f2aba72c-208c-4cfe-89a1-cb77ceb088a6',
       },
-      ready: false,
+      ready: true,
       
     }
   },
