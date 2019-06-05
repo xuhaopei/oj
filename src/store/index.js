@@ -55,7 +55,7 @@ export default new Vuex.Store({
 			state.problem.description = {...state.problem.description, ...data}
 		},
 		[types.PROBLEM.SET_CURRENT_SUBMISSION_RES_ID] (state, data) {
-			state.problem.subId = {...state.problem.subId, ...data}
+			state.problem.subId = data
 		},
 	},
 	actions: {
