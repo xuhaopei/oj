@@ -71,7 +71,6 @@ export default {
 <style scoped>
   .submissionsDetail {
     width: 100%;
-    height: 100%;
     padding: 20px;
   }
   .info-row {

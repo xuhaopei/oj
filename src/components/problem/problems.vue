@@ -97,7 +97,6 @@ export default {
       ])
       this.data.judgementResId = this.$store.state.n[0].data
       this.showJudgementProcess()
-      this.subReady.committing = false
     }
   },
   methods: {
@@ -162,6 +161,7 @@ export default {
             this.$store.commit(this.$types.PROBLEM.SET_CURRENT_SUBMISSION_RES_ID, this.data.judgementProcess.id)
           })
           this.showJudgementRes()
+          this.subReady.committing = false
           await sleep(100)
           this.snack.open = false
           break
