@@ -66,19 +66,19 @@ export default {
       },
       cmOptions: {
         tabSize: 4,
-        mode: 'text/x-c++src',
+        mode: 'text/x-java',
         theme: 'base16-light',
         lineNumbers: true,
         line: true,
       },
       optionsLanguage: [
         {
-          label: 'C++',
-          value: 'text/x-c++src',
-        },
-        {
           label: 'Java',
           value: 'text/x-java',
+        },
+        {
+          label: 'C++',
+          value: 'text/x-c++src',
         },
         {
           label: 'Python',
@@ -95,24 +95,16 @@ export default {
           value: 'monokai',
         },
       ],
+      tableForLang: {
+        'text/x-c++src': 'CPP',
+        'text/x-java': 'JAVA8',
+        'text/x-python': 'PYTHON35',
+      },
     }
   },
   methods: {
     async commit () {
-      switch (this.cmOptions.mode) {
-        case 'text/x-c++src': {
-          this.codeInfo.lang = 'C++'
-          break
-        }
-        case 'text/x-java': {
-          this.codeInfo.lang = 'JAVA8'
-          break
-        }
-        case 'text/x-python': {
-          this.codeInfo.lang = 'PYTHON35'
-          break
-        }
-      }
+      this.codeInfo.lang = this.tableForLang[this.cmOptions.mode]
       this.$emit('update:codeInfo', this.codeInfo)
       this.commitFlag += 1
       this.$emit('update:commitFlag', this.commitFlag)

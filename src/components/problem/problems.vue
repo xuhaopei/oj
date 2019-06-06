@@ -1,6 +1,6 @@
 <template>
   <div class="problems">
-    <div class="content">
+    <div class="content" :style="`width: ${style.content.width}px`" >
       <div class="displayContent">
         <mu-bottom-nav color='#222222' :value.sync="active">
           <mu-bottom-nav-item :to="`/problems/${$route.params.id}`" :value="0" title="描述" icon="description"></mu-bottom-nav-item>
@@ -19,7 +19,8 @@
         </div>
       </div>
     </div>
-    <div class="code">
+    <span @mousedown="handleDragStart" @mousemove="handleDrag" @mouseup="handleDragEnd" @mouseleave="handleDragEnd" class="resize-column"></span>
+    <div class="code" :style="`width: ${style.code.width}px`">
       <codeEditor :codeInfo.sync='data.codeInfo' :commitFlag.sync='needCommit' :committing='subReady.committing'></codeEditor>
     </div>
     <mu-snackbar style="margin: 8px 0;" snack.position="snack.postition" :open.sync="snack.open" :color='snack.type'>
@@ -45,8 +46,22 @@ export default {
   },
   data () {
     return {
+      refresh: true,
       ready: false,
+      dragData: {
+        dragging: false,
+        sx: null,
+        sy: null,
+      },
       showProblemSubmissions: false,
+      style: {
+        content: {
+          width: '',
+        },
+        code: {
+          width: '',
+        }
+      },
       data: {
         codeInfo: {
           code: '',
@@ -83,7 +98,8 @@ export default {
           method: 'post',
           url: `/code/user`,
           headers: {
-            authorization: this.$_env.testUserInfo.token
+            authorization: this.$_env.testUserInfo.token,
+            charset: 'utf-8',
           },
           params: {
             "examination_id": 0,
@@ -101,6 +117,9 @@ export default {
   },
   methods: {
     async init() {
+      let w = document.documentElement.clientWidth - 15
+      this.style.content.width = w / 2
+      this.style.code.width = w / 2
       this.ready = true
     },
     async showJudgementProcess() {
@@ -189,7 +208,22 @@ export default {
       //   default:
       //     break
       // }
-    }
+    },
+    handleDragStart(e) {
+      this.dragData.dragging = true
+      this.dragData.sx = e.x
+    },
+    handleDrag(e) {
+      if (this.dragData.dragging) {
+        let shouldMoveDistance = this.dragData.sx - e.x
+        this.style.content.width -= shouldMoveDistance
+        this.style.code.width += shouldMoveDistance
+        this.dragData.sx = e.x
+      }
+    },
+    handleDragEnd(e) {
+      this.dragData.dragging = false
+    },
   },
   created () {
     switch (this.$route.path.split('/')[3]) {
@@ -218,12 +252,10 @@ export default {
     width: 100%;
     color: #8815a1;
   }
-  .problems .content {
-    width: 50%;
+  /* .problems .content {
   }
   .problems .code {
-    width: 50%;
-  }
+  } */
   .problems .display {
     overflow-y: scroll;
     width: 100%;
@@ -235,4 +267,21 @@ export default {
     display: flex;
     flex-direction: column-reverse;
   }
+  .problems .resize-column {
+    width: 15px;
+    cursor: col-resize;
+    height: 100%;
+    background-color: #fafafa;
+  }
+  .problems .resize-column:active {
+    background-color: #6d6a6a;
+  }
+  /* .problems .resize-column::after {
+    content: "";rgba(2#fafafa55
+    display: block;
+    width: 2px;
+    height: 20px;
+    border-left: 1px solid rgba(0, 0, 0, 0.2);
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
+  } */
 </style>

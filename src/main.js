@@ -11,6 +11,9 @@ import 'muse-ui/dist/muse-ui.css'
 // import 'muse-ui-loading/dist/muse-ui-loading.css'
 // import Loading from 'muse-ui-loading'
 import Helpers from 'muse-ui/lib/Helpers'
+// 拖动
+import VueDraggableResizable from 'vue-draggable-resizable'
+import 'vue-draggable-resizable/dist/VueDraggableResizable.css'
 
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
@@ -22,6 +25,7 @@ import testenv from './testenv.js'
 Vue.prototype.$types = types
 Vue.prototype.$_env = testenv
 
+Vue.component('vue-draggable-resizable', VueDraggableResizable)
 Vue.use(Helpers)
 Vue.use(router)
 Vue.use(MuseUI)
@@ -32,3 +36,5 @@ new Vue({
   router,
   store,
 }).$mount('#app')
+
+// optionally import default styles
