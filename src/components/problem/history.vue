@@ -160,7 +160,7 @@ export default {
 
     },
     toSubmissionsDetail (data) {
-      let url = `/submissions/detail/${this.$route.params.id}?subUser_id=${this.$_env.testUserInfo.uid}`
+      let url = `/submissions/detail/${this.$route.params.id}?sub_user_id=${this.$_env.testUserInfo.uid}`
       url += `&sub_id=${data.sub_id}&token=${this.$_env.testUserInfo.token}`
       window.open( url, '_blank')
     },
@@ -175,10 +175,13 @@ export default {
     // 提交试题
     showSubmission: async function () {
       // 保存submissionId，设置problemSubmissions可见
+      this.showComponentProblemSubmissions = false
       this.componentProblemSubmissionsData = {
         id: this.$store.state.problem.subId,
       }
-      this.showComponentProblemSubmissions = true
+      this.$nextTick(function () {
+        this.showComponentProblemSubmissions = true
+      })
     }
   },
   created () {

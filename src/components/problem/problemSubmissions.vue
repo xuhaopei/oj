@@ -10,6 +10,9 @@
       <div class="info-tag tag-color-green">
         <span>{{data.time}} S</span>
       </div>
+      <div class="info-tag tag-color-blue">
+        <span @click="showDetail">查看详情</span>
+      </div>
     </div>
     <div class="test-case-list">
       <el-row v-for="(i, idx) in data.test_cases" :key="idx" class="test-case-item">
@@ -17,6 +20,9 @@
           <div class="left-info">
             <span>测试点{{idx+1}}</span>
             <div v-if="i.result=='CE'" class="info-tag tag-color-yellow">
+              Runtime Error
+            </div>
+            <div v-else-if="i.result=='RTE'" class="info-tag tag-color-yellow">
               Runtime Error
             </div>
           </div>
@@ -61,6 +67,11 @@ export default {
       this.data = this.$store.state.n[3].data.response
       this.ready = true
     },
+    showDetail () {
+      let url = `/submissions/detail/${this.$route.params.id}?sub_user_id=${this.$_env.testUserInfo.uid}`
+      url += `&sub_id=${this.data.id}&token=${this.$_env.testUserInfo.token}`
+      window.open( url, '_blank')
+    },
   },
   created () {
     this.init()
@@ -75,6 +86,7 @@ export default {
   }
   .info-row {
     display: flex;
+    align-items: center;
     margin-bottom: 10px;
   }
   .info-tag {
@@ -114,6 +126,11 @@ export default {
   .tag-color-green {
     background: #19be6b none repeat scroll 0% 0%;
     border-color: #19be6b;
+    color: rgb(255, 255, 255);
+  }
+  .tag-color-blue {
+    background: #6aade4 none repeat scroll 0% 0%;
+    border-color: #6aade4;
     color: rgb(255, 255, 255);
   }
   /* .test-case-list {
