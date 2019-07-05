@@ -41,7 +41,7 @@
 export default {
   name: 'submissionsDetail',
   props: {
-    data: Object,
+    params: Object,
   },
   components: {
   },
@@ -59,17 +59,20 @@ export default {
         this.$store.dispatch('n', {
           flag: 3,
           method: 'get',
-          url: `/code/${this.data.id}`,
+          url: `/code/${this.params.id}`,
           params: {
           }
         }),
       ])
       this.data = this.$store.state.n[3].data.response
+      console.log('init', this.params.id);
+      
       this.ready = true
     },
     showDetail () {
+      console.log('showDetail', this.params.id);
       let url = `/submissions/detail/${this.$route.params.id}?sub_user_id=${this.$_env.testUserInfo.uid}`
-      url += `&sub_id=${this.data.id}&token=${this.$_env.testUserInfo.token}`
+      url += `&sub_id=${this.params.id}&token=${this.$_env.testUserInfo.token}`
       window.open( url, '_blank')
     },
   },

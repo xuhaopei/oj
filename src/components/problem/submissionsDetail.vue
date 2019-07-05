@@ -28,7 +28,7 @@ export default {
           method: 'get',
           url: `/program-sub-detail`,
           params: {
-            subUser_id: this.$route.query.subUser_id,
+            sub_user_id: this.$route.query.sub_user_id,
             pid: this.$route.params.id,
             sub_id: this.$route.query.sub_id,
             token: this.$route.query.token,

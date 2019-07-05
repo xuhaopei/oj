@@ -1,6 +1,6 @@
 <template>
   <div v-if="ready" class="history">
-    <problemSubmissions :data='componentProblemSubmissionsData' v-if="showComponentProblemSubmissions"></problemSubmissions>
+    <problemSubmissions :params='componentProblemSubmissionsData' v-if="showComponentProblemSubmissions"></problemSubmissions>
     <div style="width: 100%;">
       <el-table
         :data="data.list"
@@ -166,7 +166,7 @@ export default {
     },
   },  
   computed: {
-    // 计算属性的 getter
+    // 
     showSubmission() {
       return this.$store.state.problem.subId
     }
