@@ -141,6 +141,7 @@ export default {
             page_num: this.params.pageNum,
             page_size: this.params.pageSize,
             pid: this.$_env.testUserInfo.submissionPid,
+            pid: this.$route.params.id,
             uid: this.$_env.testUserInfo.uid,
           }
         }),

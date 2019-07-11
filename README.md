@@ -34,7 +34,9 @@ this.$store.dispatch('n', {
   url: `/path/${this.$route.params.id}`,
   params: {
     param1: param1
-  }
+  },
+  // 当请求出错时调用的方法，非必需
+  recall: () => {}
 }),
 ```
 

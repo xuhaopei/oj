@@ -92,25 +92,32 @@ export default {
     // 提交试题
     needCommit: async function () {
       this.subReady.committing = true
-      await Promise.all([
-        this.$store.dispatch('n', {
-          flag: 0,
-          method: 'post',
-          url: `/code/user`,
-          headers: {
-            authorization: this.$_env.testUserInfo.token,
-            charset: 'utf-8',
-          },
-          params: {
-            "examination_id": 0,
-            "group_id": 0,
-            "lang": this.data.codeInfo.lang,
-            // "pid": this.$route.params.id,
-            "pid": this.$_env.testUserInfo.testUserCodePid,
-            "source_code": this.data.codeInfo.code
-          }
-        }),
-      ])
+      try {
+        await Promise.all([
+          this.$store.dispatch('n', {
+            flag: 0,
+            method: 'post',
+            url: `/code/user`,
+            headers: {
+              authorization: this.$_env.testUserInfo.token,
+              charset: 'utf-8',
+            },
+            params: {
+              "examination_id": 0,
+              "group_id": 0,
+              "lang": this.data.codeInfo.lang,
+              "pid": this.$route.params.id,
+              //"pid": this.$_env.testUserInfo.testUserCodePid,
+              "source_code": this.data.codeInfo.code
+            },
+            recall: () => {
+              this.subReady.committing = false
+            }
+          }),
+        ])
+      } catch (error) {
+        console.log('in')
+      }
       this.data.judgementResId = this.$store.state.n[0].data
       this.showJudgementProcess()
     }
@@ -179,7 +186,8 @@ export default {
           this.$nextTick(function () {
             this.$store.commit(this.$types.PROBLEM.SET_CURRENT_SUBMISSION_RES_ID, this.data.judgementProcess.id)
           })
-          this.showJudgementRes()
+          // this.showJudgementRes()
+          // 取消提交按钮加载图标
           this.subReady.committing = false
           await sleep(100)
           this.snack.open = false

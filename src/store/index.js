@@ -107,6 +107,9 @@ export default new Vuex.Store({
 					message: '网络错误',
 				}},)
 				// setTimeout(commit(types.TOGGLE_MSG, data.flag), 2000)
+				if (data.recall !== null) {
+					data.recall()
+				}
 				return
 			}
 			if (d.data.status === 200) {
