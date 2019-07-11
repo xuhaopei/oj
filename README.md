@@ -36,7 +36,7 @@ this.$store.dispatch('n', {
     param1: param1
   },
   // 当请求出错时调用的方法，非必需
-  recall: () => {}
+  recall: function
 }),
 ```
 
