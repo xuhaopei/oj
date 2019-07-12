@@ -142,7 +142,7 @@ export default {
               "pid": this.$route.params.id,
               //"pid": this.$_env.testUserInfo.testUserCodePid,
               "source_code": this.data.codeInfo.code,
-              "test_case": testcase
+              "test_cases": testcase
             },
             recall: () => {
               this.subReady.committing = false
