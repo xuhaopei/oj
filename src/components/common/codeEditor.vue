@@ -22,11 +22,18 @@
         </mu-select>
       </div>
       <div style="display: flex;align-items: center;">
-        <mu-button color="success" data-mu-loading-size='24' v-loading="committing" @click="commit">提交</mu-button>
+        <mu-button color="primary" style="margin-right: 20px;" data-mu-loading-size='24' 
+          v-loading="mCommitting&&mCommitType==1" @click="commit(1)">
+          测试
+        </mu-button>
+        <mu-button color="success" data-mu-loading-size='24' 
+          v-loading="mCommitting&&mCommitType==2" @click="commit(2)">
+          提交
+        </mu-button>
       </div>
     </div>
     <div>
-      <codemirror v-model="codeInfo.code" :options="cmOptions"></codemirror>
+      <codemirror v-model="mCodeInfo.code" :options="cmOptions"></codemirror>
     </div>
     <mu-snackbar :color='snackbar.color' position="bottom-end" :open.sync="snackbar.open">
       {{snackbar.msg}}
@@ -52,12 +59,17 @@ export default {
     codeInfo: Object,
     commitFlag: Number,
     committing: Boolean,
+    commitType: Number,
   },
   components: {
     codemirror,
   },
   data () {
     return {
+      mCodeInfo: this.codeInfo,
+      mCommitFlag: this.commitFlag,
+      mCommitting: this.committing,
+      mCommitType: this.commitType,
       ready: false,
       snackbar: {
         open: false,
@@ -103,15 +115,20 @@ export default {
     }
   },
   methods: {
-    async commit () {
-      this.codeInfo.lang = this.tableForLang[this.cmOptions.mode]
-      this.$emit('update:codeInfo', this.codeInfo)
-      this.commitFlag += 1
-      this.$emit('update:commitFlag', this.commitFlag)
+    async commit (type) {
+      this.mCodeInfo.lang = this.tableForLang[this.cmOptions.mode]
+      this.$emit('update:codeInfo', this.mCodeInfo)
+      this.mCommitFlag += 1
+      this.$emit('update:commitFlag', this.mCommitFlag)
+      this.mCommitType = type
+      this.$emit('update:commitType', this.mCommitType)
+    },
+    init () {
+      this.ready = true
     },
   },
   created () {
-    this.ready = true
+    this.init()
   }
 }
 </script>

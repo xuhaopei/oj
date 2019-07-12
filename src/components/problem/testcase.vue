@@ -91,7 +91,7 @@ export default {
 
     },
     addTestCase () {
-      if (this.input === '' || this.output === '') return
+      if (this.output === '') return
       this.data.list.push({
         id: this.testCaseId ++,
         input: this.input,

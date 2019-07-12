@@ -21,7 +21,8 @@
     </div>
     <span @mousedown="handleDragStart" @mousemove="handleDrag" @mouseup="handleDragEnd" @mouseleave="handleDragEnd" class="resize-column"></span>
     <div class="code" :style="`width: ${style.code.width}px`">
-      <codeEditor :codeInfo.sync='data.codeInfo' :commitFlag.sync='needCommit' :committing='subReady.committing'></codeEditor>
+      <codeEditor :commitType.sync='commitType' :codeInfo.sync='data.codeInfo' 
+        :commitFlag.sync='needCommit' :committing='subReady.committing'></codeEditor>
     </div>
     <mu-snackbar style="margin: 8px 0;" snack.position="snack.postition" :open.sync="snack.open" :color='snack.type'>
       <mu-icon left :value="snack.icon"></mu-icon>
@@ -53,6 +54,7 @@ export default {
         sx: null,
         sy: null,
       },
+      commitType: 1,
       showProblemSubmissions: false,
       style: {
         content: {
@@ -92,7 +94,8 @@ export default {
     // 提交试题
     needCommit: async function () {
       this.subReady.committing = true
-      try {
+      console.log(this.commitType);
+      if (this.commitType === 2) {
         await Promise.all([
           this.$store.dispatch('n', {
             flag: 0,
@@ -109,15 +112,43 @@ export default {
               "pid": this.$route.params.id,
               //"pid": this.$_env.testUserInfo.testUserCodePid,
               "source_code": this.data.codeInfo.code,
-              
             },
             recall: () => {
               this.subReady.committing = false
             }
           }),
         ])
-      } catch (error) {
-        console.log('in')
+      } else {
+        let testcase = []
+        for (const i of this.$store.state.problem.testcase) {
+          testcase.push({
+            stdin: i.input,
+            stdout: i.output,
+          })
+        }
+        await Promise.all([
+          this.$store.dispatch('n', {
+            flag: 0,
+            method: 'post',
+            url: `/code`,
+            headers: {
+              authorization: this.$_env.testUserInfo.token,
+              charset: 'utf-8',
+            },
+            params: {
+              "examination_id": 0,
+              "group_id": 0,
+              "lang": this.data.codeInfo.lang,
+              "pid": this.$route.params.id,
+              //"pid": this.$_env.testUserInfo.testUserCodePid,
+              "source_code": this.data.codeInfo.code,
+              "test_case": testcase
+            },
+            recall: () => {
+              this.subReady.committing = false
+            }
+          }),
+        ])
       }
       this.data.judgementResId = this.$store.state.n[0].data
       this.showJudgementProcess()
