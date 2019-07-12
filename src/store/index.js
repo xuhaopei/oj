@@ -33,6 +33,7 @@ export default new Vuex.Store({
 		problem: {
 			description: {},
 			subId: '',
+			testcase: [],
 		},
 	},
 	mutations: {
@@ -56,6 +57,12 @@ export default new Vuex.Store({
 		},
 		[types.PROBLEM.SET_CURRENT_SUBMISSION_RES_ID] (state, data) {
 			state.problem.subId = data
+		},
+		[types.PROBLEM.SET_TEST_CASE] (state, data) {
+			state.problem.testcase = data
+		},
+		[types.PROBLEM.CLEAR_TEST_CASE] (state) {
+			state.problem.testcase = []
 		},
 	},
 	actions: {
