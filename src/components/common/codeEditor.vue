@@ -22,12 +22,14 @@
         </mu-select>
       </div>
       <div style="display: flex;align-items: center;">
-        <mu-button color="primary" style="margin-right: 20px;" data-mu-loading-size='24' 
-          v-loading="mCommitting&&mCommitType==1" @click="commit(1)">
+        <mu-button color="primary" style="margin-right: 20px;"
+          :disabled="committing&&mCommitType==2"
+          v-loading="committing&&mCommitType==1" @click="commit(1)">
           测试
         </mu-button>
-        <mu-button color="success" data-mu-loading-size='24' 
-          v-loading="mCommitting&&mCommitType==2" @click="commit(2)">
+        <mu-button color="success"
+          :disabled="committing&&mCommitType==1"
+          v-loading="committing&&mCommitType==2" @click="commit(2)">
           提交
         </mu-button>
       </div>
@@ -68,7 +70,6 @@ export default {
     return {
       mCodeInfo: this.codeInfo,
       mCommitFlag: this.commitFlag,
-      mCommitting: this.committing,
       mCommitType: this.commitType,
       ready: false,
       snackbar: {
@@ -129,7 +130,7 @@ export default {
   },
   created () {
     this.init()
-  }
+  },
 }
 </script>
 

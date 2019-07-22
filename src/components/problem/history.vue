@@ -17,8 +17,9 @@
           prop="name"
           label="状态">
           <template slot-scope="scope">
-            <span class="accepted table-link" @click="toSubmissionsDetail(scope.row)" v-if="scope.row.status==='AC'">Accepted</span>
-            <span class="unaccepted table-link" @click="toSubmissionsDetail(scope.row)" v-if="scope.row.status===2">Error</span>
+            <span :class="`history-item-${historyStatusTable[scope.row.status]} table-link`" @click="toSubmissionsDetail(scope.row)" >{{historyStatusTable[scope.row.status]}}</span>
+            <!-- <span class="history-item-accepted table-link" @click="toSubmissionsDetail(scope.row)" v-if="scope.row.status==='AC'">Accepted</span>
+            <span class="history-item-unaccepted table-link" @click="toSubmissionsDetail(scope.row)" v-if="scope.row.status===2">Error</span> -->
           </template>
         </el-table-column>
         <el-table-column
@@ -90,6 +91,11 @@ export default {
         list: [],
         total: null,
         unready: [0, 1, 2, 3, 4, 5],
+      },
+      historyStatusTable: {
+        'AC': 'Accepted',
+        'WA': 'WA',
+        'CE': 'CE',
       },
       params: {
         pageNum: 1,
@@ -202,10 +208,19 @@ export default {
     padding-bottom: 0px;
     overflow-y: scroll;
   }
-  .accepted {
+  .history-item-WA {
     color: #009688;
   }
-  .unaccepted {
+  .history-item-AC {
+    color: #009688;
+  }
+  .history-item-CE {
+    color: #c62928;
+  }
+  .history-item-accepted {
+    color: #009688;
+  }
+  .history-item-unaccepted {
     color: #c62928;
   }
   .table-link:hover {

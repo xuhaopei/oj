@@ -1,8 +1,8 @@
 <template>
   <div v-if="ready" class="submissionsDetail">
     <div class="info-row">
-      <div v-if="data.result=='CE'" class="info-tag tag-color-yellow">
-         Runtime Error
+      <div :class="`info-tag tag-color-${caseResMsgTable[data.result]}`">
+        {{caseResMsgTable[data.result]}}
       </div>
       <div class="info-tag tag-color-green">
         <span>{{data.memory}} M</span>
@@ -19,15 +19,18 @@
         <el-col :span="6">
           <div class="left-info">
             <span>测试点{{idx+1}}</span>
-            <div v-if="i.result=='CE'" class="info-tag tag-color-yellow">
-              Runtime Error
-            </div>
-            <div v-else-if="i.result=='RTE'" class="info-tag tag-color-yellow">
-              Runtime Error
+            <div :class="`info-tag tag-color-${caseResMsgTable[i.result]}`">
+              {{caseResMsgTable[i.result]}}
             </div>
           </div>
         </el-col>
         <el-col :span="18">
+          <div class="info-tag tag-color-green">
+            <span>{{i.memory}} M</span>
+          </div>
+          <div class="info-tag tag-color-green">
+            <span>{{i.time}} S</span>
+          </div>
           <div class="right-info">
             <span>{{i.error_message}}</span>
           </div>
@@ -51,6 +54,11 @@ export default {
       data: {
       },
       active: 0,
+      caseResMsgTable: {
+        'AC': 'Access',
+        'CE': 'Runtime Error',
+        'WA': 'WA',
+      },
     }
   },
   methods: {
@@ -65,12 +73,11 @@ export default {
         }),
       ])
       this.data = this.$store.state.n[3].data.response
-      console.log('init', this.params.id);
+      console.log('data', this.data);
       
       this.ready = true
     },
     showDetail () {
-      console.log('showDetail', this.params.id);
       let url = `/submissions/detail/${this.$route.params.id}?sub_user_id=${this.$_env.testUserInfo.uid}`
       url += `&sub_id=${this.params.id}&token=${this.$_env.testUserInfo.token}`
       window.open( url, '_blank')
@@ -127,6 +134,21 @@ export default {
     color: rgb(255, 255, 255);
   }
   .tag-color-green {
+    background: #19be6b none repeat scroll 0% 0%;
+    border-color: #19be6b;
+    color: rgb(255, 255, 255);
+  }
+  .tag-color-CE {
+    background: rgb(255, 205, 86) none repeat scroll 0% 0%;
+    border-color: rgb(255, 205, 86);
+    color: rgb(255, 255, 255);
+  }
+  .tag-color-WA {
+    background: #19be6b none repeat scroll 0% 0%;
+    border-color: #19be6b;
+    color: rgb(255, 255, 255);
+  }
+  .tag-color-Access {
     background: #19be6b none repeat scroll 0% 0%;
     border-color: #19be6b;
     color: rgb(255, 255, 255);
