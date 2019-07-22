@@ -32,7 +32,10 @@ export default {
             pid: this.$route.params.id,
             sub_id: this.$route.query.sub_id,
             token: this.$route.query.token,
-          }
+          },
+          headers: {
+            authorization: this.$route.query.token,
+          },
         }),
       ])
       this.ready = true

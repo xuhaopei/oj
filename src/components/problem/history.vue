@@ -17,9 +17,10 @@
           prop="name"
           label="状态">
           <template slot-scope="scope">
-            <span :class="`history-item-${historyStatusTable[scope.row.status]} table-link`" @click="toSubmissionsDetail(scope.row)" >{{historyStatusTable[scope.row.status]}}</span>
-            <!-- <span class="history-item-accepted table-link" @click="toSubmissionsDetail(scope.row)" v-if="scope.row.status==='AC'">Accepted</span>
-            <span class="history-item-unaccepted table-link" @click="toSubmissionsDetail(scope.row)" v-if="scope.row.status===2">Error</span> -->
+            <span :class="`history-item-${historyStatusTable[scope.row.status]} table-link`" 
+              @click="toSubmissionsDetail(scope.row)" >
+              {{historyStatusTable[scope.row.status]}}
+            </span>
           </template>
         </el-table-column>
         <el-table-column
@@ -167,7 +168,7 @@ export default {
 
     },
     toSubmissionsDetail (data) {
-      let url = `/submissions/detail/${this.$route.params.id}?sub_user_id=${this.$_env.testUserInfo.uid}`
+      let url = `/submissions/detail/${this.$route.params.id}?sub_user_id=${data.sub_id}`
       url += `&sub_id=${data.sub_id}&token=${this.$_env.testUserInfo.token}`
       window.open( url, '_blank')
     },

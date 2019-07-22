@@ -83,14 +83,18 @@ export default new Vuex.Store({
 			try {
 				switch (data.method) {
 					case 'get':{
-						d = await axios.get(data.url, {
-							params: data.params,
-						}, {headers: data.headers})
+						d = await axios.get(
+							data.url, 
+							{ params: data.params, headers: data.headers},
+						)
 						break
 					}
 					case 'post':{
-						d = await axios.post(data.url, data.params, 
-							{headers: data.headers})
+						d = await axios.post(
+							data.url, 
+							data.params, 
+							{headers: data.headers}
+						)
 						break
 					}
 				
