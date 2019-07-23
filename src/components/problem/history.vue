@@ -168,8 +168,8 @@ export default {
 
     },
     toSubmissionsDetail (data) {
-      let url = `/submissions/detail/${this.$route.params.id}?sub_user_id=${data.sub_id}`
-      url += `&sub_id=${data.sub_id}&token=${this.$_env.testUserInfo.token}`
+      let url = `/submissions/detail/${this.$route.params.id}?sub_user_id=${this.$_env.testUserInfo.uid}`
+      url += `&sub_id=${data.sub_id}&token=${this.$_env.testUserInfo.uid}`
       window.open( url, '_blank')
     },
   },  

@@ -73,13 +73,11 @@ export default {
         }),
       ])
       this.data = this.$store.state.n[3].data.response
-      console.log('data', this.data);
-      
       this.ready = true
     },
     showDetail () {
       let url = `/submissions/detail/${this.$route.params.id}?sub_user_id=${this.$_env.testUserInfo.uid}`
-      url += `&sub_id=${this.params.id}&token=${this.$_env.testUserInfo.token}`
+      url += `&sub_id=${data.sub_id}&token=${this.$_env.testUserInfo.uid}`
       window.open( url, '_blank')
     },
   },
