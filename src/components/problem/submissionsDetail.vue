@@ -31,7 +31,7 @@ export default {
             sub_user_id: this.$route.query.sub_user_id,
             pid: this.$route.params.id,
             sub_id: this.$route.query.sub_id,
-            token: this.$route.query.token,
+            token: this.$route.query.token2,
           },
           headers: {
             authorization: this.$route.query.token,
