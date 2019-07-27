@@ -55,8 +55,8 @@ export default {
       },
       active: 0,
       caseResMsgTable: {
-        'AC': 'Access',
-        'CE': 'Runtime Error',
+        'AC': 'AC',
+        'CE': 'CE',
         'WA': 'WA',
       },
     }
@@ -146,7 +146,7 @@ export default {
     border-color: #19be6b;
     color: rgb(255, 255, 255);
   }
-  .tag-color-Access {
+  .tag-color-AC {
     background: #19be6b none repeat scroll 0% 0%;
     border-color: #19be6b;
     color: rgb(255, 255, 255);

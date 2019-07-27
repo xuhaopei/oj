@@ -1,38 +1,48 @@
 <template>
   <div v-if="ready" class="testcaseInfo">
     <div class="info-row">
-      <div :class="`info-tag tag-color-${caseResMsgTable[data.result]}`">
-        {{caseResMsgTable[data.result]}}
+      <div :class="`info-tag tag-color-${caseResMsgTable[data.sub_detail.judge_detail.result]}`">
+        {{caseResMsgTable[data.sub_detail.judge_detail.result]}}
       </div>
-      <div class="info-tag tag-color-green">
+      <!-- <div class="info-tag tag-color-green">
         <span>{{data.memory}} M</span>
       </div>
       <div class="info-tag tag-color-green">
         <span>{{data.time}} S</span>
-      </div>
+      </div> -->
     </div>
     <div class="test-case-list">
-      <el-row v-for="(i, idx) in data.test_cases" :key="idx" class="test-case-item">
-        <el-col :span="6">
-          <div class="left-info">
-            <span>测试点{{idx+1}}</span>
-            <div :class="`info-tag tag-color-${caseResMsgTable[i.result]}`">
-              {{caseResMsgTable[i.result]}}
+      <div v-for="(i, idx) in data.test_cases" :key="idx" class="test-case-item">
+        <el-row >
+          <el-col :span="6">
+            <div class="left-info">
+              <span>测试点{{idx+1}}</span>
+              <div :class="`info-tag tag-color-${caseResMsgTable[data.sub_detail.judge_detail.test_cases[idx].result]}`">
+                {{caseResMsgTable[data.sub_detail.judge_detail.test_cases[idx].result]}}
+              </div>
             </div>
-          </div>
-        </el-col>
-        <el-col :span="18">
-          <div class="info-tag tag-color-green">
-            <span>{{i.memory}} M</span>
-          </div>
-          <div class="info-tag tag-color-green">
-            <span>{{i.time}} S</span>
-          </div>
-          <div class="right-info">
-            <span>{{i.error_message}}</span>
-          </div>
-        </el-col>
-      </el-row>
+          </el-col>
+          <el-col :span="18">
+            <div class="info-tag tag-color-green">
+              <span>{{data.sub_detail.judge_detail.test_cases[idx].memory}} M</span>
+            </div>
+            <div class="info-tag tag-color-green">
+              <span>{{data.sub_detail.judge_detail.test_cases[idx].time}} S</span>
+            </div>
+            <div class="right-info">
+              <span>{{i.error_message}}</span>
+            </div>
+          </el-col>
+        </el-row>
+        <el-row class="io-info">
+          <el-col :span="6">
+            <span>预期输入：{{i.stdin}}</span>
+          </el-col>
+          <el-col :span="18">
+            <span>预期输出：{{i.stdout}}</span>
+          </el-col>
+        </el-row>
+      </div>
     </div>
   </div>
 </template>
@@ -50,8 +60,8 @@ export default {
       ready: false,
       active: 0,
       caseResMsgTable: {
-        'AC': 'Access',
-        'CE': 'Runtime Error',
+        'AC': 'AC',
+        'CE': 'CE',
         'WA': 'WA',
       },
     }
@@ -126,7 +136,7 @@ export default {
     border-color: #19be6b;
     color: rgb(255, 255, 255);
   }
-  .tag-color-Access {
+  .tag-color-AC {
     background: #19be6b none repeat scroll 0% 0%;
     border-color: #19be6b;
     color: rgb(255, 255, 255);
@@ -153,6 +163,12 @@ export default {
     font-size: 130%;
   }
   .test-case-item .right-info span{
+    font-size: 130%;
+  }
+  .test-case-item .io-info{
+    margin-top: 10px;
+  }
+  .test-case-item .io-info span{
     font-size: 130%;
   }
 </style>
