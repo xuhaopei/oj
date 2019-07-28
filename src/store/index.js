@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import types from './mutationsTypes'
 import axios from 'axios'
+// import util from '../util'
 Vue.use(Vuex)
 export default new Vuex.Store({
 	state: {
@@ -97,13 +98,15 @@ export default new Vuex.Store({
 						)
 						break
 					}
-				
 					default:
 						break
 				}
-
-
 			} catch (error) {
+				if (typeof(data.stopHandleNetErr) == 'boolean' && data.stopHandleNetErr) {
+					d.data.data = d.data
+					d.data.status = 200
+					return
+				}
 				commit(types.SET_N_DATA, {
 					res: {
 						...state.nTemplate, ...{
@@ -118,7 +121,7 @@ export default new Vuex.Store({
 					message: '网络错误',
 				}},)
 				// setTimeout(commit(types.TOGGLE_MSG, data.flag), 2000)
-				if (data.recall !== null) {
+				if (typeof(data.recall) == 'function') {
 					data.recall()
 				}
 				return

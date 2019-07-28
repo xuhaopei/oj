@@ -2,7 +2,7 @@
   <div class="login">
     <mu-container>
       <mu-form ref="form" :model="validateForm" class="mu-demo-form">
-        <mu-form-item label="用户名" label-float help-text="请填写用户名" prop="username" :rules="nameRules">
+        <mu-form-item label="用户名" label-float help-text="请填写用户名" prop="name" :rules="nameRules">
           <mu-text-field v-model="validateForm.name" prop="username"></mu-text-field>
         </mu-form-item>
         <mu-form-item label="密码" label-float prop="password" help-text="请填写正确密码" :rules="passwordRules">
@@ -29,26 +29,50 @@ export default {
   },
   data () {
     return {
+      responseData: null,
       visibility: false,
       validateForm: {
         name: '',
         password: '',
       },
       nameRules: [
-        { validate: (val) => !!val, message: '必须填写用户名'},
-        { validate: (val) => val.length >= 3, message: '用户名长度大于3'}
+        // { validate: (val) => !!val, message: '必须填写用户名'},
+        // { validate: (val) => val.length >= 3, message: '用户名长度大于3'}
       ],
       passwordRules: [
-        { validate: (val) => !!val, message: '必须填写密码'},
-        { validate: (val) => val.length >= 3 && val.length <= 10, message: '密码长度大于3小于10'}
+        // { validate: (val) => !!val, message: '必须填写密码'},
+        // { validate: (val) => val.length >= 3 && val.length <= 10, message: '密码长度大于3小于10'}
       ],
     }
   },
   methods: {
-    submit () {
-      this.$refs.form.validate().then((result) => {
-        // console.log('form valid: ', result)
-      });
+    async submit () {
+      // this.$refs.form.validate().then((result) => {
+      //   // console.log('form valid: ', result)
+      // });
+      const result = await this.$refs.form.validate()
+      console.log('form valid: ', result)
+      const pw = this.$util.hashpw(this.validateForm.name)
+      await Promise.all([
+        this.$store.dispatch('n', {
+          flag: 200,
+          method: 'post',
+          url: `/account/login`,
+          // headers: {
+          //   authorization: this.$_env.testUserInfo.token,
+          //   charset: 'utf-8',
+          // },
+          params: {
+            "password": pw,
+            "username": this.validateForm.name
+          },
+          stopHandleNetErr: true,
+        }),
+      ])
+
+      if (!this.$store.state.n[200].success) return
+      this.responseData = this.$store.state.n[200]
+      console.log('ddddd: ', this.responseData)
     },
     clear () {
       this.$refs.form.clear();

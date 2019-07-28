@@ -13,6 +13,7 @@
     "element-ui": "^2.8.2",
     "jsonwebtoken": "^8.5.1",
     "jsx": "^0.9.89",
+    "md5": "^2.2.1",
     "muse-ui": "^3.0.2",
     "muse-ui-loading": "^0.2.0",
     "react": "^16.8.6",

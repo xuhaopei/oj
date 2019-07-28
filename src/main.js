@@ -14,6 +14,8 @@ import Helpers from 'muse-ui/lib/Helpers'
 // 拖动
 import VueDraggableResizable from 'vue-draggable-resizable'
 import 'vue-draggable-resizable/dist/VueDraggableResizable.css'
+// 工具
+import util from './util'
 
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
@@ -24,6 +26,7 @@ import testenv from './testenv.js'
 
 Vue.prototype.$types = types
 Vue.prototype.$_env = testenv
+Vue.prototype.$util = util
 
 Vue.component('vue-draggable-resizable', VueDraggableResizable)
 Vue.use(Helpers)
