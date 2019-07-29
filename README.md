@@ -36,7 +36,9 @@ this.$store.dispatch('n', {
     param1: param1
   },
   // 当请求出错时调用的方法，非必需
-  recall: function
+  recall: function,
+  // 不处理网络错误
+  stopHandleNetErr: true,
 }),
 ```
 
