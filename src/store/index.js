@@ -81,6 +81,15 @@ export default new Vuex.Store({
 		},
 		async n ({commit, state}, data) {
 			let d = null
+			// 辅助对象，记录请求信息
+			let auxiliary = {
+				data: null,
+				errMsg: null,
+				isProcessedCatch: false,
+				// type：1请求且处理成功，2请求错误，3请求成功但处理错误
+				// 4请求错误且不处理
+				type: null,
+			}
 			try {
 				switch (data.method) {
 					case 'get':{
@@ -102,54 +111,67 @@ export default new Vuex.Store({
 						break
 				}
 			} catch (error) {
+				// 设置不处理错误
+				auxiliary.data = error
+				auxiliary.isProcessedCatch = true
 				if (typeof(data.stopHandleNetErr) == 'boolean' && data.stopHandleNetErr) {
-					d.data.data = d.data
-					d.data.status = 200
-					return
+					auxiliary.type = 4
+				} else {
+					auxiliary.type = 2
+					// setTimeout(commit(types.TOGGLE_MSG, data.flag), 2000)
 				}
-				commit(types.SET_N_DATA, {
-					res: {
-						...state.nTemplate, ...{
-							success: false,
-							showMsg: true,
-							msg: '',
-					}},
-					flag: data.flag
-				})
-				commit(types.SET_MSG, {...state.msg, ...{
-					type: 'error',
-					message: '网络错误',
-				}},)
-				// setTimeout(commit(types.TOGGLE_MSG, data.flag), 2000)
 				if (typeof(data.recall) == 'function') {
 					data.recall()
 				}
-				return
 			}
-			if (d.data.status === 200) {
+			if (!auxiliary.isProcessedCatch) {
+				if (d.data.status === 200) {
+					auxiliary.type = 1
+					auxiliary.data = d.data.data
+				} else {
+					auxiliary.type = 3
+					auxiliary.errMsg = d.data.message
+				}
+			}
+
+			if (auxiliary.type == 1) {
 				commit(types.SET_N_DATA, {
 					res: {
 						...state.nTemplate, ...{
 						success: true,
-						data: d.data.data,
+						data: auxiliary.data,
 					}},
 					flag: data.flag
 				})
-			} else {
+			} else if (auxiliary.type == 3) {
 				commit(types.SET_N_DATA, {
 					res: {
 						...state.nTemplate, ...{
 							success: false,
 							showMsg: true,
-							msg: d.data.message,
+							msg: auxiliary.errMsg,
 					}},
 					flag: data.flag
 				})
 				commit(types.SET_MSG, {...state.msg, ...{
 					type: 'error',
-					message: d.data.msg,
+					message: auxiliary.errMsg,
 				}},)
-				// setTimeout(commit(types.TOGGLE_MSG, data.flag), 2000)
+			} else if (auxiliary.type == 2 || auxiliary.type == 4) {
+				commit(types.SET_N_DATA, {
+					res: {
+						...state.nTemplate, ...{
+						success: false,
+						data: auxiliary.data,
+					}},
+					flag: data.flag
+				})
+				if (auxiliary.type == 2) {
+					commit(types.SET_MSG, {...state.msg, ...{
+						type: 'error',
+						message: auxiliary.data.response.data.message,
+					}},)
+				}
 			}
 		},
 	},

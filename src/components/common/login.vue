@@ -11,6 +11,7 @@
           :action-click="() => (visibility = !visibility)" :type="visibility ? 'text' : 'password'">
           </mu-text-field>
         </mu-form-item>
+        <span class="err-msg" v-show="showErrMsg"><h5>{{errMsg}}</h5></span>
         <mu-form-item>
           <mu-button color="primary" @click="submit">提交</mu-button>
           <mu-button @click="clear">重置</mu-button>
@@ -24,17 +25,21 @@
 export default {
   name: 'login',
   props: {
+    needCloseLogin: Number,
   },
   components: {
   },
   data () {
     return {
+      mNeedCloseLogin: this.needCloseLogin,
       responseData: null,
       visibility: false,
       validateForm: {
         name: '',
         password: '',
       },
+      showErrMsg: false,
+      errMsg: '',
       nameRules: [
         // { validate: (val) => !!val, message: '必须填写用户名'},
         // { validate: (val) => val.length >= 3, message: '用户名长度大于3'}
@@ -50,9 +55,10 @@ export default {
       // this.$refs.form.validate().then((result) => {
       //   // console.log('form valid: ', result)
       // });
+      this.showErrMsg = false
       const result = await this.$refs.form.validate()
-      console.log('form valid: ', result)
-      const pw = this.$util.hashpw(this.validateForm.name)
+      // console.log('form valid: ', result)
+      const pw = this.$util.hashpw(this.validateForm.password)
       await Promise.all([
         this.$store.dispatch('n', {
           flag: 200,
@@ -70,9 +76,14 @@ export default {
         }),
       ])
 
-      if (!this.$store.state.n[200].success) return
       this.responseData = this.$store.state.n[200]
-      console.log('ddddd: ', this.responseData)
+      if (this.responseData.success) {
+        this.mNeedCloseLogin += 1
+        this.$emit('update:needCloseLogin', this.mNeedCloseLogin)
+      } else {
+        this.errMsg = this.responseData.data.response.data.message
+        this.showErrMsg = true
+      }
     },
     clear () {
       this.$refs.form.clear();
@@ -87,4 +98,7 @@ export default {
 </script>
 
 <style scoped>
+  .err-msg {
+    color: #f56c6c;
+  }
 </style>

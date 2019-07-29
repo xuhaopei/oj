@@ -31,7 +31,7 @@
       </mu-list>
     </mu-drawer>
     <mu-dialog title="登录" width="360" :open.sync="show.login">
-      <login></login>
+      <login :needCloseLogin.sync="needCloseLogin"></login>
     </mu-dialog>
   </div>
 </template>
@@ -50,7 +50,8 @@ export default {
       show: {
         aside: false,
         login: false,
-      }
+      },
+      needCloseLogin: 1,
     }
   },
   methods: {
@@ -60,6 +61,15 @@ export default {
     showLogin () {
       this.show.login = true
     }
+  },
+  watch: {
+    needCloseLogin: function () {
+      this.show.login = false
+      this.$message({
+        message: '登录成功',
+        type: 'success'
+      });
+    },
   },
 }
 </script>
