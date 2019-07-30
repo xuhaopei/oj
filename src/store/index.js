@@ -144,19 +144,31 @@ export default new Vuex.Store({
 					flag: data.flag
 				})
 			} else if (auxiliary.type == 3) {
-				commit(types.SET_N_DATA, {
-					res: {
-						...state.nTemplate, ...{
-							success: false,
-							showMsg: true,
-							msg: auxiliary.errMsg,
-					}},
-					flag: data.flag
-				})
-				commit(types.SET_MSG, {...state.msg, ...{
-					type: 'error',
-					message: auxiliary.errMsg,
-				}},)
+				if (typeof(data.stopHandleNetErr) == 'boolean' && data.stopHandleNetErr) {
+					commit(types.SET_N_DATA, {
+						res: {
+							...state.nTemplate, ...{
+								success: false,
+								showMsg: true,
+								data: d.data,
+						}},
+						flag: data.flag
+					})
+				} else {
+					commit(types.SET_N_DATA, {
+						res: {
+							...state.nTemplate, ...{
+								success: false,
+								showMsg: true,
+								msg: auxiliary.errMsg,
+						}},
+						flag: data.flag
+					})
+					commit(types.SET_MSG, {...state.msg, ...{
+						type: 'error',
+						message: auxiliary.errMsg,
+					}},)
+				}
 			} else if (auxiliary.type == 2 || auxiliary.type == 4) {
 				commit(types.SET_N_DATA, {
 					res: {

@@ -2,7 +2,7 @@
   <div class="submissionsDetail center-div main-view">
     <div class="center-item">
       <testcase-info :data="data.meta"></testcase-info>
-      <div>
+      <div v-if="show.code">
         <codemirror v-model="data.code" :options="cmOptions"></codemirror>
       </div>
     </div>
@@ -34,9 +34,10 @@ export default {
       ready: false,
       data: {
         meta: null,
-        code: `
-          int main() {return 0;}
-        `
+        code: ``
+      },
+      show: {
+        code: false,
       },
       active: 0,
       cmOptions: {
@@ -45,6 +46,11 @@ export default {
         theme: 'base16-light',
         lineNumbers: true,
         line: true,
+      },
+      tableForLangBackEndToLangShow: {
+        'java': 'text/x-java',
+        'cpp': 'text/x-c++src',
+        'py': 'text/x-python',
       },
     }
   },
@@ -69,27 +75,28 @@ export default {
       
       if (!this.$store.state.n[9].success) return
       this.data.meta = this.$store.state.n[9].data
+      // console.log('this.data.meta', this.data.meta);
       await this.getSourceCode()
-
       this.ready = true
     },
     async getSourceCode () {
-      // await Promise.all([
-      //   this.$store.dispatch('n', {
-      //     flag: 8,
-      //     method: 'get',
-      //     url: `/program-sub-detail`,
-      //     params: {
-      //       sub_user_id: this.$route.query.sub_user_id,
-      //       pid: this.$route.params.id,
-      //       sub_id: this.$route.query.sub_id,
-      //       token: this.$route.query.token2,
-      //     },
-      //     headers: {
-      //       authorization: this.$route.query.token,
-      //     },
-      //   }),
-      // ])
+      this.show.code = false
+      await Promise.all([
+        this.$store.dispatch('n', {
+          flag: 8,
+          method: 'get',
+          url: `/file/code/${this.data.meta.sub_detail.source_code}`,
+          stopHandleNetErr: true,
+          params: {
+          },
+          // headers: {
+          //   authorization: this.$route.query.token,
+          // },
+        }),
+      ])
+      this.cmOptions.mode = this.tableForLangBackEndToLangShow[this.data.meta.sub_detail.source_code.split('.')[1]]
+      this.data.code = this.$store.state.n[8].data.code
+      this.show.code = true
     }
   },
   created () {
