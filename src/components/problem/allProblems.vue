@@ -100,9 +100,9 @@
                 round :ripple='false'>
                 <span class="tag-content">{{item.tag_name}}</span><mu-badge :content="`${item.used_times}`" color="#61a9a7"></mu-badge>
               </mu-chip> :type="`${item.deleted==0?'primary':'s'}`"-->
-              <el-badge class="tag-badge" v-for="(item, idx) in filter.tag" :key='idx' :value="item.used_times" type="primary">
-                <el-tag :class="`${item.deleted==0?'tag-unselected':'tag-selected'}`"
-                  >
+              <el-badge class="tag-badge" v-for="(item, idx) in filter.tag" :key='idx' 
+                :value="item.used_times" type="primary">
+                <el-tag @click="handleTagClick(item)" :class="`${item.isSelected?'tag-selected':'tag-unselected'}`">
                   {{item.tag_name}}
                 </el-tag>
               </el-badge>
@@ -184,17 +184,17 @@ export default {
       filter: {
         keyword: '',
         tag: [],
+        selectedTat: [],
       },
       active: 0,
     }
   },
   methods: {
     async init () {
-      
-			const sleep = (ms) => {
-				return new Promise(resolve => setTimeout(resolve, ms))
-      }
-      await sleep(1000)
+			// const sleep = (ms) => {
+			// 	return new Promise(resolve => setTimeout(resolve, ms))
+      // }
+      // await sleep(1000)
       await Promise.all([
         this.getData(),
         this.getFilterTag(),
@@ -202,10 +202,6 @@ export default {
       this.ready = true
     },
     async getFilterTag() {
-			const sleep = (ms) => {
-				return new Promise(resolve => setTimeout(resolve, ms))
-      }
-      await sleep(1000)
       this.subReady.filter = false
       await Promise.all([
         this.$store.dispatch('n', {
@@ -216,7 +212,23 @@ export default {
           }
         }),
       ])
-      this.filter.tag = this.$store.state.n[1].data
+      // this.filter.tag = this.$store.state.n[1].data
+      let temp = []
+      for (const i of this.$store.state.n[1].data) {
+        // deleted	0
+        // gmt_create	1552931096000
+        // gmt_modified	1556245604000
+        // program_tag_id	1
+        // tag_name	标签111
+        // used_times	2
+        temp.push({
+          tag_name: i.tag_name,
+          id: i.program_tag_id,
+          isSelected: false,
+          used_times: i.used_times,
+        })
+      }
+      this.filter.tag = temp
       this.$nextTick(function () {
         this.subReady.filter = true
       })
@@ -238,6 +250,15 @@ export default {
         case 0: {
           this.data.codeProblemsList.list = []
           this.subReady.codeProblemsList = false
+
+          // 处理标签参数
+          let t = []
+          for (const i of this.filter.tag) {
+            if (i.isSelected) {
+              t.push(i.id)
+            }
+          }
+          this.params.program.tagList = t.length===0?null:t.join(',')
           await Promise.all([
             this.$store.dispatch('n', {
               flag: 0,
@@ -248,7 +269,7 @@ export default {
                 page_size: this.params.program.page_size,
                 difficult: this.params.program.difficult,
                 query: this.filter.keyword,
-                tagList: this.params.program.tagList,
+                tag_list: this.params.program.tagList,
                 uid: this.$_env.testUserInfo.uid,
               }
             }),
@@ -290,7 +311,7 @@ export default {
     async handleTagClick (data) {
       for (const i of this.filter.tag) {
         if (i.id === data.id) {
-          data.selected = !data.selected
+          i.isSelected = !data.isSelected
         }
       }
       this.getData()
@@ -411,5 +432,8 @@ export default {
   .tag-selected {
     color: #333333;
     background-color: #e6e6e6;
+  }
+  .tag-selected:hover {
+    cursor: pointer;
   }
 </style>
