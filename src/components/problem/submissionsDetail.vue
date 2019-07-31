@@ -1,9 +1,9 @@
 <template>
-  <div class="submissionsDetail center-div main-view">
+  <div v-if="ready" class="submissionsDetail center-div main-view">
     <div class="center-item">
       <testcase-info :data="data.meta"></testcase-info>
-      <div v-if="show.code">
-        <codemirror v-model="data.code" :options="cmOptions"></codemirror>
+      <div v-if="show.code" class="code-area">
+        <codemirror style="height: 1200px;" v-model="data.code" :options="cmOptions"></codemirror>
       </div>
     </div>
   </div>
@@ -75,6 +75,7 @@ export default {
       
       if (!this.$store.state.n[9].success) return
       this.data.meta = this.$store.state.n[9].data
+      this.data.meta.sub_detail.judge_detail = JSON.parse(this.data.meta.sub_detail.judge_detail)
       // console.log('this.data.meta', this.data.meta);
       await this.getSourceCode()
       this.ready = true
@@ -105,10 +106,15 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
   .submissionsDetail {
     display: flex;
     height: calc(100vh - 64px);
     
+  }
+  .submissionsDetail .CodeMirror {
+    border: 1px solid #eee;
+    min-height: 900px;
+    font-size: 20px;
   }
 </style>

@@ -149,7 +149,7 @@ export default {
     margin-right: 50px;
   } */
 
-  .CodeMirror {
+  .codeEdit .CodeMirror {
     border: 1px solid #eee;
     height: calc(100vh - 200px);
     font-size: 20px;
