@@ -308,10 +308,22 @@ export default {
           break;
       }
     },
+    // 多标签
+    // async handleTagClick (data) {
+    //   for (const i of this.filter.tag) {
+    //     if (i.id === data.id) {
+    //       i.isSelected = !data.isSelected
+    //     }
+    //   }
+    //   this.getData()
+    // },
+    // 单标签
     async handleTagClick (data) {
       for (const i of this.filter.tag) {
         if (i.id === data.id) {
           i.isSelected = !data.isSelected
+        } else {
+          i.isSelected = false
         }
       }
       this.getData()

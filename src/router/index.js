@@ -1,16 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import index from '../components/index/index.vue'
-import problems from '../components/problem/problems.vue'
-import objectivetProblem from '../components/problem/objectivetProblem.vue'
-import history from '../components/problem/history.vue'
-import testcase from '../components/problem/testcase.vue'
-import problemSubmissions from '../components/problem/problemSubmissions.vue'
-import allProblems from '../components/problem/allProblems.vue'
-import test from '../components/test.vue'
-import submissionsDetail from '../components/problem/submissionsDetail.vue'
-import quizList from '../components/quiz/quizList.vue'
-import quiz from '../components/quiz/quiz.vue'
 
 Vue.use(Router);
 
@@ -18,54 +7,54 @@ const defalutRouter = [
   {
     path: '/',
     name: 'index',
-    component: index,
+    component: r => require(['../components/index/index.vue'], r),
   },
   {
     path: '/allProblems',
     name: 'allProblems',
-    component: allProblems,
+    component: r => require(['../components/problem/allProblems.vue'], r),
   },
   {
     path: '/quizList',
     name: 'quizList',
-    component: quizList,
+    component: r => require(['../components/quiz/quizList.vue'], r),
   },
   {
     path: '/quiz/:id',
     name: 'quiz',
-    component: quiz,
+    component: r => require(['../components/quiz/quiz.vue'], r),
     props: true,
   },
   {
     path: '/problems/:id',
     name: 'problems',
-    component: problems,
+    component: r => require(['../components/problem/problems.vue'], r),
     props: true,
     children: [
-      { path: 'history', component: history },
-      { path: 'testcase', component: testcase },
-      { path: 'submissions', component: problemSubmissions },
+      { path: 'history', component: r => require(['../components/problem/history.vue'], r) },
+      { path: 'testcase',component: r => require(['../components/problem/testcase.vue'], r) },
+      { path: 'submissions', component: r => require(['../components/problem/problemSubmissions.vue'], r) },
     ]
   },
   {
     path: '/objectivetProblem/:id',
     name: 'objectivetProblem',
-    component: objectivetProblem,
+    component: r => require(['../components/problem/objectivetProblem.vue'], r),
     props: true,
     // children: [
-    //   { path: 'history', component: history },
+    //   { path: 'history', component: r => require(['../components/problem/history.vue'], r) },
     // ]
   },
   {
     path: '/submissions/detail/:id',
     name: 'submissionsDetail',
-    component: submissionsDetail,
+    component: r => require(['../components/problem/submissionsDetail.vue'], r),
     props: true,
   },
   {
     path: '/test',
     name: 'test',
-    component: test,
+    component: r => require(['../components/test.vue'], r),
   },
 ];
 
