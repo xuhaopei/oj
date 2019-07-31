@@ -8,7 +8,8 @@ export default new Vuex.Store({
 	state: {
 		userInfo: {
 			isLogin: false,
-			name: ''
+			name: '',
+			count: 1,
 		},
 		n: {},
 		msg: {
@@ -67,17 +68,35 @@ export default new Vuex.Store({
 		},
 	},
 	actions: {
-		async getUserInfo ({commit, state}, data) {
-			data
-			const sleep = (ms) => {
-				return new Promise(resolve => setTimeout(resolve, ms))
+		async getUserInfo ({commit, state},) {
+			if (localStorage['token'] === undefined) {
+				return
 			}
-			await sleep(1000)
 			let _d = state.userInfo
-			_d = {..._d, ...{
-				name: '123'
-			}}
-			commit(types.SET_USER_INFO, _d)
+			try {
+				let u = await axios.get('/account/token', 
+					{ headers: {Authorization: localStorage.token} }
+				)
+				// aCTimes	0
+				// deleted	0
+				// finishedProblems	0
+				// gmt_create	1564185527000
+				// gmt_modified	1564523767000
+				// password	56b273f0dc75541d1bd6a94732df7cc8cec467262e4f2fd7c280d9b21762471b
+				// rte_times	0
+				// submitTimes	0
+				// tle_times	0
+				// userId	2
+				// username	admin
+				// wATimes	0
+				_d = {...state.userInfo, ...{
+					name: u.data.data.username,
+					isLogin: true,
+				}}
+				commit(types.SET_USER_INFO, _d)
+			} catch (error) {
+				commit(types.SET_USER_INFO, _d)
+			}
 		},
 		async n ({commit, state}, data) {
 			let d = null

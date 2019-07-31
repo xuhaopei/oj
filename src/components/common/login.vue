@@ -95,6 +95,8 @@ export default {
       if (this.responseData.success) {
         this.mNeedCloseLogin += 1
         this.$emit('update:needCloseLogin', this.mNeedCloseLogin)
+        // 保存token
+        localStorage.setItem("token", u.token)
       } else {
         this.errMsg = this.responseData.data.response.data.message
         this.showErrMsg = true

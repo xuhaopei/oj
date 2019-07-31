@@ -17,7 +17,7 @@
         <span style="font-size: 150%;">考试中心</span>
       </mu-button>
       <mu-button flat @click="showLogin" slot="right">
-        <span style="font-size: 150%;">登录</span>
+        <span style="font-size: 150%;">{{userInfo.name}}</span>
       </mu-button>
     </mu-appbar>
     <mu-drawer :open.sync="show.aside" :docked="false" :left="true">
@@ -63,6 +63,10 @@ export default {
         icon: '',
         position: 'bottom',
       },
+      userInfo: {
+        name: '登录',
+        isLogin: false,
+      }
     }
   },
   methods: {
@@ -70,6 +74,9 @@ export default {
       this.show.aside = true
     },
     showLogin () {
+      if (this.userInfo.isLogin) {
+        return
+      }
       this.show.login = true
     },
 		sleep (ms) {
@@ -88,6 +95,11 @@ export default {
       this.snack.open = false
     },
   },
+  computed: {
+    needUpdateUserInfo () {
+      return this.$store.state.userInfo
+    },
+  },
   watch: {
     needCloseLogin: function () {
       this.show.login = false
@@ -96,6 +108,10 @@ export default {
       //   type: 'success'
       // });
       this.getUserMsg()
+    },
+    needUpdateUserInfo: function () {
+      this.userInfo.name = this.$store.state.userInfo.name
+      this.userInfo.isLogin = this.$store.state.userInfo.isLogin
     },
   },
 }

@@ -25,7 +25,7 @@ export default {
   computed: {
     needShowMsg () {
       return this.$store.state.msg
-    }
+    },
   },
   watch: {
     needShowMsg (newVal) {
@@ -38,6 +38,9 @@ export default {
   },
   methods: {
     async init () {
+			if(!window.localStorage){
+				alert('浏览器不支持或禁用了localStorage,浏览时可能会出现问题')
+			}
       await this.$store.dispatch('getUserInfo')
       this.ready = true
     }
