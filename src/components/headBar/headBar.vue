@@ -33,6 +33,10 @@
     <mu-dialog title="登录" width="360" :open.sync="show.login">
       <login :needCloseLogin.sync="needCloseLogin"></login>
     </mu-dialog>
+    <mu-snackbar style="margin: 8px 0;" snack.position="snack.postition" :open.sync="snack.open" :color='snack.type'>
+      <mu-icon left :value="snack.icon"></mu-icon>
+      {{snack.msg}}
+    </mu-snackbar>
   </div>
 </template>
 
@@ -52,6 +56,13 @@ export default {
         login: false,
       },
       needCloseLogin: 1,
+      snack: {
+        msg: '获取用户信息中',
+        type: '',
+        open: false,
+        icon: '',
+        position: 'bottom',
+      },
     }
   },
   methods: {
@@ -60,15 +71,31 @@ export default {
     },
     showLogin () {
       this.show.login = true
-    }
+    },
+		sleep (ms) {
+      return new Promise(resolve => setTimeout(resolve, ms))
+    },
+    async getUserMsg () {
+      // 获取用户信息
+      this.snack.msg = '登录成功,获取用户信息中'
+      this.snack.icon = 'info'
+      this.snack.open = true
+      await this.$store.dispatch('getUserInfo')
+      
+      this.snack.icon = 'check_circle'
+      this.snack.msg = '已获取用户信息'
+      await this.sleep(1000)
+      this.snack.open = false
+    },
   },
   watch: {
     needCloseLogin: function () {
       this.show.login = false
-      this.$message({
-        message: '登录成功',
-        type: 'success'
-      });
+      // this.$message({
+      //   message: '登录成功',
+      //   type: 'success'
+      // });
+      this.getUserMsg()
     },
   },
 }
