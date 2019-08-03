@@ -3,7 +3,8 @@
     <div class="center-item">
       <div class="display">
         <div class="display-item-left">
-          <mu-tabs inverse color="#000000" indicator-color='#93989c' text-color="rgba(0, 0, 0, .54)" :value.sync="active">
+          <mu-tabs inverse color="#000000" indicator-color='#93989c' text-color="rgba(0, 0, 0, .54)" 
+            :value.sync="active">
             <!-- <mu-tab>全部</mu-tab> -->
             <mu-tab>编程</mu-tab>
             <mu-tab>填空</mu-tab>
@@ -14,6 +15,75 @@
               <div v-if='subReady.codeProblemsList'>
                 <div style="width: 100%;">
                   
+                    <!-- row-style="background-color: #bebebe;" -->
+                  <el-table
+                    :data="data.codeProblemsList.list"
+                    style="width: 100%">
+                    <el-table-column
+                      width="70"
+                      v-if="this.$_env.testUserInfo.uid!==null"
+                      prop="name"
+                      label="状态">
+                      <template slot-scope="scope">
+                        <span class="accepted table-link" v-if="scope.row.status==='AC'">
+                          <i class="el-icon-check" style="color: rgb(25, 190, 107);"></i>
+                        </span>
+                        <span class="unaccepted table-link" v-if="scope.row.status===2">
+                          <i class="el-icon-minus" style="color: rgb(255, 153, 0);"></i>
+                        </span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      label="标题"
+                      width="350">
+                      <template slot-scope="scope">
+                        <el-button type="text" @click="toProblem(scope.row)">{{scope.row.title}}</el-button>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="runtime"
+                      label="提交次数">
+                      <template slot-scope="scope">
+                        <span>{{scope.row.submit_times}}</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="name"
+                      label="通过率">
+                      <template slot-scope="scope">
+                        <span>{{ scope.row._percentage }}%</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="name"
+                      label="难度">
+                      <template slot-scope="scope">
+                        <el-tag size='small' :type="scope.row._difficultFlag">{{scope.row._difficult}}</el-tag>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </div>
+                <div class="bottom-control">
+                  <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="params.program.page_num"
+                    :page-sizes="options.pageSize"
+                    :page-size="100"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="data.codeProblemsList.total">
+                  </el-pagination>
+                </div>
+              </div>
+              <div v-else class="history">
+                <div style="height: 100%;width: 100%;">
+                  <div v-for="item in data.unready" :key='item' class="skeleton-screen skeleton-item"></div>
+                </div>
+              </div>
+            </div>
+            <div v-if="active===1">
+              <div v-if='subReady.codeProblemsList'>
+                <div style="width: 100%;">
                     <!-- row-style="background-color: #bebebe;" -->
                   <el-table
                     :data="data.codeProblemsList.list"
@@ -136,6 +206,7 @@ export default {
       ready: false,
       subReady: {
         codeProblemsList: false,
+        completionProblemsList: false,
         filter: false,
         screen: false,
       },
@@ -144,6 +215,11 @@ export default {
         unready: [0, 1, 2, 3],
         difficult: 1,
         codeProblemsList: {
+          list: [],
+          page: 1,
+          total: null,
+        },
+        completionProblemsList: {
           list: [],
           page: 1,
           total: null,
@@ -187,6 +263,38 @@ export default {
         selectedTat: [],
       },
       active: 0,
+      talbe: {
+        codeDifficult: {
+          0: ['无', 'primary'],
+          1: ['简单', 'success'],
+          2: ['中等', 'primary'],
+          3: ['困难', 'danger'],
+        },
+        // active: {
+        //   0: 'codeProblemsList',
+        //   1: 'completionProblemsList',
+        //   2: '',
+        // }
+      }
+    }
+  },
+  watch: {
+    active: async function () {
+      this.filter.tag = []
+      // this.subReady[this.talbe.active[this.active]] = false
+      this.params.program = {
+        page_num: 1,
+        page_size: 20,
+        difficult: null,
+        query: null,
+        tagList: null,
+        uid: this.$_env.testUserInfo.uid,
+      }
+      await Promise.all([
+        this.getData(),
+        this.getFilterTag(),
+      ])
+      // this.subReady[this.talbe.active[this.active]] = true
     }
   },
   methods: {
@@ -233,32 +341,25 @@ export default {
         this.subReady.filter = true
       })
     },
-    async screen () {			
-      // this.$store.dispatch('n', {
-			// 	method: 'get',
-			// 	url: '',
-			// 	params: {
-					
-			// 	}
-      // })
+    async screen () {
       this.subReady.screen = true
       await this.getData()
       this.subReady.screen = false
     },
     async getData () {
+      // 处理标签参数
+      let tagTemp = []
+      for (const i of this.filter.tag) {
+        if (i.isSelected) {
+          tagTemp.push(i.id)
+        }
+      }
       switch (this.active) {
         case 0: {
           this.data.codeProblemsList.list = []
           this.subReady.codeProblemsList = false
 
-          // 处理标签参数
-          let t = []
-          for (const i of this.filter.tag) {
-            if (i.isSelected) {
-              t.push(i.id)
-            }
-          }
-          this.params.program.tagList = t.length===0?null:t.join(',')
+          this.params.program.tagList = tagTemp.length===0?null:tagTemp.join(',')
           await Promise.all([
             this.$store.dispatch('n', {
               flag: 0,
@@ -276,23 +377,69 @@ export default {
           ])
           if (!this.$store.state.n[0].success) return
           for (const i of this.$store.state.n[0].data.data) {
-            let _difficult, _difficultFlag, _percentage
-            switch (i.difficult) {
-              case 1: {
-                _difficult = '简单'
-                _difficultFlag = 'success'
+            i._difficult = i.difficult?this.talbe.codeDifficult[i.difficult][0]:'无'
+            i._difficultFlag = i.difficult?this.talbe.codeDifficult[i.difficult][1]:'primary'
+            i._percentage = (i.ac_times / i.submit_times)
+            i._percentage = i._percentage!==NaN?'0.00':i._percentage.toFixed(2)
+          }
+          this.data.codeProblemsList.list = this.$store.state.n[0].data.data
+          this.data.codeProblemsList.total = this.$store.state.n[0].data.total
+          this.$nextTick(function () {
+            this.subReady.codeProblemsList = true
+          })
+          break;
+        }
+        case 1: {
+          this.data.completionProblemsList.list = []
+          this.subReady.completionProblemsList = false
+
+          this.params.program.tagList = tagTemp.length===0?null:tagTemp.join(',')
+          await Promise.all([
+            this.$store.dispatch('n', {
+              flag: 1,
+              method: 'get',
+              url: `/object-problems`,
+              params: {
+                page_num: this.params.program.page_num,
+                page_size: this.params.program.page_size,
+                query: this.filter.keyword==""?null:this.filter.keyword,
+                tag_list: this.params.program.tagList,
+                uid: this.$_env.testUserInfo.uid,
               }
-              case 2: {
-                _difficult = '中等'
-                _difficultFlag = ''
+            }),
+          ])
+          if (!this.$store.state.n[1].success) return
+          this.data.codeProblemsList.list = this.$store.state.n[0].data.data
+          this.data.codeProblemsList.total = this.$store.state.n[0].data.total
+          this.$nextTick(function () {
+            this.subReady.codeProblemsList = true
+          })
+          break;
+        }
+        case 2: {
+          this.data.codeProblemsList.list = []
+          this.subReady.codeProblemsList = false
+
+          this.params.program.tagList = tagTemp.length===0?null:tagTemp.join(',')
+          await Promise.all([
+            this.$store.dispatch('n', {
+              flag: 0,
+              method: 'get',
+              url: `/program-problems`,
+              params: {
+                page_num: this.params.program.page_num,
+                page_size: this.params.program.page_size,
+                difficult: this.params.program.difficult,
+                query: this.filter.keyword,
+                tag_list: this.params.program.tagList,
+                uid: this.$_env.testUserInfo.uid,
               }
-              case 3: {
-                _difficult = '困难'
-                _difficultFlag = 'danger'
-              }
-            }
-            i._difficult = _difficult
-            i._difficultFlag = _difficultFlag
+            }),
+          ])
+          if (!this.$store.state.n[0].success) return
+          for (const i of this.$store.state.n[0].data.data) {
+            i._difficult = i.difficult?this.talbe.codeDifficult[i.difficult][0]:'无'
+            i._difficultFlag = i.difficult?this.talbe.codeDifficult[i.difficult][1]:'primary'
             i._percentage = (i.ac_times / i.submit_times)
             i._percentage = i._percentage!==NaN?'0.00':i._percentage.toFixed(2)
           }
