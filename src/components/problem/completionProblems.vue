@@ -1,8 +1,6 @@
 <template>
   <div v-if="ready" class="completionProblems">
-    <div v-for="i in tag" :key="i">
-      {{i}}
-    </div>
+    
   </div>
 </template>
 
@@ -20,6 +18,10 @@ export default {
       params: {
         page: 1,
         pageSize: 20,
+      },
+      data: {
+        list: [],
+        total: 0,
       }
     }
   },
@@ -48,6 +50,8 @@ export default {
           }
         }),
       ])
+      this.data.list = this.$store.state.n[20].data.data
+      this.data.total = this.$store.state.n[20].data.total
     },
     handleSortChange () {
 
