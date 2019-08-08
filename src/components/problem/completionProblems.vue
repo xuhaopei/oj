@@ -1,5 +1,5 @@
 <template>
-  <div class="completionProblems">
+  <div v-if="ready" class="completionProblems">
     <div v-for="i in tag" :key="i">
       {{i}}
     </div>
@@ -16,16 +16,38 @@ export default {
   },
   data () {
     return {
+      ready: false,
+      params: {
+        page: 1,
+        pageSize: 20,
+      }
     }
+  },
+  watch: {
+    tag () {
+      this.getData()
+    },
   },
   methods: {
     async init () {
-			// const sleep = (ms) => {
-			// 	return new Promise(resolve => setTimeout(resolve, ms))
-      // }
-      // await sleep(1000)
-
-      // this.ready = true
+      await this.getData()
+      this.ready = true
+    },
+    async getData () {
+      const tempTag = this.tag.length===0?null:this.tag.join(',')
+      await Promise.all([
+        this.$store.dispatch('n', {
+          flag: 20,
+          method: 'get',
+          url: `/object-problems`,
+          params: {
+            page_num: this.params.page,
+            page_size: this.params.pageSize,
+            type: 0,
+            tag_list: tempTag,
+          }
+        }),
+      ])
     },
     handleSortChange () {
 
@@ -41,7 +63,7 @@ export default {
   },
   created () {
     this.init()
-  }
+  },
 }
 </script>
 

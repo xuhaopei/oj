@@ -11,7 +11,7 @@
             :value.sync="active">
             <!-- <mu-tab>全部</mu-tab> -->
             <mu-tab>编程</mu-tab>
-            <mu-tab>填空</mu-tab>
+            <!-- <mu-tab>填空</mu-tab> -->
             <mu-tab>选择</mu-tab>
           </mu-tabs>
           <div class="show-problems">
@@ -85,7 +85,7 @@
               </div>
             </div>
             <div v-if="active===1">
-              <div v-if='subReady.completionProblemsList' style="width: 100%;">
+              <div style="width: 100%;">
                 <completion-problems :tag="filter.auxiTagList"></completion-problems>
               </div>
             </div>
@@ -320,9 +320,11 @@ export default {
           break;
         }
         case 1: {
+          this.subReady.completionProblemsList = false
           this.filter.tag = []
           // 只获取标签列表
           // 然后交给子组件
+          this.subReady.completionProblemsList = true
         }
         default:
           break;
