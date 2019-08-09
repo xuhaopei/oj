@@ -1,6 +1,13 @@
 <template>
   <div v-if="ready" class="completionProblems">
-    
+    <!-- <div class="option-item">
+
+    </div> -->
+    <div class="option-item-warp">
+      <mu-ripple class="option-item-i">
+        {{currentProblem.description.opt1}}
+      </mu-ripple>
+    </div>
   </div>
 </template>
 
@@ -22,7 +29,10 @@ export default {
       data: {
         list: [],
         total: 0,
-      }
+      },
+      currentProblem: {
+        description: null,
+      },
     }
   },
   watch: {
@@ -33,6 +43,7 @@ export default {
   methods: {
     async init () {
       await this.getData()
+      this.currentProblem.description = this.data.list[0].description
       this.ready = true
     },
     async getData () {
@@ -76,5 +87,22 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+  .option-item-warp {
+    width: 100%;
+    height: 40px;
+  }
+  .option-item-i {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 16px;
+    background-color: #fff;
+    border-radius: 4px;
+    color: #2196f3;
+    border: 1px solid #2196f3;
   }
 </style>
