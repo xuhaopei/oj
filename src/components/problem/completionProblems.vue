@@ -4,8 +4,27 @@
 
     </div> -->
     <div class="option-item-warp">
-      <mu-ripple class="option-item-i">
+      <mu-ripple @click="selectOpt(1)" 
+        :class="`option-item-i option-item-i-${currentProblem.select==1?'selected':'unselected'}`">
         {{currentProblem.description.opt1}}
+      </mu-ripple>
+    </div>
+    <div class="option-item-warp">
+      <mu-ripple @click="selectOpt(2)" 
+        :class="`option-item-i option-item-i-${currentProblem.select==2?'selected':'unselected'}`">
+        {{currentProblem.description.opt2}}
+      </mu-ripple>
+    </div>
+    <div class="option-item-warp">
+      <mu-ripple @click="selectOpt(3)" 
+        :class="`option-item-i option-item-i-${currentProblem.select==3?'selected':'unselected'}`">
+        {{currentProblem.description.opt3}}
+      </mu-ripple>
+    </div>
+    <div class="option-item-warp">
+      <mu-ripple @click="selectOpt(4)" 
+        :class="`option-item-i option-item-i-${currentProblem.select==4?'selected':'unselected'}`">
+        {{currentProblem.description.opt4}}
       </mu-ripple>
     </div>
   </div>
@@ -32,6 +51,7 @@ export default {
       },
       currentProblem: {
         description: null,
+        select: 0,
       },
     }
   },
@@ -43,7 +63,7 @@ export default {
   methods: {
     async init () {
       await this.getData()
-      this.currentProblem.description = this.data.list[0].description
+      this.currentProblem.description = JSON.parse(this.data.list[0].description)
       this.ready = true
     },
     async getData () {
@@ -66,6 +86,9 @@ export default {
     },
     handleSortChange () {
 
+    },
+    selectOpt (opt) {
+      this.currentProblem.select = opt
     },
     toProblem (data) {
       this.$router.push({
@@ -90,7 +113,8 @@ export default {
   }
   .option-item-warp {
     width: 100%;
-    height: 40px;
+    height: 60px;
+    padding: 10px;
   }
   .option-item-i {
     position: relative;
@@ -100,9 +124,17 @@ export default {
     justify-content: center;
     align-items: center;
     margin-right: 16px;
-    background-color: #fff;
     border-radius: 4px;
-    color: #2196f3;
-    border: 1px solid #2196f3;
+  }
+  .option-item-i-selected {
+    background-color: #fff;
+    color: #000000;
+    border: 1px solid #000000;
+    background-color: #d8d5d5;
+  }
+  .option-item-i-unselected {
+    background-color: #fff;
+    color: #0a85e9;
+    border: 1px solid #0a85e9;
   }
 </style>
