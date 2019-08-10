@@ -1,8 +1,8 @@
 <template>
   <div v-if="ready" class="completionProblems">
-    <!-- <div class="option-item">
-
-    </div> -->
+    <div>
+      <p>{{currentProblem.description.des}}</p>
+    </div>
     <div class="option-item-warp">
       <mu-ripple @click="selectOpt(1)" 
         :class="`option-item-i option-item-i-${currentProblem.select==1?'selected':'unselected'}`">
@@ -27,6 +27,18 @@
         {{currentProblem.description.opt4}}
       </mu-ripple>
     </div>
+    <!-- <ul class="pagination">
+      <li class="pagination-item" v-for="(i, idx) in data.list" :key="idx">
+        <span>{{idx+1}}</span>
+      </li>
+    </ul> -->
+    <el-pagination
+      background
+      layout="prev, pager, next"
+      @current-change="changePage"
+      :page-size="1"
+      :total="data.total">
+    </el-pagination>
   </div>
 </template>
 
@@ -48,6 +60,7 @@ export default {
       data: {
         list: [],
         total: 0,
+        selected: [],
       },
       currentProblem: {
         description: null,
@@ -86,6 +99,10 @@ export default {
     },
     handleSortChange () {
 
+    },
+    changePage (p) {
+      this.data.selected
+      this.currentProblem.description = JSON.parse(this.data.list[p-1].description)
     },
     selectOpt (opt) {
       this.currentProblem.select = opt
@@ -136,5 +153,17 @@ export default {
     background-color: #fff;
     color: #0a85e9;
     border: 1px solid #0a85e9;
+  }
+  .pagination {
+    clear: both;
+  }
+  .pagination-item {
+    list-style: none;
+    float:left;
+    height: 48px;
+    width: 48px;
+    color: #0a85e9;
+    border: 1px solid #0a85e9;
+    text-align: center;
   }
 </style>

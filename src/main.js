@@ -11,9 +11,6 @@ import 'muse-ui/dist/muse-ui.css'
 // import 'muse-ui-loading/dist/muse-ui-loading.css'
 // import Loading from 'muse-ui-loading'
 import Helpers from 'muse-ui/lib/Helpers'
-// 拖动
-import VueDraggableResizable from 'vue-draggable-resizable'
-import 'vue-draggable-resizable/dist/VueDraggableResizable.css'
 // 工具
 import util from './util'
 
@@ -23,12 +20,10 @@ Vue.use(ElementUI);
 
 // 测试环境
 import testenv from './testenv.js'
-
 Vue.prototype.$types = types
 Vue.prototype.$_env = testenv
 Vue.prototype.$util = util
 
-Vue.component('vue-draggable-resizable', VueDraggableResizable)
 Vue.use(Helpers)
 Vue.use(router)
 Vue.use(MuseUI)

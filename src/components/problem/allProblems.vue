@@ -72,7 +72,6 @@
                     @current-change="handleCurrentChange"
                     :current-page="params.program.page_num"
                     :page-sizes="options.pageSize"
-                    :page-size="100"
                     layout="total, sizes, prev, pager, next, jumper"
                     :total="data.codeProblemsList.total">
                   </el-pagination>
