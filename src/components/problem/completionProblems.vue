@@ -5,25 +5,25 @@
     </div>
     <div class="option-item-warp">
       <mu-ripple @click="selectOpt(1)" 
-        :class="`option-item-i option-item-i-${currentProblem.select==1?'selected':'unselected'}`">
+        :class="`option-item-i option-item-i-${currentProblem.selected==1?'selected':'unselected'}`">
         {{currentProblem.description.opt1}}
       </mu-ripple>
     </div>
     <div class="option-item-warp">
       <mu-ripple @click="selectOpt(2)" 
-        :class="`option-item-i option-item-i-${currentProblem.select==2?'selected':'unselected'}`">
+        :class="`option-item-i option-item-i-${currentProblem.selected==2?'selected':'unselected'}`">
         {{currentProblem.description.opt2}}
       </mu-ripple>
     </div>
     <div class="option-item-warp">
       <mu-ripple @click="selectOpt(3)" 
-        :class="`option-item-i option-item-i-${currentProblem.select==3?'selected':'unselected'}`">
+        :class="`option-item-i option-item-i-${currentProblem.selected==3?'selected':'unselected'}`">
         {{currentProblem.description.opt3}}
       </mu-ripple>
     </div>
     <div class="option-item-warp">
       <mu-ripple @click="selectOpt(4)" 
-        :class="`option-item-i option-item-i-${currentProblem.select==4?'selected':'unselected'}`">
+        :class="`option-item-i option-item-i-${currentProblem.selected==4?'selected':'unselected'}`">
         {{currentProblem.description.opt4}}
       </mu-ripple>
     </div>
@@ -60,11 +60,12 @@ export default {
       data: {
         list: [],
         total: 0,
-        selected: [],
+        save: {},
       },
       currentProblem: {
         description: null,
-        select: 0,
+        idx: 0,
+        selected: 0,
       },
     }
   },
@@ -76,7 +77,8 @@ export default {
   methods: {
     async init () {
       await this.getData()
-      this.currentProblem.description = JSON.parse(this.data.list[0].description)
+      this.currentProblem.idx = 0
+      this.currentProblem.description = JSON.parse(this.data.list[this.currentProblem.idx].description)
       this.ready = true
     },
     async getData () {
@@ -101,11 +103,21 @@ export default {
 
     },
     changePage (p) {
-      this.data.selected
-      this.currentProblem.description = JSON.parse(this.data.list[p-1].description)
+      // 保存当前题目信息
+      this.data.save[this.currentProblem.idx] = {
+        selected: this.currentProblem.selected
+      }
+      // 更改题目信息
+      this.currentProblem.idx = p-1
+      this.currentProblem.description = JSON.parse(this.data.list[this.currentProblem.idx].description)
+      if (this.data.save[this.currentProblem.idx] === undefined) {
+        this.currentProblem.selected = 0
+      } else {
+        this.currentProblem.selected = this.data.save[this.currentProblem.idx].selected
+      }
     },
     selectOpt (opt) {
-      this.currentProblem.select = opt
+      this.currentProblem.selected = opt
     },
     toProblem (data) {
       this.$router.push({
