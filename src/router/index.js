@@ -26,6 +26,11 @@ const defalutRouter = [
     props: true,
   },
   {
+    path: '/completionProblem/:id',
+    name: 'completionProblem',
+    component: r => require(['../components/problem/completionProblem.vue'], r),
+  },
+  {
     path: '/problems/:id',
     name: 'problems',
     component: r => require(['../components/problem/problems.vue'], r),

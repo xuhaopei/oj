@@ -1,12 +1,24 @@
 <template>
-  <div v-if="ready" class="completionProblems">
-    <el-button @click="toProblem"></el-button>
+  <div v-if="ready" class="completionProblem center-div">
+    <div class="center-item">
+      <div class="processBar">
+
+      </div>
+      <div>
+        <div class="promblem">
+
+        </div>
+        <div class="answerSheet">
+
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'completionProblems',
+  name: 'completionProblem',
   props: {
     tag: Array,
   },
@@ -83,10 +95,9 @@ export default {
     },
     toProblem (data) {
       this.$router.push({
-        name: 'completionProblem',
+        name: 'problems',
         params: {
-          // id: `${data.id}`,
-          id: 1,
+          id: `${data.id}`,
         }
       })
     }
@@ -98,7 +109,7 @@ export default {
 </script>
 
 <style scoped>
-  .completionProblems {
+  .completionProblem {
     display: flex;
     flex-direction: column;
     align-items: center;

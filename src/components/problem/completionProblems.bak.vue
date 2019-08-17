@@ -1,12 +1,50 @@
 <template>
-  <div v-if="ready" class="completionProblems">
-    <el-button @click="toProblem"></el-button>
+  <div v-if="ready" class="completionProblem">
+    <div>
+      <p>{{currentProblem.description.des}}</p>
+    </div>
+    <div class="option-item-warp">
+      <mu-ripple @click="selectOpt(1)" 
+        :class="`option-item-i option-item-i-${currentProblem.selected==1?'selected':'unselected'}`">
+        {{currentProblem.description.opt1}}
+      </mu-ripple>
+    </div>
+    <div class="option-item-warp">
+      <mu-ripple @click="selectOpt(2)" 
+        :class="`option-item-i option-item-i-${currentProblem.selected==2?'selected':'unselected'}`">
+        {{currentProblem.description.opt2}}
+      </mu-ripple>
+    </div>
+    <div class="option-item-warp">
+      <mu-ripple @click="selectOpt(3)" 
+        :class="`option-item-i option-item-i-${currentProblem.selected==3?'selected':'unselected'}`">
+        {{currentProblem.description.opt3}}
+      </mu-ripple>
+    </div>
+    <div class="option-item-warp">
+      <mu-ripple @click="selectOpt(4)" 
+        :class="`option-item-i option-item-i-${currentProblem.selected==4?'selected':'unselected'}`">
+        {{currentProblem.description.opt4}}
+      </mu-ripple>
+    </div>
+    <!-- <ul class="pagination">
+      <li class="pagination-item" v-for="(i, idx) in data.list" :key="idx">
+        <span>{{idx+1}}</span>
+      </li>
+    </ul> -->
+    <el-pagination
+      background
+      layout="prev, pager, next"
+      @current-change="changePage"
+      :page-size="1"
+      :total="data.total">
+    </el-pagination>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'completionProblems',
+  name: 'completionProblem',
   props: {
     tag: Array,
   },
@@ -38,9 +76,9 @@ export default {
   },
   methods: {
     async init () {
-      // await this.getData()
-      // this.currentProblem.idx = 0
-      // this.currentProblem.description = JSON.parse(this.data.list[this.currentProblem.idx].description)
+      await this.getData()
+      this.currentProblem.idx = 0
+      this.currentProblem.description = JSON.parse(this.data.list[this.currentProblem.idx].description)
       this.ready = true
     },
     async getData () {
@@ -83,10 +121,9 @@ export default {
     },
     toProblem (data) {
       this.$router.push({
-        name: 'completionProblem',
+        name: 'problems',
         params: {
-          // id: `${data.id}`,
-          id: 1,
+          id: `${data.id}`,
         }
       })
     }
@@ -98,7 +135,7 @@ export default {
 </script>
 
 <style scoped>
-  .completionProblems {
+  .completionProblem {
     display: flex;
     flex-direction: column;
     align-items: center;
