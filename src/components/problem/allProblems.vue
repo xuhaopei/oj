@@ -90,7 +90,7 @@
             </div>
           </div>
         </div>
-        <div class="display-item-right">
+        <div v-show="filter.show" class="display-item-right">
           <div class="filter-row">
             <mu-button v-loading="subReady.screen" @click="screen" color="primary">筛选</mu-button>
             <mu-select @change="getData" class="pageSizeSelect" label="" v-model="data.difficult" full-width>
@@ -190,6 +190,7 @@ export default {
         }
       },
       filter: {
+        show: true,
         keyword: '',
         tag: [],
         selectedTat: [],
@@ -285,6 +286,7 @@ export default {
     async getData () {
       switch (this.active) {
         case 0: {
+          this.filter.show = true
           this.data.codeProblemsList.list = []
           this.subReady.codeProblemsList = false
 
@@ -324,6 +326,7 @@ export default {
           // 只获取标签列表
           // 然后交给子组件
           this.subReady.completionProblemsList = true
+          this.filter.show = false
         }
         default:
           break;
