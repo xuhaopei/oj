@@ -1,15 +1,26 @@
 <template>
-  <div v-if="ready" class="completionProblem center-div">
+  <div v-if="ready" class="completionProblem main-view center-div">
     <div class="center-item">
       <div class="processBar">
 
       </div>
-      <div>
+      <div class="main-display">
         <div class="promblem">
 
         </div>
-        <div class="answerSheet">
-
+        <div class="panel">
+          <div class="panel-heading">
+            <div class="panel-title">
+              答题卡
+              <span class="color-primary mls js-done-number">0</span>
+              <span class="color-gray">
+                /
+                <span class="font-sm js-total-number">
+                    10
+                </span>
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -110,35 +121,17 @@ export default {
 
 <style scoped>
   .completionProblem {
+  }
+  .main-display {
     display: flex;
-    flex-direction: column;
-    align-items: center;
   }
-  .option-item-warp {
-    width: 100%;
-    height: 60px;
-    padding: 10px;
+  .promblem {
+    width: 900px;
+    height: 100px;
   }
-  .option-item-i {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 16px;
-    border-radius: 4px;
-  }
-  .option-item-i-selected {
-    background-color: #fff;
-    color: #000000;
-    border: 1px solid #000000;
-    background-color: #d8d5d5;
-  }
-  .option-item-i-unselected {
-    background-color: #fff;
-    color: #0a85e9;
-    border: 1px solid #0a85e9;
+  .panel {
+    width: calc(100% - 900px);
+    height: 100px;
   }
   .pagination {
     clear: both;
@@ -151,5 +144,15 @@ export default {
     color: #0a85e9;
     border: 1px solid #0a85e9;
     text-align: center;
+  }
+  .panel {
+
+  }
+  .panel-header {
+    border-color: #e6e6e6;
+    box-shadow: none;
+    border-radius: 4px;
+    background-color: #fff;
+    margin-bottom: 10px;
   }
 </style>
