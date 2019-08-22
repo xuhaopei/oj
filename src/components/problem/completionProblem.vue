@@ -1,5 +1,5 @@
 <template>
-  <div v-if="ready" class="completionProblem main-view center-div">
+  <div v-if="ready" class="main-view center-div">
     <div class="center-item">
       <div class="processBar">
 
@@ -8,17 +8,15 @@
         <div class="promblem">
 
         </div>
-        <div class="panel">
-          <div class="panel-heading">
-            <div class="panel-title">
-              答题卡
-              <span class="color-primary mls js-done-number">0</span>
-              <span class="color-gray">
-                /
-                <span class="font-sm js-total-number">
-                    10
-                </span>
-              </span>
+        <div class="panel-div">
+          <div class="panel">
+            <div class="panel-header">
+              <span style="font-size: 18px;">答题卡</span>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-op">
+              <span style="font-size: 18px;">操作</span>
             </div>
           </div>
         </div>
@@ -120,18 +118,43 @@ export default {
 </script>
 
 <style scoped>
-  .completionProblem {
-  }
   .main-display {
     display: flex;
   }
   .promblem {
     width: 900px;
+    height: 2000px;
+  }
+  .panel-div {
+    width: 300px;
     height: 100px;
+    position: fixed;
+    top: 64px;
+    right: calc((100vw - 1200px) / 2);
+    padding: 5px;
   }
   .panel {
-    width: calc(100% - 900px);
-    height: 100px;
+  }
+  .panel-header {
+    border-color: #cecece;
+    box-shadow: none;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #3e4450;
+    text-align: center;
+    padding: 18px;
+    border: 1px solid #e6e6e6;
+    border-bottom: 0px;
+  }
+  .panel-op {
+    border-color: #cecece;
+    box-shadow: none;
+    border-radius: 4px;
+    background-color: #ffffff;
+    color: #3e4450;
+    text-align: center;
+    padding: 18px;
+    border: 1px solid #e6e6e6;
   }
   .pagination {
     clear: both;
@@ -144,15 +167,5 @@ export default {
     color: #0a85e9;
     border: 1px solid #0a85e9;
     text-align: center;
-  }
-  .panel {
-
-  }
-  .panel-header {
-    border-color: #e6e6e6;
-    box-shadow: none;
-    border-radius: 4px;
-    background-color: #fff;
-    margin-bottom: 10px;
   }
 </style>
