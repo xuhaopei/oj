@@ -211,7 +211,7 @@ export default {
     overflow-y: scroll;
   }
   .history-item-WA {
-    color: #009688;
+    color: #f67c09;
   }
   .history-item-AC {
     color: #009688;

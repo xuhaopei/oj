@@ -2,11 +2,36 @@
   <div v-if="ready" class="main-view center-div">
     <div class="center-item">
       <div class="processBar">
-
-      </div>
       <div class="main-display">
         <div class="promblem">
-
+        <div>
+          <p>{{currentProblem.description.des}}</p>
+        </div>
+        <div class="option-item-warp">
+          <mu-ripple @click="selectOpt(1)" 
+            :class="`option-item-i option-item-i-${currentProblem.selected==1?'selected':'unselected'}`">
+            {{currentProblem.description.opt1}}
+          </mu-ripple>
+        </div>
+        <div class="option-item-warp">
+          <mu-ripple @click="selectOpt(2)" 
+            :class="`option-item-i option-item-i-${currentProblem.selected==2?'selected':'unselected'}`">
+            {{currentProblem.description.opt2}}
+          </mu-ripple>
+        </div>
+        <div class="option-item-warp">
+          <mu-ripple @click="selectOpt(3)" 
+            :class="`option-item-i option-item-i-${currentProblem.selected==3?'selected':'unselected'}`">
+            {{currentProblem.description.opt3}}
+          </mu-ripple>
+        </div>
+        <div class="option-item-warp">
+          <mu-ripple @click="selectOpt(4)" 
+            :class="`option-item-i option-item-i-${currentProblem.selected==4?'selected':'unselected'}`">
+            {{currentProblem.description.opt4}}
+          </mu-ripple>
+        </div>
+      </div>
         </div>
         <div class="panel-div">
           <div class="panel">
@@ -59,13 +84,13 @@ export default {
   },
   methods: {
     async init () {
-      // await this.getData()
-      // this.currentProblem.idx = 0
-      // this.currentProblem.description = JSON.parse(this.data.list[this.currentProblem.idx].description)
+      await this.getData()
+      this.currentProblem.idx = 0
+      this.currentProblem.description = JSON.parse(this.data.list[this.currentProblem.idx].description)
       this.ready = true
     },
     async getData () {
-      const tempTag = this.tag.length===0?null:this.tag.join(',')
+      const testId = this.$route.params.id
       await Promise.all([
         this.$store.dispatch('n', {
           flag: 20,
@@ -75,7 +100,6 @@ export default {
             page_num: this.params.page,
             page_size: this.params.pageSize,
             type: 0,
-            tag_list: tempTag,
           }
         }),
       ])
@@ -167,5 +191,31 @@ export default {
     color: #0a85e9;
     border: 1px solid #0a85e9;
     text-align: center;
+  }
+  .option-item-warp {
+    width: 100%;
+    height: 60px;
+    padding: 10px;
+  }
+  .option-item-i {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 16px;
+    border-radius: 4px;
+  }
+  .option-item-i-selected {
+    background-color: #fff;
+    color: #000000;
+    border: 1px solid #000000;
+    background-color: #d8d5d5;
+  }
+  .option-item-i-unselected {
+    background-color: #fff;
+    color: #0a85e9;
+    border: 1px solid #0a85e9;
   }
 </style>
