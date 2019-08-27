@@ -12,11 +12,13 @@ export default new Vuex.Store({
 			count: 1,
 		},
 		n: {},
+		// 错误信息
 		msg: {
 			type: null,
 			message: null,
 			title: null,
 		},
+		// 网络请求数据模板
 		nTemplate: {
 			success: null,
 			data: null,
@@ -32,6 +34,7 @@ export default new Vuex.Store({
 				sourceCode: null,
 			}
 		},
+		// 编程问题模块
 		problem: {
 			description: {},
 			subId: '',
@@ -68,6 +71,7 @@ export default new Vuex.Store({
 		},
 	},
 	actions: {
+		// 获取用户信息
 		async getUserInfo ({commit, state},) {
 			if (localStorage['token'] === undefined) {
 				return
@@ -77,18 +81,6 @@ export default new Vuex.Store({
 				let u = await axios.get('/account/token', 
 					{ headers: {Authorization: localStorage.token} }
 				)
-				// aCTimes	0
-				// deleted	0
-				// finishedProblems	0
-				// gmt_create	1564185527000
-				// gmt_modified	1564523767000
-				// password	56b273f0dc75541d1bd6a94732df7cc8cec467262e4f2fd7c280d9b21762471b
-				// rte_times	0
-				// submitTimes	0
-				// tle_times	0
-				// userId	2
-				// username	admin
-				// wATimes	0
 				_d = {...state.userInfo, ...{
 					name: u.data.data.username,
 					isLogin: true,
@@ -98,6 +90,7 @@ export default new Vuex.Store({
 				commit(types.SET_USER_INFO, _d)
 			}
 		},
+		// 网络请求
 		async n ({commit, state}, data) {
 			let d = null
 			// 辅助对象，记录请求信息
