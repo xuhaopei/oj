@@ -23,10 +23,10 @@
             </div>
           </el-col>
           <el-col :span="18">
-            <div class="info-tag tag-color-green">
-              <span>{{data.sub_detail.judge_detail.test_cases[idx].memory}} M</span>
+            <div v-show="data.sub_detail.judge_detail.result!=='CE'" class="info-tag tag-color-green">
+              <span >{{data.sub_detail.judge_detail.test_cases[idx].memory}} M</span>
             </div>
-            <div class="info-tag tag-color-green">
+            <div v-show="data.sub_detail.judge_detail.result!=='CE'" class="info-tag tag-color-green">
               <span>{{data.sub_detail.judge_detail.test_cases[idx].time}} S</span>
             </div>
             <div class="right-info">
@@ -127,18 +127,18 @@ export default {
     color: rgb(255, 255, 255);
   }
   .tag-color-CE {
-    background: rgb(255, 205, 86) none repeat scroll 0% 0%;
-    border-color: rgb(255, 205, 86);
+    background: #c62928;
+    border-color: #c62928;
     color: rgb(255, 255, 255);
   }
   .tag-color-WA {
-    background: #19be6b none repeat scroll 0% 0%;
-    border-color: #19be6b;
+    background: #f67c09;
+    border-color: #f67c09;
     color: rgb(255, 255, 255);
   }
   .tag-color-AC {
-    background: #19be6b none repeat scroll 0% 0%;
-    border-color: #19be6b;
+    background: #009688;
+    border-color: #009688;
     color: rgb(255, 255, 255);
   }
   .tag-color-blue {

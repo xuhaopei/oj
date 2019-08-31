@@ -219,7 +219,7 @@ export default {
   .history-item-CE {
     color: #c62928;
   }
-  .history-item-accepted {
+  .history-item-Accepted {
     color: #009688;
   }
   .history-item-unaccepted {
