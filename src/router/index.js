@@ -7,7 +7,8 @@ const defalutRouter = [
   {
     path: '/',
     name: 'index',
-    component: r => require(['../components/index/index.vue'], r),
+    // component: r => require(['../components/index/index.vue'], r),
+    redirect: '/allProblems'
   },
   {
     path: '/allProblems',

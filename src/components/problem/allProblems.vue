@@ -12,7 +12,7 @@
             <!-- <mu-tab>全部</mu-tab> -->
             <mu-tab>编程</mu-tab>
             <!-- <mu-tab>填空</mu-tab> -->
-            <mu-tab>选择</mu-tab>
+            <!-- <mu-tab>选择</mu-tab> -->
           </mu-tabs>
           <div class="show-problems">
             <div v-if="active===0">
