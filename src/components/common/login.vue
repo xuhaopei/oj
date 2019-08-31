@@ -8,7 +8,8 @@
         <mu-form-item label="密码" label-float prop="password" help-text="请填写正确密码" :rules="passwordRules">
           <mu-text-field v-model="validateForm.password" prop="password"
           :action-icon="visibility ? 'visibility_off' : 'visibility'" 
-          :action-click="() => (visibility = !visibility)" :type="visibility ? 'text' : 'password'">
+          :action-click="() => (visibility = !visibility)" :type="visibility ? 'text' : 'password'"
+          @keyup.enter.native="submit">
           </mu-text-field>
         </mu-form-item>
         <span class="err-msg" v-show="showErrMsg"><h5>{{errMsg}}</h5></span>
@@ -96,7 +97,14 @@ export default {
         this.mNeedCloseLogin += 1
         this.$emit('update:needCloseLogin', this.mNeedCloseLogin)
         // 保存token
-        localStorage.setItem("token", u.token)
+        localStorage.setItem("token", this.responseData.data)
+        
+        // const userInfo = {
+        //   isLogin: true,
+        //   name: this.validateForm.name,
+        //   count: 1,
+        // }
+        // this.$store.commit(this.$types.SET_USER_INFO, this.data.detail)
       } else {
         this.errMsg = this.responseData.data.response.data.message
         this.showErrMsg = true

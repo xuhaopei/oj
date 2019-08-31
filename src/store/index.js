@@ -9,7 +9,7 @@ export default new Vuex.Store({
 		userInfo: {
 			isLogin: false,
 			name: '',
-			count: 1,
+			// count: 1,
 		},
 		n: {},
 		// 错误信息
@@ -74,7 +74,10 @@ export default new Vuex.Store({
 		// 获取用户信息
 		async getUserInfo ({commit, state},) {
 			if (localStorage['token'] === undefined) {
-				return
+				return {
+					isLogin: false,
+					name: '',
+				}
 			}
 			let _d = state.userInfo
 			try {

@@ -22,11 +22,8 @@
     </mu-appbar>
     <mu-drawer :open.sync="show.aside" :docked="false" :left="true">
       <mu-list>
-        <mu-list-item button>
-          <mu-list-item-title>Menu Item 1</mu-list-item-title>
-        </mu-list-item>
-        <mu-list-item button>
-          <mu-list-item-title>Menu Item 2</mu-list-item-title>
+        <mu-list-item button @click="logout">
+          <mu-list-item-title >退出登录</mu-list-item-title>
         </mu-list-item>
       </mu-list>
     </mu-drawer>
@@ -88,12 +85,28 @@ export default {
       this.snack.icon = 'info'
       this.snack.open = true
       await this.$store.dispatch('getUserInfo')
-      
-      this.snack.icon = 'check_circle'
-      this.snack.msg = '已获取用户信息'
-      await this.sleep(1000)
-      this.snack.open = false
+      if (this.$store.state.userInfo.name === '') {
+        this.userInfo.name = '登录'
+        this.snack.icon = 'warning'
+        this.snack.msg = '获取用户信息失败'
+        await this.sleep(1000)
+        this.snack.open = false
+      } else {
+        this.userInfo = this.$store.state.userInfo
+        this.snack.icon = 'check_circle'
+        this.snack.msg = '已获取用户信息'
+        await this.sleep(1000)
+        this.snack.open = false
+      }
     },
+    logout () {
+      localStorage.removeItem("token")
+      this.userInfo.name = '登录'
+      this.userInfo.isLogin = false
+      this.$nextTick(function () {
+        this.show.aside = false
+      })
+    }
   },
   computed: {
     needUpdateUserInfo () {
