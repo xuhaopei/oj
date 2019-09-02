@@ -183,7 +183,7 @@ export default {
 
     },
     test () {
-      console.log(this.data.pageArray, this.currentPage)
+      // console.log(this.data.pageArray, this.currentPage)
     },
   },
 

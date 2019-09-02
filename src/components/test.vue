@@ -50,7 +50,7 @@ export default {
       // const s = 'https://cdn.eagleoj.com/2019/4/18/712bcfe0-af33-47c2-beff-e11cbf8a52e9.java'
       const s = '/noLogin/readImageFile'
       let d = await axios.get(s)
-      console.log('d is ', d.data);
+      // console.log('d is ', d.data);
       this.data.codeInfo.code = d.data
 			// const sleep = (ms) => {
 			// 	return new Promise(resolve => setTimeout(resolve, ms))

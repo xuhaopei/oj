@@ -10,9 +10,9 @@
       <div class="info-tag tag-color-green">
         <span>{{data.time}} S</span>
       </div>
-      <div class="info-tag tag-color-blue">
+      <!-- <div class="info-tag tag-color-blue">
         <span @click="showDetail">查看详情</span>
-      </div>
+      </div> -->
     </div>
     <div class="test-case-list">
       <el-row v-for="(i, idx) in data.test_cases" :key="idx" class="test-case-item">

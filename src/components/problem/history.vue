@@ -157,6 +157,10 @@ export default {
       
       this.data.list = this.$store.state.n[2].data.data
       this.data.total = this.$store.state.n[2].data.total
+      for(const i of this.data.list) {
+        const d = new Date(i.submit_time)
+        i.date = `${d.getFullYear()}/${d.getMonth()+1}/${d.getDay()+1}`
+      }
     },
     handleSizeChange (val) {
       this.params.pageSize = val

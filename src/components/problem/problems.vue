@@ -85,6 +85,8 @@ export default {
         position: 'bottom',
       },
       notification: ``,
+      // 设置每隔多久向后端请求一次判卷结果
+      // 等一个WebSocket接口
       retryGettingJudgementTime: 1000,
       needCommit: 1,
       active: 0,
@@ -94,7 +96,6 @@ export default {
     // 提交试题
     needCommit: async function () {
       this.subReady.committing = true
-      console.log(this.commitType);
       if (this.commitType === 2) {
         await Promise.all([
           this.$store.dispatch('n', {
