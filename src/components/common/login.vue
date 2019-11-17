@@ -65,6 +65,7 @@ export default {
   },
   methods: {
     async submit () {
+      
       // this.$refs.form.validate().then((result) => {
       //   // console.log('form valid: ', result)
       // });

@@ -15,7 +15,7 @@ import headBar from './components/headBar/headBar.vue'
 export default {
   name: 'app',
   components: {
-    headBar,
+    headBar
   },
   data () {
     return {

@@ -35,7 +35,7 @@
       </div>
     </div>
     <div>
-      <codemirror v-model="mCodeInfo.code" :options="cmOptions"></codemirror>
+      <codemirror v-model="codeInfo.code" :options="cmOptions" ></codemirror>
     </div>
     <mu-snackbar :color='snackbar.color' position="bottom-end" :open.sync="snackbar.open">
       {{snackbar.msg}}
@@ -113,6 +113,7 @@ export default {
         'text/x-java': 'JAVA8',
         'text/x-python': 'PYTHON35',
       },
+      test:123
     }
   },
   methods: {

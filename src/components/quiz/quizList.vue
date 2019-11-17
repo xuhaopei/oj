@@ -3,29 +3,31 @@
     <div class="center-item">
       <div style="width: 100%;padding-top: 30px;">
         <el-table
-          :data="data.list"
+          v-loading="Loading"
+          :data="data1.data"
           style="width: 100%">
           <el-table-column
+            prop="title"
             label="标题">
             <template slot-scope="scope">
               <b>{{scope.row.title}}</b>
             </template>
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="score"
             label="分数"
             width="150">
             <template slot-scope="scope">
-              <span>{{ scope.row._percentage }}</span>
+              <span>{{ scope.row.score }}</span>
             </template>
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="status"
             label="状态"
             width="250">
             <template slot-scope="scope">
-              <el-button v-if="scope.row.status===0" @click="toQuiz(scope.row)" type="text">进入考试</el-button>
-              <el-button v-if="scope.row.status===1" disabled type="text">考试已结束</el-button>
+              <el-button v-if="scope.row.status=='editing'" @click="toQuiz(scope.row.exam_id)" type="text">进入考试</el-button>
+              <el-button v-else disabled type="text">考试已结束</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -36,9 +38,9 @@
           @current-change="handleCurrentChange"
           :current-page="params.page_num"
           :page-sizes="options.pageSize"
-          :page-size="100"
+          :page-size="10"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="data.total">
+          :total="data1.total">
         </el-pagination>
       </div>
     </div>
@@ -46,6 +48,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'quizList',
   props: {
@@ -59,13 +62,15 @@ export default {
         list: [],
         total: 20,
       },
+      data1:[],
       params: {
-        page_size: 10,
-        page_num: 1,
+        page_size: 8,          // 单页试卷数量
+        page_num: 1,           // 页码
       },
       options: {
-        pageSize: [20, 50],
+        pageSize: [8],         // pageSize条/页
       },
+      Loading:true
     }
   },
   methods: {
@@ -88,25 +93,54 @@ export default {
       this.data.list = temp
       this.ready = true
     },
-    toQuiz (data) {
+    toQuiz (exam_id) {
       this.$router.push({
         name: 'quiz',
         params: {
-          id: `${data.id}`,
+          id: `${exam_id}`,
         }
       })
     },
     async handleSizeChange(val) {
-      this.params.page_size = val
-      await this.init()
+      this.params.page_size = val;
+      //await this.init()
     },
     async handleCurrentChange(val) {
-      this.params.page_num = val
-      await this.init()
+      this.params.page_num = val;
+     // await this.init();
+      this.getData();
     },
+    
+    /*
+     * 函数描述：根据URL参数ID获取试卷
+     * 作者：许浩培
+     * 时间：2019/11/15
+     */
+    async getData() {
+        this.Loading = true;
+        const that = this;
+        await Promise.all([
+          axios.get("http://localhost:8080/exam/page/"+ this.params.page_num + "/" + this.params.page_size,{
+          }).then(function(response){
+          that.data1 = response.data.data;
+          }).catch(function (error) {
+            that.openError();
+          }),
+        ])
+        this.Loading = false;
+    },
+    /*
+     * 函数描述：加载数据失败时，弹出提示框
+     * 作者：许浩培
+     * 时间：2019/11/17
+     */
+    openError () {
+        this.$message.error('加载数据失败');
+    }
   },
   created () {
-    this.init()
+    //this.init();
+    this.getData();
   }
 }
 </script>

@@ -1,29 +1,50 @@
+<!--
+模块说明
+功能：OJ的导航模块
+原作者：曾嘉铭
+修改者：许浩培
+完成时间：2019/11/15
+获取  父组件的输入参数：
+传递给父组件的输出参数：
+传递给子组件的输入参数：
+listChapter
+login：needCloseLogin
+-->
 <template>
   <div class="headBar">
+    
     <mu-appbar :z-depth='0' style="width: 1200px;background-color: #222222;margin-right: 16px;" color="primary">
-      <mu-button @click="showAside" icon slot="left">
-        <mu-icon value="menu"></mu-icon>
-      </mu-button>
+      
       <!-- <span style="font-size: 150%;" slot="left">
         {{$store.state.userInfo.name}}
       </span> -->
       <!-- <mu-button flat @click="$router.push({name: 'index'})" slot="left">
         <span style="font-size: 150%;">主页</span>
       </mu-button> -->
-      <mu-button flat @click="$router.push({name: 'allProblems'})" slot="left">
-        <span style="font-size: 150%;">题目列表</span>
+      <mu-button  @click="showAside" icon slot="left">
+        <img :src="imgURL" alt="" style="width:40px;height:30px;">
       </mu-button>
-      <!-- <mu-button flat @click="$router.push({name: 'quizList'})" slot="left">
-        <span style="font-size: 150%;">考试中心</span>
-      </mu-button> -->
+      <mu-button flat @click="$router.push({path:'/frontEnd'})" slot="left">
+        <span style="font-size: 130%;">前端练习</span>
+      </mu-button>
+      <mu-button flat @click="$router.push({name: 'allProblems'})" slot="left">
+        <span style="font-size: 130%;">后端练习</span>
+      </mu-button>
+      <mu-button flat @click="$router.push({name: 'quizList'})" slot="left">
+        <span style="font-size: 130%;">考试中心</span>
+      </mu-button>
+      <mu-button flat @click="$router.push({name: 'begin'})" slot="right">
+        <span style="font-size: 130%;">公告</span>
+      </mu-button>
       <mu-button flat @click="showLogin" slot="right">
-        <span style="font-size: 150%;">{{userInfo.name}}</span>
+        <span style="font-size: 130%;">{{userInfo.name}}</span>
       </mu-button>
     </mu-appbar>
     <mu-drawer :open.sync="show.aside" :docked="false" :left="true">
       <mu-list>
+        <list-chapter v-show="show.listChapter"></list-chapter>
         <mu-list-item button @click="logout">
-          <mu-list-item-title >退出登录</mu-list-item-title>
+          <mu-list-item-title v-show="show.title">退出登录</mu-list-item-title>
         </mu-list-item>
       </mu-list>
     </mu-drawer>
@@ -35,9 +56,11 @@
       {{snack.msg}}
     </mu-snackbar>
   </div>
+  
 </template>
 
 <script>
+import listChapter from '../common/listChapter.vue'
 import login from '../common/login.vue'
 export default {
   name: 'headBar',
@@ -45,12 +68,16 @@ export default {
   },
   components: {
     login,
+    listChapter,
   },
   data () {
     return {
       show: {
         aside: false,
         login: false,
+        imgURL:'',
+        listChapter:false,
+        title:false
       },
       needCloseLogin: 1,
       snack: {
@@ -67,8 +94,16 @@ export default {
     }
   },
   methods: {
+    /*
+     * 函数描述：如果用户没有登录，不显示
+     * 作者：许浩培
+     * 时间：2019/11/15
+     */
     showAside () {
-      this.show.aside = true
+      this.show.aside = true;
+      if (this.userInfo.isLogin == true) {
+          this.show.title = true;
+      } 
     },
     showLogin () {
       if (this.userInfo.isLogin) {
@@ -106,7 +141,44 @@ export default {
       this.$nextTick(function () {
         this.show.aside = false
       })
-    }
+      this.$router.push({name: 'begin'});
+    },
+    /*
+     * 函数描述：通过地址变化控制只有进入后端练习，即url为(/allProblems)时，listChapter组件显示出来
+     * 作者：许浩培
+     * 时间：2019/11/15
+     */
+    isShowlistChapter () {
+      let path = this.$route.path;
+
+      if (path.search('allProblems') > -1) {
+        this.show.listChapter = true;
+      } else {
+        this.show.listChapter = false;
+      }
+    },
+    /*
+     * 函数描述：如果变化的地址有参数，但是用户没有登录，不允许进入，跳回公告页面并弹出提示框要求登录。
+     * 作者：许浩培
+     * 时间：2019/11/15
+     */
+    isLogin () {
+      
+      let params = this.$route.params.id;
+      let pattern = /\d/g;
+      if(params.search(pattern) > -1){
+        if (this.userInfo.isLogin == false) {
+          this.$router.push({name: 'begin'});
+          this.$alert('请您先登录', '警告', {
+          confirmButtonText: '确定',
+          callback: action => {
+            this.show.login = true;
+          }
+          });
+        } 
+      }
+     
+    },
   },
   computed: {
     needUpdateUserInfo () {
@@ -126,7 +198,25 @@ export default {
       this.userInfo.name = this.$store.state.userInfo.name
       this.userInfo.isLogin = this.$store.state.userInfo.isLogin
     },
+    /*    
+     * 函数描述：监听URL地址变化,如果变化，进行一系列操作
+     * 作者：许浩培
+     * 时间：2019/11/15
+     */
+    $route() {
+
+      this.isShowlistChapter();
+      
+      this.isLogin();
+     
+      //console.log(this.$route.path);   获取地址
+      //console.log(this.$route.params); 获取地址参数
+
+    }
   },
+  created(){
+    this.imgURL = require('../../assets/OJ.png')
+  }
 }
 </script>
 

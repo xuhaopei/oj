@@ -8,7 +8,7 @@ const defalutRouter = [
     path: '/',
     name: 'index',
     // component: r => require(['../components/index/index.vue'], r),
-    redirect: '/allProblems'
+    redirect: '/begin'
   },
   {
     path: '/allProblems',
@@ -61,6 +61,16 @@ const defalutRouter = [
     path: '/test',
     name: 'test',
     component: r => require(['../components/test.vue'], r),
+  },
+  {
+    path: '/begin',
+    name: 'begin',
+    component: r => require(['../components/index/begin.vue'], r),
+  },
+  {
+    path: '/frontEnd',
+    name: 'frontEnd',
+    component: r => require(['../components/frontEnd/frontEnd.vue'], r),
   },
 ];
 
