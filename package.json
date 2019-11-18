@@ -36,7 +36,8 @@
     "eslint-plugin-vue": "^5.0.0",
     "less": "^3.9.0",
     "less-loader": "^5.0.0",
-    "vue-template-compiler": "^2.5.21"
+    "vue-template-compiler": "^2.5.21",
+    "vue2-ace-editor": "^0.0.15"
   },
   "eslintConfig": {
     "root": true,

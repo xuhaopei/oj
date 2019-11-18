@@ -149,8 +149,10 @@ export default {
      * 时间：2019/11/15
      */
     isShowlistChapter () {
-      let path = this.$route.path;
-
+      var path = this.$route.path;
+      if(typeof params == 'undefined'){
+        return;
+      }
       if (path.search('allProblems') > -1) {
         this.show.listChapter = true;
       } else {
@@ -163,9 +165,11 @@ export default {
      * 时间：2019/11/15
      */
     isLogin () {
-      
-      let params = this.$route.params.id;
-      let pattern = /\d/g;
+      var params = this.$route.params.id;
+      var pattern = /\d/g;
+      if(typeof params == 'undefined'){
+        return;
+      }
       if(params.search(pattern) > -1){
         if (this.userInfo.isLogin == false) {
           this.$router.push({name: 'begin'});

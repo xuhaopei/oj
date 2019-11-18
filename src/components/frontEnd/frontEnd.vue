@@ -2,7 +2,7 @@
 模块说明
 功能：前端练习模块
 作者：许浩培
-完成时间：2019/10/22
+完成时间：2019/11/18
 获取  父组件的输入参数：
 传递给父组件的输出参数：
 传递给子组件的输入参数：
@@ -11,32 +11,13 @@
   <div class = 'fronEnd'>
       <mu-button flat large   color="success" v-on:click="run" >Run</mu-button>
       <mu-flex  justify-content="between">
-        <div class = 'left' >
-<pre contenteditable="true" id = 'pre_result' >
-&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-&lt;head&gt;
-&lt;script src="/jquery/jquery-1.11.1.min.js"&gt;
-&lt;/script&gt;
-&lt;script&gt;
-$(document).ready(function(){
-$("p").click(function(){
-    $(this).hide();
-});
-});
-&lt;/script&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;p>如果您点击我，我会消失。&lt;/p&gt;
-&lt;p>点击我，我会消失。&lt;/p&gt;
-&lt;p>也要点击我哦。&lt;/p&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-</pre>       
+        <div class = 'left' id = "pre_result" >
+            <editor  v-model="content" @init="editorInit" lang="html" theme="chrome" width="100%" height="100%" ></editor>   
         </div>
         <div  id="inputText"  class = 'right'>
             <iframe src="" frameborder="0" id = 'iframe_result' style = "width:100%;height:100%"></iframe>
         </div>
+        
      </mu-flex>
   </div>
 </template>
@@ -48,11 +29,22 @@ export default {
 
     },
     components:{
-
+        editor: require('vue2-ace-editor'),
     },
     data(){
         return {
-            test:"nihao"
+            content:'<!DOCTYPE html>\n'+
+                    '<html lang="en">\n'+
+                    '<head>\n'+
+                    '<meta charset="UTF-8">\n'+
+                    '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n'+
+                    '<meta http-equiv="X-UA-Compatible" content="ie=edge">\n'+
+                    '<style>\n'+
+                    '</style>\n'+
+                    '</head>\n'+
+                    '<body>\n'+
+                    '</body>\n'+
+                    '</html>'
         }
     },
     methods:{
@@ -64,12 +56,27 @@ export default {
          * 
          *************************************************************/
         run:function(){
-            var objPre = document.getElementById("pre_result");
+
             var objIframe = document.getElementById("iframe_result");
             objIframe.contentDocument.open();
-            objIframe.contentDocument.write(objPre.innerText);
+            objIframe.contentDocument.write(this.content);
             objIframe.contentDocument.close();
             
+        },
+        /**************************************************************
+         * 函数名：
+         * 功能描述：这是导入vue2-ace-editor后使用的方法，根据官网https://www.npmjs.com/package/vue2-ace-editor配置的
+         * 输入参数：
+         * 输出参数：
+         * 
+         *************************************************************/
+        editorInit: function () {
+            require('brace/ext/language_tools') //language extension prerequsite...
+            require('brace/mode/html')                
+            require('brace/mode/javascript')    //language
+            require('brace/mode/less')
+            require('brace/theme/chrome')
+            require('brace/snippets/javascript') //snippet
         }
     },
     created(){

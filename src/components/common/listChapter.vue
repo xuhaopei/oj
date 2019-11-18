@@ -12,7 +12,7 @@
     <div class="listChapter" > 
         <mu-paper :z-depth="1" class="demo-list-wrap" >
             <mu-list toggle-nested>
-                <mu-list-item button :ripple="true" nested :open="false" 
+                <mu-list-item button :ripple="true" nested :open="false" v-loading = 'lodaing'
                 v-for="(value,index) in msg.data"  :key="index">
                     <mu-list-item-title style="font-weight:bold">{{value.name}}</mu-list-item-title>
                     <mu-list-item-action>
@@ -35,7 +35,8 @@ export default {
     data(){
         return{
             open: 'send',
-            msg:{}
+            msg:{},
+            lodaing:true
         }
     },
     methods:{
@@ -46,14 +47,28 @@ export default {
         */
         async getData(){
             var that = this;
-            axios.get("http://localhost:8080/sys/cate/tree.json",({})).then(function(response){
+            this.lodaing = true;
+            await Promise.all([
+                axios.get("http://localhost:8080/sys/cate/tree.json",({
+
+                })).then(function (response) {
                 if(response.status != 200){
-                    alert("获取数据失败，请确认网络是否链接正常");
-                    return;
+                    throw "获取数据失败，status不为200!";
                 }
                 that.msg = response.data;
-                //console.log(that.msg);
-            });
+                }).catch(function (error) {
+                    that.openError();
+                })
+            ]);
+            this.lodaing = false;
+        },
+        /*
+        * 函数描述：加载章节数据失败时，弹出提示框
+        * 作者：许浩培
+        * 时间：2019/11/17
+        */
+        openError () {
+            this.$message.error('加载章节数据失败');
         }
     },
     computed:{
