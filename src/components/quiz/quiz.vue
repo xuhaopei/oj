@@ -12,8 +12,8 @@ page-btn：data.pageArray
 -->
 <template>
   <div class="quiz main-view center-div" v-loading="loading" element-loading-text="考试内容加载中,请稍等" >
-    <answerSheet v-if='!loading'  :answerSheet_problem.sync="data.answerSheet_problem"  :current_problem.sync="current_problem"></answerSheet>
-    <tip v-if='!loading' ></tip>
+    <answerSheet v-if='show.answerSheet'  :answerSheet_problem.sync="data.answerSheet_problem"  :current_problem.sync="current_problem"></answerSheet>
+    <tip v-if='show.tip' ></tip>
     {{current_problem}}
     <!--<div v-if="ready" class="center-item">
       <page-btn v-if="refresh.pageBtn" :pages.sync="data.pageArray" :currentPage.sync="currentPage"></page-btn>-->
@@ -35,7 +35,7 @@ page-btn：data.pageArray
 
 <script>
 import axios from 'axios';
-import answerSheet from './pageBtn.vue'
+import answerSheet from './answerSheet.vue'
 //import description from './description.vue'
 import tip from './tip.vue'
 export default {
@@ -59,36 +59,6 @@ export default {
       },
       data: {
         list: [],
-        pageArray: [
-          {
-            name:'单选题',
-            sum:[
-              {id:1,status:2},
-              {id:2,status:2},
-              {id:3,status:2},
-              {id:4,status:2},
-              {id:5,status:2},
-              {id:6,status:3},
-              {id:7,status:2},
-              {id:8,status:3}
-            ],
-            type:0
-          },
-          {
-            name:'编程题',
-            sum:[
-              {id:1,status:2},
-              {id:2,status:2},
-              {id:3,status:2},
-              {id:4,status:2},
-              {id:5,status:2},
-              {id:6,status:3},
-              {id:7,status:2},
-              {id:8,status:3}
-            ],
-            type:1
-          }
-        ],
         pageData: [],
         currentData: null,
         program_problem:[],           // 编程题
@@ -117,7 +87,8 @@ export default {
       },
       temp: 2,
       show: {
-        tip:true
+        tip:false,
+        answerSheet:false
       },
       loading:true
     }
@@ -333,6 +304,8 @@ export default {
                 ];
                 that.initAnswerSheet_type(that.data.object_problem.length,0);
                 that.initAnswerSheet_type(that.data.program_problem.length,1);
+                that.show.answerSheet = true;
+                that.show.tip = true;
                 }).catch(function () {
                     that.openError();
                 })
