@@ -1,5 +1,5 @@
 <template>
-  <div class="description">
+  <div class="description" id = 'description'>
     <div class='description-main'>
       <div class="description-item">
         <div>
@@ -50,10 +50,16 @@ export default {
     }
   },
   methods: {
+    changeShow() {
+      document.body.onclick = function() {
+        document.getElementById('description');
+      }
+    }
   },
   created () {
   }
 }
+
 </script>
 
 <style scoped>

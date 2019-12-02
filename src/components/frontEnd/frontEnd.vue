@@ -30,6 +30,7 @@ export default {
     },
     components:{
         editor: require('vue2-ace-editor'),
+        
     },
     data(){
         return {
@@ -48,13 +49,12 @@ export default {
         }
     },
     methods:{
-        /**************************************************************
-         * 函数名：run
-         * 功能描述：点击RUN时，展示编写的HTML效果
-         * 输入参数：
-         * 输出参数：
-         * 
-         *************************************************************/
+        
+        /*
+         * 函数描述：点击RUN时，展示编写的HTML效果
+         * 作者：许浩培
+         * 时间：2019/11/18
+         */
         run:function(){
 
             var objIframe = document.getElementById("iframe_result");
@@ -63,13 +63,11 @@ export default {
             objIframe.contentDocument.close();
             
         },
-        /**************************************************************
-         * 函数名：
-         * 功能描述：这是导入vue2-ace-editor后使用的方法，根据官网https://www.npmjs.com/package/vue2-ace-editor配置的
-         * 输入参数：
-         * 输出参数：
-         * 
-         *************************************************************/
+        /*
+         * 函数描述：这是导入vue2-ace-editor后使用的方法，根据官网https://www.npmjs.com/package/vue2-ace-editor配置的
+         * 作者：许浩培
+         * 时间：2019/11/18
+         */ 
         editorInit: function () {
             require('brace/ext/language_tools') //language extension prerequsite...
             require('brace/mode/html')                

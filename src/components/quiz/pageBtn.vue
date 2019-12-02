@@ -1,54 +1,141 @@
+<!--
+模块说明
+功能：答题卡
+作者：许浩培
+完成时间：2019/11/29
+获取  父组件的输入参数：
+[
+  {
+    name:'单选题',
+    sum:[{id:1,status:2},     // 存储这个类型题的答题信息
+    type:0                    // 0代表单选题 1代表多选题 2代表填空题 3代表编程题 
+  },
+  {
+    name:'编程题',
+    sum:[{id:1,status:2},     
+    type:1
+  }....
+]
+传递给父组件的输出参数：
+传递给子组件的输入参数：
+-->
 <template>
-  <ul class="pageBtnWrap">
-    <li @click="clickPage(i)" v-for="(i, idx) in pages" :key="idx" :class="`pageBtnLi status${i.status}`">
-      {{i.page}}
-    </li>
-  </ul>
+  <div class="pageBtnTemp" id = "pageBtn">
+    <el-collapse  accordion style = "margin-left:5px;">
+        <el-collapse-item  :name="id" v-for="(problem,id) in data" :key="id">
+          <template slot="title">
+            <h2>{{problem.name}}</h2>
+          </template>
+          <ul class="pageBtnWrap">
+             <li @click="clickPage(i.id,problem)" v-for="(i, idx) in problem.sum" :key="idx" :class="`pageBtnLi status${i.status}`">
+                {{i.id}}
+            </li> 
+          </ul>
+        </el-collapse-item>
+    </el-collapse>
+     <P style = 'font-size:0'>{{test}}</P>
+  </div>
 </template>
 
 <script>
 export default {
   name: 'pageBtn',
   props: {
-    pages: Array,
-    currentPage: Number,
+    answerSheet_problem: Array
   },
   components: {
   },
   data () {
     return {
-      ready: false,
-      data: {
-      },
-      params: {
-      },
-      options: {
-      },
+      data: this.answerSheet_problem,
+      current_problem:{type:0,id:1,statu:2},      // 初始化
+      test:1
     }
   },
   methods: {
-    async init () {
-      this.ready = true
+    /**
+     * 函数描述：进入考试时，设置当前题号的初始状态，以及给选择题的第一题的状态变成蓝色。
+     * 作者：许浩培
+     * 时间：2019/11/29
+     */
+    init () {
+      this.data[0].sum[0].status = 1;
     },
-    clickPage (data) {
-      this.$emit('update:currentPage', data.page)
+    /**
+     * 函数描述：点击题号，修改题号状态，并向父组件发送题号。
+     * 作者：许浩培
+     * 时间：2019/11/28
+     * 输入参数:
+     * id(题号)，表示点击后的当前题号
+     * problem(大题类型)，表示当前大题 例如选择题 客观题 编程题中的一种。
+     * 输出参数:
+     * current_problem(当前题号信息)
+     */
+    clickPage (id,problem) {
+        // 恢复题号的原始状态
+        this.data[this.current_problem.type].sum[this.current_problem.id - 1].status = this.current_problem.statu;
+        // 保存当前题号信息
+        this.current_problem.type = problem.type;
+        this.current_problem.id = id;
+        this.current_problem.statu = problem.sum[id-1].status;
+        // 将点击的题号暂时修改成蓝色的状态
+        //problem.sum[id-1].status = 1; 
+        this.data[problem.type].sum[id - 1].status = 1;                             
+        // 发送当天题号信息给父组件
+        this.$emit('update:current_problem', this.current_problem);
+        this.test--;
     },
+    /*
+    * 函数描述：鼠标左键时，执行组件动画的效果。
+    * 作者：许浩培
+    * 时间：2019/11/28
+    */ 
+    animationShow () {
+      document.getElementById('pageBtn').className = 'pageBtn';
+    }
   },
   created () {
-    this.init()
+   this.init();
+  },
+  mounted () {
+    document.getElementById('pageBtn').parentNode.onclick = this.animationShow;
+  },
+  watch: {
+     
   }
+  
 }
 </script>
 
 <style scoped>
+  .pageBtnTemp {
+    position: fixed;
+    top:65px;
+    width: 220px;
+    left:0px;
+  }
+  .pageBtn {
+    position: fixed;
+    top:65px;
+    width: 220px;
+    transition:left 1s;
+    left:-200px;
+  }
+  .pageBtn:hover {
+    left:0px;
+  }
   .pageBtnWrap {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
+    position: relative;
+    top:-10px;
+    left:0px;
+    padding: 0;
   }
   .pageBtnLi {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     list-style: none;
     margin: 3px;
     font-size: 15px;
