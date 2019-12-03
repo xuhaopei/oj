@@ -12,16 +12,15 @@ page-btn：data.pageArray
 -->
 <template>
   <div class="quiz main-view center-div" v-loading="loading" element-loading-text="考试内容加载中,请稍等" >
-    <answerSheet v-if='show.answerSheet'  :answerSheet_problem.sync="data.answerSheet_problem"  :current_problem.sync="current_problem"></answerSheet>
+    <answerSheet v-if='show.answerSheet'  :answerSheet_problem.sync="data.answerSheet_problem"  :current_answerSheet.sync="current_answerSheet"></answerSheet>
     <tip v-if='show.tip' ></tip>
-    {{current_problem}}
     <!--<div v-if="ready" class="center-item">
       <page-btn v-if="refresh.pageBtn" :pages.sync="data.pageArray" :currentPage.sync="currentPage"></page-btn>-->
-
+      {{current_answerSheet}}
       <!-- <el-button @click="test">test</el-button> -->
-      <!--<div v-loading="subReady.quizItem" v-if="data.currentData.type==2">
-        <description :detail="data.currentData.data"></description>
-      </div>
+      <!--<div v-loading="subReady.quizItem" v-if="data.currentData.type==2">-->
+        <description :detail="data.program_problem[0]"></description>
+     <!-- </div>
       <div v-loading="subReady.quizItem" v-else>
         <h1>客观题</h1>
       </div>
@@ -36,7 +35,7 @@ page-btn：data.pageArray
 <script>
 import axios from 'axios';
 import answerSheet from './answerSheet.vue'
-//import description from './description.vue'
+import description from './description.vue'
 import tip from './tip.vue'
 export default {
   name: 'quiz',
@@ -44,7 +43,7 @@ export default {
   },
   components: {
     answerSheet,
-   // description,
+    description,
     tip
   },
   data () {
@@ -63,20 +62,12 @@ export default {
         currentData: null,
         program_problem:[],           // 编程题
         object_problem:[],            // 选择题
-        answerSheet_problem:[
-            {
-            name:'单选题',
-            sum:[
-              {id:1,status:2},
-            ],
-            type:0
-          },
-        ]        // 答题卡
+        answerSheet_problem:[],       // 答题卡  
+        current_problem:{}            // 当前答题
       },
+      current_answerSheet:{type:0,id:1,statu:2},
       params: {
-
       },
-      current_problem: {},
       options: {
       },
       refresh: {
@@ -302,8 +293,8 @@ export default {
                       "status": 0
                   }
                 ];
-                that.initAnswerSheet_type(that.data.object_problem.length,0);
-                that.initAnswerSheet_type(that.data.program_problem.length,1);
+                that.initAnswerSheet_type(that.data.object_problem.length,'单选题');
+                that.initAnswerSheet_type(that.data.program_problem.length,'编程题');
                 that.show.answerSheet = true;
                 that.show.tip = true;
                 }).catch(function () {
@@ -322,61 +313,57 @@ export default {
         this.$message.error('加载数据失败');
     },
     /**
-     * 函数描述：根据obj,type来设置答题卡各个模块的信息
+     * 函数描述：根据problemLength,name来设置答题卡各个模块的信息
      * 作者：许浩培
      * 时间：2019/12/2
      * 参数:
-     * obj:这套试卷的模块信息，
-     * type:这套试卷的模块类型 0代表单选题 1代表多选题 2代表填空题 3代表编程题 
+     * problemLength: Number类型，这套试卷类型的题目数量
+     * name:String类型， 这套试卷类型的名称
      */
-    initAnswerSheet_type (problemLength,type) {
+    initAnswerSheet_type (problemLength,name) {
         var obj = {};
 
-        if(type == 0) {       
-            obj.name = '单选题'; 
-        }
-        
-        if(type == 1) {       
-            obj.name = '多选题'; 
-        }
-        
-        if(type == 2) {       
-            obj.name = '填空题'; 
-        }
-        
-        if(type == 3) {       
-            obj.name = '编程题'; 
-        }
-        obj.type = type;          // 0代表单选题 1代表多选题 2代表填空题 3代表编程题 
+        obj.name = name;
+        obj.type = this.data.answerSheet_problem.length;           // 0代表单选题 1代表多选题 2代表填空题 3代表编程题 
         obj.sum = [];
     
         for(let i = 0; i < problemLength; i++){
-            var single = {};          // 存储这个类型题的答题信息
-            single.id = i + 1;       // 存储题号
-            single.status = 2;        // 1表示当前题，2代表该题未答，3代表已答题
+            var single = {};                                       // 存储这个类型题的答题信息
+            single.id = i + 1;                                     // 存储题号
+            single.status = 2;                                     // 1表示当前题，2代表该题未答，3代表已答题
             obj.sum.push(single);
         }
-        this.data.answerSheet_problem[type] = obj;
+        this.data.answerSheet_problem.push(obj);
     },
+    /**
+     * 函数描述：设置当前答题current_problem的信息，并传给子组件description
+     * 作者：许浩培
+     * 时间：2019/12/3
+     * 参数:
+     * problem:obj类型
+     */
+    setCurrent_problem (problem) {
+      this.data.current_problem = problem;
+    }
   },
 
   watch: {
-    /*currentPage: async function (newd, oldd) {
-      this.refresh.pageBtn = false
-      this.data.pageArray[oldd-1].status = 2
-      // todo: 获取题目数据, 改变状态
-      this.getDataByPageNum(oldd)
-      // todo: 与后端同步数据, 改变状态
-      this.submitPageData(oldd)
+    'current_answerSheet': {
+      deep: true,
+      handler: function() {
+        // 发送单选题
+        if(this.current_answerSheet.type == 0) {
+           
+        } 
+        // 发送编程题
+        else if(this.current_answerSheet.type == 1) {
 
-      this.data.pageArray[newd-1].status = 1
-      this.$nextTick(function () {
-        this.refresh.pageBtn = true
-      })
-    }*/
+        }
+      }
+    }
   },
   created () {
-    //this.init()
+
     this.getData();
     
   }
@@ -404,22 +391,5 @@ export default {
   .center-div{
     position: relative;
   }
-/*  .left_navTemp {
-    position: fixed;
-    top:65px;
-    width: 220px;
-    left:0px;
-  }
-  .left_nav {
-    position: fixed;
-    top:65px;
-    width: 220px;
-    transition:left 1s;
-    left:-200px;
-  }
-  .left_nav:hover {
-    left:0px;
-  }
-*/
-  
+
 </style>

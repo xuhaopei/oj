@@ -150,7 +150,7 @@ export default {
      */
     isShowlistChapter () {
       var path = this.$route.path;
-      if(typeof params == 'undefined'){
+      if(typeof path == 'undefined'){
         return;
       }
       if (path.search('allProblems') > -1) {

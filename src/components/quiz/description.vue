@@ -6,7 +6,7 @@
           <h2>输入规范</h2>
         </div>
         <div>
-          {{detail.input_format.insert}}
+          {{detail.input_format}}
         </div>
       </div>
       <div class="description-item">
@@ -14,7 +14,7 @@
           <h2>输出规范</h2>
         </div>
         <div>
-          {{detail.output_format.insert}}
+          {{detail.output_format}}
         </div>
       </div>
       <div class="description-item">
@@ -54,9 +54,21 @@ export default {
       document.body.onclick = function() {
         document.getElementById('description');
       }
+    },
+    /**
+     * 函数描述：JSON一些数据
+     * 作者：许浩培
+     * 时间：2019/12/3
+     */
+    jsonParse() {
+      this.detail.description = JSON.parse(this.detail.description);
+      this.detail.input_format = JSON.parse(this.detail.input_format);
+      this.detail.output_format = JSON.parse(this.detail.output_format);
+      this.detail.samples = JSON.parse(this.detail.samples);
     }
   },
   created () {
+    this.jsonParse();
   }
 }
 

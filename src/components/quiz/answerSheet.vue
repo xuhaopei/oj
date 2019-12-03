@@ -48,7 +48,7 @@ export default {
   data () {
     return {
       data: this.answerSheet_problem,
-      current_problem:{type:0,id:1,statu:2},      // 初始化
+      current_answerSheet:{type:0,id:1,statu:2},      // 初始化
       test:1
     }
   },
@@ -69,20 +69,20 @@ export default {
      * id(题号)，表示点击后的当前题号
      * problem(大题类型)，表示当前大题 例如选择题 客观题 编程题中的一种。
      * 输出参数:
-     * current_problem(当前题号信息)
+     * current_answerSheet(当前题号信息)
      */
     clickPage (id,problem) {
         // 恢复题号的原始状态
-        this.data[this.current_problem.type].sum[this.current_problem.id - 1].status = this.current_problem.statu;
+        this.data[this.current_answerSheet.type].sum[this.current_answerSheet.id - 1].status = this.current_answerSheet.statu;
         // 保存当前题号信息
-        this.current_problem.type = problem.type;
-        this.current_problem.id = id;
-        this.current_problem.statu = problem.sum[id-1].status;
+        this.current_answerSheet.type = problem.type;
+        this.current_answerSheet.id = id;
+        this.current_answerSheet.statu = problem.sum[id-1].status;
         // 将点击的题号暂时修改成蓝色的状态
         //problem.sum[id-1].status = 1; 
         this.data[problem.type].sum[id - 1].status = 1;                             
         // 发送当天题号信息给父组件
-        this.$emit('update:current_problem', this.current_problem);
+        this.$emit('update:current_answerSheet', this.current_answerSheet);
         this.test--;
     },
     /*
