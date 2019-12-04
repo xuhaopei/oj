@@ -11,15 +11,14 @@ page-btn：current_problem
 page-btn：data.pageArray 
 -->
 <template>
-  <div class="quiz main-view center-div" v-loading="loading" element-loading-text="考试内容加载中,请稍等" >
+  <div class="quiz main-view center-div" v-loading="loading" element-loading-text="考试内容加载中,请稍等" v-on:click='show.description=true'>
     <answerSheet v-if='show.answerSheet'  :answerSheet_problem.sync="data.answerSheet_problem"  :current_answerSheet.sync="current_answerSheet"></answerSheet>
-    <tip v-if='show.tip' ></tip>
-    <!--<div v-if="ready" class="center-item">
-      <page-btn v-if="refresh.pageBtn" :pages.sync="data.pageArray" :currentPage.sync="currentPage"></page-btn>-->
-      {{current_answerSheet}}
+    <tip v-if='show.tip'></tip>
       <!-- <el-button @click="test">test</el-button> -->
       <!--<div v-loading="subReady.quizItem" v-if="data.currentData.type==2">-->
-        <description :detail="data.program_problem[0]"></description>
+    <transition name="fade">
+      <description :current_problem="data.current_problem" v-if='show.description'></description>
+    </transition>
      <!-- </div>
       <div v-loading="subReady.quizItem" v-else>
         <h1>客观题</h1>
@@ -79,7 +78,8 @@ export default {
       temp: 2,
       show: {
         tip:false,
-        answerSheet:false
+        answerSheet:false,
+        description:false
       },
       loading:true
     }
@@ -297,6 +297,7 @@ export default {
                 that.initAnswerSheet_type(that.data.program_problem.length,'编程题');
                 that.show.answerSheet = true;
                 that.show.tip = true;
+                that.setCurrent_problem (that.data.program_problem[that.current_answerSheet.id-1]);
                 }).catch(function () {
                     that.openError();
                 })
@@ -344,6 +345,11 @@ export default {
      */
     setCurrent_problem (problem) {
       this.data.current_problem = problem;
+      this.data.current_problem.description = JSON.parse(this.data.current_problem.description);
+      this.data.current_problem.input_format = JSON.parse(this.data.current_problem.input_format);
+      this.data.current_problem.output_format = JSON.parse(this.data.current_problem.output_format);
+      this.data.current_problem.samples = JSON.parse(this.data.current_problem.samples);
+      this.$emit("update:current_problem",this.data.current_problem)
     }
   },
 
@@ -357,7 +363,7 @@ export default {
         } 
         // 发送编程题
         else if(this.current_answerSheet.type == 1) {
-
+          this.setCurrent_problem(this.data.program_problem[this.current_answerSheet.id-1]);
         }
       }
     }
@@ -391,5 +397,10 @@ export default {
   .center-div{
     position: relative;
   }
-
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity 1s;
+    }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+  }
 </style>
