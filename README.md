@@ -66,5 +66,8 @@ this.$store.state.n[flag].data
 
 ``` module.exports.devServer.port ```
 
+[1]: /vue.config.js
 
-  [1]: /vue.config.js
+### 项目完成情况见此脑图：
+
+https://naotu.baidu.com/file/55c39a262cab5f0f0ff25743a15a0d9c?token=52e1810aabc4bdbf

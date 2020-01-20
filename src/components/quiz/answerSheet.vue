@@ -1,14 +1,13 @@
 <!--
 模块说明
 功能：答题卡
-作者：许浩培
-完成时间：2019/11/29
 获取  父组件的输入参数：
+answerSheet_problem:
 [
   {
-    name:'单选题',
+    name:'客观题',
     sum:[{id:1,status:2},     // 存储这个类型题的答题信息
-    type:0                    // 0代表单选题 1代表多选题 2代表填空题 3代表编程题 
+    type:0                    // 0代表客观题 1代表编程题
   },
   {
     name:'编程题',
@@ -17,7 +16,14 @@
   }....
 ]
 传递给父组件的输出参数：
-传递给子组件的输入参数：
+current_answerSheet:
+{
+  type:0,                     // 0 代表客观题，1代表编程题 
+  id:1,                       // 题目数字
+  statu:1                     // 题目状态,1 当前激活 2 非当前 3 已完成
+}
+作者：许浩培
+完成时间：2019/11/29
 -->
 <template>
   <div class="pageBtnTemp" id = "pageBtn">
@@ -75,13 +81,13 @@ export default {
         // 恢复题号的原始状态
         this.data[this.current_answerSheet.type].sum[this.current_answerSheet.id - 1].status = this.current_answerSheet.statu;
         // 保存当前题号信息
-        this.current_answerSheet.type = problem.type;
-        this.current_answerSheet.id = id;
-        this.current_answerSheet.statu = problem.sum[id-1].status;
+        this.current_answerSheet.type = problem.type;               // 题目类型
+        this.current_answerSheet.id = id;                           // 题目
+        this.current_answerSheet.statu = problem.sum[id-1].status;  // 题目状态
         // 将点击的题号暂时修改成蓝色的状态
         //problem.sum[id-1].status = 1; 
         this.data[problem.type].sum[id - 1].status = 1;                             
-        // 发送当天题号信息给父组件
+        // 发送当前题号信息给父组件
         this.$emit('update:current_answerSheet', this.current_answerSheet);
         this.test--;
     },

@@ -1,41 +1,69 @@
 <template>
 
   <div class="description" id = 'description'  >
-    <div class='description-main'>
-      <div class="description-item" >
-        <div>
-          <h2>输入规范</h2>
-        </div>
-        <div>
-          {{current_problem.input_format.insert}}
-        </div>
+    <div class = 'object_problem' v-if="current_answerSheet.type == 0">
+      <h2 style="margin-left:10px" class = "description_title" v-if="current_answerSheet.type == 0">{{exam_Titles[exam_AllProblem.object_problem[current_answerSheet.id - 1].type]}}</h2>
+      <div class = 'description_hr' ></div>
+      <div v-if ="exam.type == 0"      class = "object_problem_select" >
+        <h2>{{exam.problem.description.des}}</h2>
+        <ul>
+          <label v-for="(value,key,index) in exam.problem.description" v-bind:key="index" v-show="index != 0"><li><input type="radio" name='singleSelect'>{{value}}</li></label>
+        </ul>
+        
       </div>
-      <div class="description-item">
-        <div>
-          <h2>输出规范</h2>
-        </div>
-        <div>
-          {{current_problem.output_format.insert}}
-        </div>
+      <div v-else-if ="exam.type == 1" class = "object_problem_tiankong" v-html="exam.problem.description.des"></div>
+      <div v-else                      class = "object_problem_juedge" v-html="exam.problem.description.des"></div>
+      
+    </div>
+    <div class = 'program_problem' v-else>
+      <div class = "progam_problem_title" style = "width:100%" >
+          <h2 style="margin-left:2%;" >{{exam_Titles[exam.type]}}</h2>
+          <div class = 'description_hr' ></div>
       </div>
-      <div class="description-item">
-        <h2 style='margin-bottom: 0px;'>样例</h2>
-        <div class="sample">
-          <div v-for="(item, idx) in current_problem.samples" :key='idx'>
-            <h5 >输入</h5>
-            <div class="res">
-              <span>{{item.input}}</span>
+      <div class = 'program_problem_body' >
+        <div class='program_problem-main'>
+          <div class="program_problem-item" >
+            <div>
+              <h2>输入规范</h2>
             </div>
-            <h5 >输出</h5>
-            <div class="res">
-              <span>{{item.output}}</span>
+            <div>
+              {{exam.problem.input_format.insert}}
+            </div>
+          </div>
+          <div class="program_problem-item">
+            <div>
+              <h2>输出规范</h2>
+            </div>
+            <div>
+              {{exam.problem.output_format.insert}}
+            </div>
+          </div>
+          <div class="program_problem-item">
+            <h2 style='margin-bottom: 0px;'>样例</h2>
+            <div class="sample">
+              <div v-for="(item, idx) in exam.problem.samples" :key='idx'>
+                <h5 >输入</h5>
+                <div class="res">
+                  <span>{{item.input}}</span>
+                </div>
+                <h5 >输出</h5>
+                <div class="res">
+                  <span>{{item.output}}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+        <div class='program_problem-answer'>
+          <editor  v-model="content" @init="editorInit" lang="java" theme="chrome" width="100%" height="100%" ></editor>
+        </div>
       </div>
+
     </div>
-    <div class='description_answer'>
-      <editor  v-model="content" @init="editorInit" lang="java" theme="chrome" width="100%" height="100%" ></editor>
+    <div class = 'control_problem'>
+        <div class = 'btn btn-origin'>提交试卷</div>
+        <div class = 'btn btn-blue'>上一题</div>
+        <div class = 'btn btn-blue'>下一题</div>
     </div>
   </div>
 </template>
@@ -44,22 +72,26 @@
 export default {
   name: 'description',
   props: {
-    current_problem: Object,
+    exam_AllProblem: Object,                // 获取父组件传递过来的试卷数据
+    current_answerSheet:Object              // 获取父组件传递过来的点击的题号
   },
   components: {
-    editor: require('vue2-ace-editor'),
+    editor: require('vue2-ace-editor'),     // 导入代码编写的模块
   },
   data () {
     return {
-      ready: true,
-      show: false,
       content:"package xu;\n"+
               "public class Main {\n"+
               "       public static void main(String[] args) {\n"+
               "         xhpShowLayout xhp = new xhpShowLayout();\n"+
               "         xhp.setTitle(\"两个界面组合起来使用:许浩培2017035144038广技师1班\");\n"+
               "       }\n"+
-              "}"
+              "}",
+      exam_Titles:["选择题","填空题","判断题","编程题"],  // 设置题目类型的标题 
+      exam:{
+        type:0,                                         // 题目类型 0选择题，1填空题，2判断题，3编程题
+        problem:Object                                  // 题目数据  
+      }    
     }
   },
   methods: {
@@ -77,19 +109,40 @@ export default {
             require('brace/theme/chrome')
             require('brace/snippets/javascript') //snippet
             require('brace/snippets/java') //snippet
+        },
+        /**
+         * 函数描述：初始化题目默认显示答题卡中的客观题中的第一道题
+         * 作者：许浩培
+         * 时间：2019/11/18
+         */
+        dataInit: function() {
+            this.exam.problem = this.exam_AllProblem.object_problem[this.current_answerSheet.id - 1];
+            this.exam.type    = this.exam_AllProblem.object_problem[this.current_answerSheet.id - 1].type;
         }
   },
   created () {
-    //this.jsonParse();
+        this.dataInit();                // 初始化题目默认显示答题卡中的客观题中的第一道题
   },
   mounted () {
     
   },
   watch : {
-    'current_problem':{
+    /**
+     * 监听对象描述：当点击答题卡、点击上下提时，更改题目内容。
+     */
+    'current_answerSheet':{
       deep:true,
       handler:function() {
-        this.content='';
+        // 答题卡点击的是客观题
+        if(this.current_answerSheet.type == 0) {
+            this.exam.problem = this.exam_AllProblem.object_problem[this.current_answerSheet.id - 1];
+            this.exam.type    = this.exam_AllProblem.object_problem[this.current_answerSheet.id - 1].type;
+        }
+        // 答题卡点击的是编程题
+        else {
+            this.exam.problem = this.exam_AllProblem.program_problem[this.current_answerSheet.id - 1];
+            this.exam.type    = 3;
+        }
       }
     }
   }
@@ -101,27 +154,101 @@ export default {
   .description {
     width: 100%;
     display: flex;
+    flex-direction: column; 
+    margin:0 10%;  
+  }
+  .description_hr {
+    height:1px;
+    width:100%;
+    border:1px solid rgba(0,0,0,0.2);
+  }
+  /**客观题的样式 */
+  .object_problem {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    padding:0 2%;
+    background-color:white; 
+  }
+  /**选择题的样式 */
+  .object_problem_select {
+    width: 100%;
+  }
+  .object_problem_select ul {
+    list-style: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  .object_problem_select li {
+    border: 1px solid black;
+    height: 50px;
+    width: 100%;
+    margin-bottom: 2%;
+    line-height: 50px;
+    padding-left: 2%;
+    display: flex;
+    align-items: center;
+  }
+  .object_problem_select li input {
+    height: 40px;
+    margin-right: 0.5%;
+    border: 0;
+    appearance: none;               /*设置它的外观为空 */
+    border-radius: 50%;
+  }
+  .object_problem_select li input::before {
+    content: " ";
+    width: 20px;
+    height: 20px;
+    border: 1px solid rgba(0,0,0,0.5);
+    display:inline-block;
+    border-radius: 50%;
+  }
+  .object_problem_select li input:checked::before {
+    border: 1px solid #407dff;
+    background: #407dff;
+  }
+  .object_problem_select li:hover {
+    background-color:rgba(0,0,0,0.1);
+    cursor:pointer; 
+  }
+  /**填空题的样式 */
+  .inputValue {
+    display:inline-block;
+    width:60px;
+    white-space:nowrap;
+    height:20px;
+    border-bottom:1px solid black;
+    color:#407dff;
+    text-align:center
+  }
+  /**判断题的样式 */
+
+  /*编程题的样式 */
+  .program_problem {
+    width: 100%;
+    background-color:white; 
+  }
+  .program_problem_body{
+    width: 100%;
+    display: flex;
     align-items: flex-start;
     flex-direction: row;
-    align-items:stretch;
+    height: 85%;
+    background-color:white; 
   }
-  .description-main {
-    /* display: flex; */
+  .program_problem-main {
     flex:1;
+    flex-direction:row;
     margin-left:25px;
   }
-  .description-main .sample {
+  .program_problem-main .sample {
     padding: 5px 10px;
     border-left: 2px solid #2d8cf0;
   }
-  .tag-list {
-    display: flex;
-    padding: 10px;
-  }
-  .tag-item:hover {
-    background-color: #ffffff;
-  }
-  .description-main .sample .res {
+  .program_problem-main .sample .res {
     margin: 5px 0;
     padding: 5px;
     background-color: #f4faff;
@@ -129,7 +256,7 @@ export default {
     font-size: 1em;
     color: #495060;
   }
-  .description-main .description-nodata-item {
+  .program_problem-main .description-nodata-item {
     padding-top: 20px;
     padding-bottom: 20px;
   }
@@ -148,7 +275,42 @@ export default {
     width: 50%;
     margin-bottom: 20px;
   }
-  .description_answer {
+  .program_problem-answer {
     flex:1;
+    height:100%;
   }
+  /**按钮的样式 */
+  .control_problem {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;        /*控制水平方向 */
+    align-items: center;              /*控制竖直方向 */
+    height: 15%;
+  }
+  .btn {
+    height: 50px;
+    width: 120px;
+    color: white;
+    margin: 12px;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 50px;
+    font-size: 18px;
+  }
+  .btn:hover {
+    cursor: pointer;
+  }
+  .btn-origin {
+    background-color: #FF654B;
+  }
+  .btn-origin:hover {
+    background-color: #ec7063;
+  }
+  .btn-blue {
+    background-color: #407dff;
+  }
+  .btn-blue:hover {
+    background-color: #409dff;
+  }
+
 </style>

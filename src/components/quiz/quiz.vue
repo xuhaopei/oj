@@ -1,210 +1,63 @@
 <!--
 模块说明
 功能：考试内容的组合模块，这个模块主要获取试卷的所有信息。然后将信息重新组合后分发给各个模块。
+获取  子组件的输入参数：
+answerSheet：current_answerSheet
+传递给子组件的输出参数：
+answerSheet：current_answerSheet，
+             answerSheet_problem
+description：data.exam_AllProblem 
 作者：许浩培
 完成时间：2019/11/28
-获取  父组件的输入参数：
-传递给父组件的输出参数：
-获取  子组件的输入参数：
-page-btn：current_problem
-传递给子组件的输入参数：
-page-btn：data.pageArray 
 -->
 <template>
   <div class="quiz main-view center-div" v-loading="loading" element-loading-text="考试内容加载中,请稍等" v-on:click='show.description=true'>
     <answerSheet v-if='show.answerSheet'  :answerSheet_problem.sync="data.answerSheet_problem"  :current_answerSheet.sync="current_answerSheet"></answerSheet>
     <tip v-if='show.tip'></tip>
-      <!-- <el-button @click="test">test</el-button> -->
-      <!--<div v-loading="subReady.quizItem" v-if="data.currentData.type==2">-->
     <transition name="fade">
-      <description :current_problem="data.current_problem" v-if='show.description'></description>
+      <description :exam_AllProblem="data.exam_AllProblem" v-if='show.description' :current_answerSheet.sync="current_answerSheet"></description>
     </transition>
-     <!-- </div>
-      <div v-loading="subReady.quizItem" v-else>
-        <h1>客观题</h1>
-      </div>
-    </div>
-    <mu-snackbar style="margin: 8px 0;" snack.position="snack.postition" :open.sync="snack.open" :color='snack.type'>
-      <mu-icon left :value="snack.icon"></mu-icon>
-      {{snack.msg}}
-    </mu-snackbar>-->
+    
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import answerSheet from './answerSheet.vue'
-import description from './description.vue'
-import tip from './tip.vue'
+import answerSheet from './answerSheet.vue'       // 导入答题表模块
+import description from './description.vue'       // 导入答题内容模块
+import tip from './tip.vue'                       // 导入提示模块
 export default {
   name: 'quiz',
   props: {
   },
   components: {
-    answerSheet,
-    description,
-    tip
+    answerSheet,                                  // 导入答题表模块
+    description,                                  // 导入答题内容模块
+    tip                                           // 导入提示模块
   },
   data () {
     return {
-      ready: false,
-      snack: {
-        msg: '',
-        type: '',
-        open: false,
-        icon: '',
-        position: 'bottom',
-      },
       data: {
-        list: [],
-        pageData: [],
-        currentData: null,
-        program_problem:[],           // 编程题
-        object_problem:[],            // 选择题
+        exam_AllProblem:{             // 存储一张试卷的数据
+          program_problem:[],         // 存储编程题的所有题目数据
+          object_problem:[]           // 存储客观题的所有题目数据（包括选择题、客观题、判断题）
+        },                           
         answerSheet_problem:[],       // 答题卡  
-        current_problem:{}            // 当前答题
+        //current_problem:{}            // 当前题目信息（传递给answerSheet组件）
       },
-      current_answerSheet:{type:0,id:1,statu:2},
-      params: {
-      },
-      options: {
-      },
-      refresh: {
-        pageBtn: true,
-      },
-      subReady: {
-        quizItem: false,
-      },
-      temp: 2,
+      current_answerSheet:{type:0,id:1,statu:2},    // 当前的题号信息， type为题目类型，ID为题号，statu为题号的背景颜色
+    
       show: {
-        tip:false,
-        answerSheet:false,
-        description:false
+        tip:false,                    // 控制温馨提示模块的显示
+        answerSheet:false,            // 控制答题表模块的显示
+        description:false             // 控制编程题模快的显示
       },
-      loading:true
+      loading:true                    // 控制请求数据时，出现加载符号
     }
   },
   methods: {
-    /*async init () {
-			const sleep = (ms) => {
-				return new Promise(resolve => setTimeout(resolve, ms))
-      }
-      this.snack = {
-        msg: '获取题目元数据中',
-        type: '',
-        open: true,
-        icon: 'info',
-        position: 'bottom',
-      }
-      await sleep(1000)
-      // 此处应该获取到了题目的数量等信息
-      const pageCount = 50
-      for (let i = 1; i <= pageCount; i++) {
-        this.data.pageArray.push({
-          page: i,
-          status: 2,
-        })
-        this.data.pageData.push({
-          type: 0,
-        })
-      }
-      this.snack = {
-        msg: '加载题目',
-        type: '',
-        open: true,
-        icon: 'info',
-        position: 'bottom',
-      }
-      await this.getDataByPageNum(this.currentPage)
-      this.data.pageArray[this.currentPage-1].status=1
-      this.snack.open = false
-      this.ready = true
-    },*/
-    /*async getDataByPageNum (p) {
-      this.subReady.quizItem = true
-      // 如果数据未曾获取过才获取数据
-      if (this.data.pageData[p-1].type === 0) {
-        const d = await this._getDataByPageNum(p)
-        this.data.pageData[p-1] = d
-      }
-      this.data.currentData = this.data.pageData[p-1]
-      // await Promise.all([
-      //   this.$store.dispatch('n', {
-      //     flag: 0,
-      //     method: 'post',
-      //     url: `/code/user`,
-      //     params: {
-      //       "examinationId": 0,
-      //       "groupId": 0,
-      //       "lang": this.data.codeInfo.lang,
-      //       "pid": this.$route.params.id,
-      //       "sourceCode": this.data.codeInfo.code
-      //     }
-      //   }),
-      // ])
-      this.subReady.quizItem = false
-    },
-    async _getDataByPageNum (p) {
-			const sleep = (ms) => {
-				return new Promise(resolve => setTimeout(resolve, ms))
-      }
-      await sleep(1000)
-      if (this.temp === 1) {
-        this.temp = 2
-        return {
-          type: 1,
-          data: {
-            title: 'Design Sprnt为Google的一套产品设计方法，关于该产品设计方法说法正确的是（）',
-            options: [
-              '选项1选项1选项1选项1选项1选项1选项1选项1选项1选项1选项1选项1选项1',
-              '选项1选项1选项1选项1选项1选项1选项1选项1选项1选项1选项1选项1选项1',
-              '选项1选项1选项1选项1选项1选项1选项1选项1选项1选项1选项1选项1选项1',
-              '选项1选项1选项1选项1选项1选项1选项1选项1选项1选项1选项1选项1选项1',
-            ],
-          }
-        }
-      } else {
-        this.temp = 1
-        return {
-          type: 2,
-          data: {
-            "ac_times": 0,
-            "ce_times": 0,
-            "deleted": 0,
-            "description": {
-              "insert": "二叉树可以用于排序。其原理很简单：对于一个排序二叉树添加新节点时，先与根节点比较，若小则交给左子树继续处理，否则交给右子树。\n当遇到空子树时，则把该节点放入那个位置。 \n比如，10 8 5 7 12 4 的输入顺序，应该建成二叉树如下图所示，其中.表示空白。\n...|-12\n 10-|\n ...|-8-|\n .......|...|-7\n .......|-5-|\n ...........|-4 \n本题目要求：根据已知的数字，建立排序二叉树，并在标准输出中横向打印该二叉树。\n"
-            },
-            "difficult": 0,
-            "gmt_create": 1556269441000,
-            "gmt_modified": 1556270421000,
-            "input_format": {
-              "insert": "输入数据为一行空格分开的N个整数。 N<100，每个数字不超过10000。\n输入数据中没有重复的数字。\n"
-            },
-            "memory": 128,
-            "output_format": {
-              "insert": "输出该排序二叉树的横向表示。为了便于评卷程序比对空格的数目，请把空格用句点代替：\n"
-            },
-            "program_problem_id": 20,
-            "rte_times": 0,
-            "run_time": 1,
-            "samples": [
-              {
-                "output": "...|-20\n10-|\n...|-5 \n",
-                "input": "10 5 20 "
-              }
-            ],
-            "status": 0,
-            "submit_times": 0,
-            "title": "横向打印二叉树123",
-            "tle_times": 0,
-            "used_times": 0,
-            "wa_times": 0
-          }
-        }
-      }
-    },*/
     /**
-     * 函数描述：想服务器发送请求，获取试卷的所有信息
+     * 函数描述：向服务器发送请求，获取试卷的所有信息
      * 作者：许浩培
      * 时间：2019/12/2
      */
@@ -219,20 +72,57 @@ export default {
                 if(response.status != 200){
                     throw "获取数据失败!";
                 }
-               // that.data.object_problem = response.data.object_problem;  // 获取试卷的选择题
+               // that.data.exam_AllProblem = response.data;
+               // that.data.object_problem = response.data.object_problem;  // 获取试卷的客观题（选择题0、填空题1、判断题2）
                // that.data.program_problem = response.data.program_problem;//  获取试卷的编程题
-                that.data.object_problem = [
-                  {
-                      "gmt_create": 1555938245000,
-                      "ac_times": 0,
-                      "is_deleted": 0,
-                      "object_problem_id": 4,
-                      "answer": "final",
-                      "description": "{\"des\": \"局部内部类可以用private、abstract、_____ 修饰符修饰\"}",
-                      "type": "1",
-                      "gmt_modified": 1556014876000,
-                      "submit_times": 0,
-                      "status": 0
+                that.data.exam_AllProblem.object_problem = [
+                {
+                    "gmt_create": 1571541020000,
+                    "ac_times": 0,
+                    "is_deleted": 0,
+                    "object_problem_id": 10,
+                    "answer": "false",
+                    "description": "{\"des\": \"<div class=\\\"question-main\\\"><span>下列程序段的输出结果是：（ </span> <h1>123</h1><span> ）</span> <span> <br> public void complicatedexpression_r(){<br> &nbsp;&nbsp;&nbsp;&nbsp;int x=20, y=30;<br> &nbsp;&nbsp;&nbsp;&nbsp;boolean   b;<br> &nbsp;&nbsp;&nbsp;&nbsp;b = x &gt; 50 &amp;&amp; y &gt; 60 || x &gt; 50 &amp;&amp; y &lt; -60 || x &lt; -50 &amp;&amp; y &gt; 60 || x &lt; -50 &amp;&amp; y &lt; -60;<br> &nbsp;&nbsp;&nbsp;&nbsp;System.out.println(b);<br> }<br> </span></div>\"}",
+                    "type": "1",
+                    "gmt_modified": 1571541020000,
+                    "submit_times": 0,
+                    "status": 0
+                },
+                {
+                    "gmt_create": 1571541020000,
+                    "ac_times": 0,
+                    "is_deleted": 0,
+                    "object_problem_id": 11,
+                    "answer": "final",
+                    "description": "{\"des\": \"局部内部类可以用private、abstract、(<div class =\\\"inputValue\\\" contentEditable='true'>123</div> )修饰符修饰\"}",
+                    "type": "1",
+                    "gmt_modified": 1571541020000,
+                    "submit_times": 0,
+                    "status": 0
+                },
+                {
+                    "gmt_create": 1555938245000,
+                    "ac_times": 0,
+                    "is_deleted": 1,
+                    "object_problem_id": 1,
+                    "answer": "C",
+                    "description": "{\"des\": \" 下列选项中，用于在定义子类时声明父类名的关键字是：( ) \", \"opt1\": \"interface\", \"opt2\": \"package\", \"opt3\": \"extends\", \"opt4\": \"class\"}",
+                    "type": "0",
+                    "gmt_modified": 1571543419000,
+                    "submit_times": 0,
+                    "status": 0
+                },
+                {
+                    "gmt_create": 1571541039000,
+                    "ac_times": 0,
+                    "is_deleted": 0,
+                    "object_problem_id": 18,
+                    "answer": "true",
+                    "description": "{\"des\": \"如果a.equals(b)返回true，那么a,b两个对象的hashcode必须相同\"}",
+                    "type": "2",
+                    "gmt_modified": 1571541039000,
+                    "submit_times": 0,
+                    "status": 0
                   },
                   {
                       "gmt_create": 1555938245000,
@@ -240,14 +130,14 @@ export default {
                       "is_deleted": 0,
                       "object_problem_id": 4,
                       "answer": "final",
-                      "description": "{\"des\": \"局部内部类可以用private、abstract、_____ 修饰符修饰\"}",
+                      "description": "{\"des\": \"局部内部类可以用private、abstract、<div class = 'inputValue' contentEditable='true'></div> 修饰符修饰\"}",
                       "type": "1",
                       "gmt_modified": 1556014876000,
                       "submit_times": 0,
                       "status": 0
                   }
                 ];
-                that.data.program_problem = [
+                that.data.exam_AllProblem.program_problem = [
                   {
                       "gmt_create": 1556269441000,
                       "used_times": 0,
@@ -293,17 +183,17 @@ export default {
                       "status": 0
                   }
                 ];
-                that.initAnswerSheet_type(that.data.object_problem.length,'单选题');
-                that.initAnswerSheet_type(that.data.program_problem.length,'编程题');
+                that.initAnswerSheet_type(that.data.exam_AllProblem.object_problem.length,'客观题');      // 设置答题卡标题为客观题，题目数量为length
+                that.initAnswerSheet_type(that.data.exam_AllProblem.program_problem.length,'编程题');     // 设置答题卡标题为编程题，题目数量为length
                 that.show.answerSheet = true;
                 that.show.tip = true;
-                that.setCurrent_problem (that.data.program_problem[that.current_answerSheet.id-1]);
+                that.setCurrent_problem (that.data.exam_AllProblem);          // 传数据给答题内容模块
                 }).catch(function () {
                     that.openError();
                 })
           ]);
 
-          this.loading = false;
+          this.loading = false;                                               // 停止数据加载图标的显示
     },
     /**
      * 函数描述：加载数据失败时，弹出提示框
@@ -325,7 +215,7 @@ export default {
         var obj = {};
 
         obj.name = name;
-        obj.type = this.data.answerSheet_problem.length;           // 0代表单选题 1代表多选题 2代表填空题 3代表编程题 
+        obj.type = this.data.answerSheet_problem.length;           // 0代表客观题 1代表编程题 
         obj.sum = [];
     
         for(let i = 0; i < problemLength; i++){
@@ -337,41 +227,45 @@ export default {
         this.data.answerSheet_problem.push(obj);
     },
     /**
-     * 函数描述：设置当前答题current_problem的信息，并传给子组件description
+     * 函数描述：设置这套试卷的所有数据，并传给子组件description
      * 作者：许浩培
      * 时间：2019/12/3
      * 参数:
      * problem:obj类型
      */
     setCurrent_problem (problem) {
-      this.data.current_problem = problem;
-      this.data.current_problem.description = JSON.parse(this.data.current_problem.description);
-      this.data.current_problem.input_format = JSON.parse(this.data.current_problem.input_format);
-      this.data.current_problem.output_format = JSON.parse(this.data.current_problem.output_format);
-      this.data.current_problem.samples = JSON.parse(this.data.current_problem.samples);
-      this.$emit("update:current_problem",this.data.current_problem)
+      this.data.exam_AllProblem = problem;
+      // 将数据对象里面客观题中的文本数据类型转换成JSON数据，不然答题内容的数据显示会异常。
+      for(let i = 0; i < problem.object_problem.length; i++) {    // 客观题
+          this.data.exam_AllProblem.object_problem[i].description = JSON.parse(problem.object_problem[i].description);  
+      }
+      for(let i = 0; i < problem.program_problem.length; i++) {   // 编程题
+          this.data.exam_AllProblem.program_problem[i].description = JSON.parse(problem.program_problem[i].description);
+          this.data.exam_AllProblem.program_problem[i].input_format = JSON.parse(problem.program_problem[i].input_format);
+          this.data.exam_AllProblem.program_problem[i].output_format = JSON.parse(problem.program_problem[i].output_format);
+          this.data.exam_AllProblem.program_problem[i].samples = JSON.parse(problem.program_problem[i].samples);
+      }
+      this.$emit("update:exam_AllProblem",this.data.exam_AllProblem);
     }
   },
 
   watch: {
+    /**
+     * 函数描述：当点击答题卡的不同题目时，传值给子组件，更改题目的内容。
+     * 作者：许浩培
+     * 时间：2020/1/15
+     * 监听对象:
+     * current_answerSheet:obj类型
+     */
     'current_answerSheet': {
       deep: true,
       handler: function() {
-        // 发送单选题
-        if(this.current_answerSheet.type == 0) {
-           
-        } 
-        // 发送编程题
-        else if(this.current_answerSheet.type == 1) {
-          this.setCurrent_problem(this.data.program_problem[this.current_answerSheet.id-1]);
-        }
+        this.$emit("update:current_answerSheet",this.data.current_answerSheet);
       }
     }
   },
   created () {
-
     this.getData();
-    
   }
 }
 </script>
