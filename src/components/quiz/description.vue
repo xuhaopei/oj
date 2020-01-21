@@ -6,13 +6,36 @@
       <div class = 'description_hr' ></div>
       <div v-if ="exam.type == 0"      class = "object_problem_select" >
         <h2>{{exam.problem.description.des}}</h2>
-        <ul>
-          <label v-for="(value,key,index) in exam.problem.description" v-bind:key="index" v-show="index != 0"><li><input type="radio" name='singleSelect'>{{value}}</li></label>
+        <ul class = "_ul">
+          <label v-for="(value,key,index) in exam.problem.description" v-bind:key="index" v-show="index != 0"><li class = "_ul_li"><input class="_ul_li_input" type="radio" name='singleSelect' v-bind:value="key" v-model="examObject_problemTemp.answerSelect">{{value}}</li></label>
         </ul>
-        
+        {{examObject_problemTemp.answerSelect}}
       </div>
-      <div v-else-if ="exam.type == 1" class = "object_problem_tiankong" v-html="exam.problem.description.des"></div>
-      <div v-else                      class = "object_problem_juedge" v-html="exam.problem.description.des"></div>
+      <div v-else-if ="exam.type == 1" class = "object_problem_tiankong" >
+          <div class = 'object_problem_tiankong-contend' v-html="exam.problem.description.des"></div>
+          <div class = 'object_problem_tiankong-input'>
+            <h2>请输入你的答案</h2>
+            <input type="text" v-model="examObject_problemTemp.answerTiankong">
+          </div>
+      </div>
+      <div v-else                      class = "object_problem_juedge">
+          <div class = 'object_problem_juedge-contend' v-html="exam.problem.description.des"></div>
+          <div class = 'object_problem_juedge-input'>
+            <ul class = "_ul">
+              <label>
+                <li class ="_ul_li">
+                  <input class ="_ul_li_input" type="radio" name='singleSelect' value="true"  v-model="examObject_problemTemp.answerSelect">True
+                </li>
+              </label>
+              <label>
+                <li class ="_ul_li">
+                  <input class ="_ul_li_input" type="radio" name='singleSelect' value="false" v-model="examObject_problemTemp.answerSelect">False
+                </li>
+              </label>
+              {{examObject_problemTemp.answerSelect}}
+            </ul>
+          </div>
+      </div>
       
     </div>
     <div class = 'program_problem' v-else>
@@ -88,10 +111,29 @@ export default {
               "       }\n"+
               "}",
       exam_Titles:["选择题","填空题","判断题","编程题"],  // 设置题目类型的标题 
-      exam:{
+      exam:{                                            // 一道题的数据
         type:0,                                         // 题目类型 0选择题，1填空题，2判断题，3编程题
         problem:Object                                  // 题目数据  
-      }    
+      },
+      examAnswer:{                                      // 一整张试卷提交的答案
+        object_problem:[],                              // 客观题的答案
+        program_problem:[]                              // 编程题的答案
+      },
+      examObject_problem:{                              // 一道客观题的答案
+        id:0,                                           // 题目编号
+        type:0,                                         // 题目类型 0选择题，1填空题，2判断题，3编程题
+        answer:0                                        // 答题结果 1正确 0错误
+      },  
+      examProgram_problem:{                             // 一道编程题的答案
+        id:0,                                           // 题目编号
+        type:0,                                         // 题目类型 0选择题，1填空题，2判断题，3编程题
+        answer:' '                                      // 答题结果
+      },
+      examObject_problemTemp:{                          // 暂时存储数据，用来比较答案
+        answerSelect:'',                                // 存储选择题
+        answerTiankong:'',                              // 存储填空题
+        answerJuedge:''                                 // 存储判断题
+      }
     }
   },
   methods: {
@@ -175,13 +217,13 @@ export default {
   .object_problem_select {
     width: 100%;
   }
-  .object_problem_select ul {
+  ._ul {
     list-style: none;
     width: 100%;
     margin: 0;
     padding: 0;
   }
-  .object_problem_select li {
+  ._ul_li {
     border: 1px solid black;
     height: 50px;
     width: 100%;
@@ -191,14 +233,14 @@ export default {
     display: flex;
     align-items: center;
   }
-  .object_problem_select li input {
+  ._ul_li_input {
     height: 40px;
     margin-right: 0.5%;
     border: 0;
     appearance: none;               /*设置它的外观为空 */
     border-radius: 50%;
   }
-  .object_problem_select li input::before {
+  ._ul_li_input::before {
     content: " ";
     width: 20px;
     height: 20px;
@@ -206,26 +248,25 @@ export default {
     display:inline-block;
     border-radius: 50%;
   }
-  .object_problem_select li input:checked::before {
+  ._ul_li_input:checked::before {
     border: 1px solid #407dff;
     background: #407dff;
   }
-  .object_problem_select li:hover {
+  ._ul_li:hover {
     background-color:rgba(0,0,0,0.1);
     cursor:pointer; 
   }
   /**填空题的样式 */
-  .inputValue {
-    display:inline-block;
-    width:60px;
-    white-space:nowrap;
-    height:20px;
-    border-bottom:1px solid black;
-    color:#407dff;
-    text-align:center
+  .object_problem_tiankong {
+    margin-top: 2%;
   }
   /**判断题的样式 */
-
+  .object_problem_juedge{
+    width:100%;
+  }
+  .object_problem_juedge-contend {
+    margin: 2% 0;
+  }
   /*编程题的样式 */
   .program_problem {
     width: 100%;
