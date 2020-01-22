@@ -27,19 +27,18 @@ current_answerSheet:
 -->
 <template>
   <div class="pageBtnTemp" id = "pageBtn">
-    <el-collapse  accordion style = "margin-left:5px;">
+      <el-collapse  accordion style = "margin-left:5px;">
         <el-collapse-item  :name="id" v-for="(problem,id) in data" :key="id">
           <template slot="title">
             <h2>{{problem.name}}</h2>
           </template>
           <ul class="pageBtnWrap">
-             <li @click="clickPage(i.id,problem)" v-for="(i, idx) in problem.sum" :key="idx" :class="`pageBtnLi status${i.status}`">
+              <li @click="clickPage(i.id,problem)" v-for="(i, idx) in problem.sum" :key="idx" :class="`pageBtnLi status${i.status}`">
                 {{i.id}}
             </li> 
           </ul>
         </el-collapse-item>
-    </el-collapse>
-     <P style = 'font-size:0'>{{test}}</P>
+      </el-collapse>
   </div>
 </template>
 
@@ -47,7 +46,7 @@ current_answerSheet:
 export default {
   name: 'pageBtn',
   props: {
-    answerSheet_problem: Array
+    answerSheet_problem: Array,
   },
   components: {
   },

@@ -1,5 +1,25 @@
+<!--
+模块说明
+功能：试卷内容显示
+获取  父组件的输入参数：
+exam_AllProblem:Object
+current_answerSheet:
+{
+  type:0,                     // 0 代表客观题，1代表编程题 
+  id:1,                       // 题目数字
+  statu:1                     // 题目状态,1 当前激活 2 非当前 3 已完成
+}
+传递给父组件的输出参数：
+current_answerSheet:
+{
+  type:0,                     // 0 代表客观题，1代表编程题 
+  id:1,                       // 题目数字
+  statu:1                     // 题目状态,1 当前激活 2 非当前 3 已完成
+}
+作者：许浩培
+完成时间：2020/1/22
+-->
 <template>
-
   <div class="description" id = 'description'  >
     <div class = 'object_problem' v-if="current_answerSheet.type == 0">
       <h2 style="margin-left:10px" class = "description_title" v-if="current_answerSheet.type == 0">{{exam_Titles[exam_AllProblem.object_problem[current_answerSheet.id - 1].type]}}</h2>
@@ -85,8 +105,8 @@
     </div>
     <div class = 'control_problem'>
         <div class = 'btn btn-origin'>提交试卷</div>
-        <div class = 'btn btn-blue'>上一题</div>
-        <div class = 'btn btn-blue'>下一题</div>
+        <div class = 'btn btn-blue' v-show="show.front"  v-on:click="frontProblem">上一题</div>
+        <div class = 'btn btn-blue' v-show="show.next" v-on:click="nextProblem">下一题</div>
     </div>
   </div>
 </template>
@@ -116,8 +136,27 @@ export default {
         problem:Object                                  // 题目数据  
       },
       examAnswer:{                                      // 一整张试卷提交的答案
-        object_problem:[],                              // 客观题的答案
-        program_problem:[]                              // 编程题的答案
+        object_problem:[                                    // 客观题的答案
+          {
+            id:0,                                           // 题目编号
+            type:0,                                         // 题目类型 0选择题，1填空题，2判断题，3编程题
+            answer:0                                        // 答题结果 1正确 0错误 
+          },
+          {
+            id:0,                                           
+            type:0,                                         
+            answer:0                                         
+          }
+        ],                              
+        program_problem:[                                 // 编程题的答案
+          {
+            id:0,                                           // 题目编号
+            type:0,                                         // 题目类型 0选择题，1填空题，2判断题，3编程题
+            answer:' '                                      // 答题结果
+          }
+        ],
+        userId:0 ,                                       // 用户ID   
+        examId:0                                        // 试卷ID
       },
       examObject_problem:{                              // 一道客观题的答案
         id:0,                                           // 题目编号
@@ -133,6 +172,10 @@ export default {
         answerSelect:'',                                // 存储选择题
         answerTiankong:'',                              // 存储填空题
         answerJuedge:''                                 // 存储判断题
+      },
+      show:{                                            // 组件的显示
+        next:true,                                  // 下一题按钮的显示
+        front:true                                  // 上一题按钮的显示
       }
     }
   },
@@ -160,7 +203,46 @@ export default {
         dataInit: function() {
             this.exam.problem = this.exam_AllProblem.object_problem[this.current_answerSheet.id - 1];
             this.exam.type    = this.exam_AllProblem.object_problem[this.current_answerSheet.id - 1].type;
-        }
+            //this.show.front   = false;                                     // 初始化设置上一题按钮不可见
+        },
+        /**
+         * 函数描述：点击下一题时，改变题目内容，保存答案。
+         * 作者：许浩培
+         * 时间：2019/11/18
+         */
+         nextProblem: function() {
+            let defineNum = 999;                                          // 约定999数字客观题阀值，为客观题转编程题做辅助。
+            this.show.front = true;
+            if(this.current_answerSheet.id == this.exam_AllProblem.object_problem.length) {
+                  this.current_answerSheet.type = 1;                
+                  this.current_answerSheet.id = 1;       
+            }           
+            else {
+                this.current_answerSheet.id ++;
+                if(this.current_answerSheet.id == this.exam_AllProblem.program_problem.length && this.current_answerSheet.type == 1) {
+                  this.show.next = false;                
+                } 
+            }                   
+         },
+          /**
+         * 函数描述：点击下一题时，改变题目内容，保存答案。
+         * 作者：许浩培
+         * 时间：2019/11/18
+         */
+         frontProblem: function() {
+            let defineNum = 999;                                          // 约定999数字客观题阀值，为客观题转编程题做辅助。
+            this.show.next = true;
+            if(this.current_answerSheet.id == 1 && this.current_answerSheet.type == 1) {
+                  this.current_answerSheet.type = 0;                
+                  this.current_answerSheet.id = this.exam_AllProblem.object_problem.length;       
+            }           
+            else {
+                this.current_answerSheet.id --;
+                if(this.current_answerSheet.id == 1 && this.current_answerSheet.type == 0) {
+                  this.show.front = false;                
+                } 
+            }                   
+         }
   },
   created () {
         this.dataInit();                // 初始化题目默认显示答题卡中的客观题中的第一道题

@@ -2,10 +2,34 @@
 模块说明
 功能：考试内容的组合模块，这个模块主要获取试卷的所有信息。然后将信息重新组合后分发给各个模块。
 获取  子组件的输入参数：
-answerSheet：current_answerSheet
+answerSheet：
+    current_answerSheet:
+    {
+      type:0,                     // 0 代表客观题，1代表编程题 
+      id:1,                       // 题目数字
+      statu:1                     // 题目状态,1 当前激活 2 非当前 3 已完成
+    }
 传递给子组件的输出参数：
-answerSheet：current_answerSheet，
-             answerSheet_problem
+answerSheet：
+   current_answerSheet:
+    {
+      type:0,                     // 0 代表客观题，1代表编程题 
+      id:1,                       // 题目数字
+      statu:1                     // 题目状态,1 当前激活 2 非当前 3 已完成
+    }
+    answerSheet_problem:
+    [
+      {
+        name:'客观题',
+        sum:[{id:1,status:2},     // 存储这个类型题的答题信息
+        type:0                    // 0代表客观题 1代表编程题
+      },
+      {
+        name:'编程题',
+        sum:[{id:1,status:2},     
+        type:1
+      }....
+    ]
 description：data.exam_AllProblem 
 作者：许浩培
 完成时间：2019/11/28
@@ -260,7 +284,9 @@ export default {
     'current_answerSheet': {
       deep: true,
       handler: function() {
-        this.$emit("update:current_answerSheet",this.data.current_answerSheet);
+        //this.$emit("update:current_answerSheet",this.data.current_answerSheet);
+       // this.data.answerSheet_problem[this.current_answerSheet.type].sum[this.current_answerSheet.id - 2].status = 2; // 将上一题改成无状态2
+        //this.data.answerSheet_problem[this.current_answerSheet.type].sum[this.current_answerSheet.id - 1].status = 1; // 将当前题目改成状态1
       }
     }
   },
