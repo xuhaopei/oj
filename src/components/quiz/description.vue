@@ -136,24 +136,9 @@ export default {
         problem:Object                                  // 题目数据  
       },
       examAnswer:{                                      // 一整张试卷提交的答案
-        object_problem:[                                    // 客观题的答案
-          {
-            id:0,                                           // 题目编号
-            type:0,                                         // 题目类型 0选择题，1填空题，2判断题，3编程题
-            answer:0                                        // 答题结果 1正确 0错误 
-          },
-          {
-            id:0,                                           
-            type:0,                                         
-            answer:0                                         
-          }
+        object_problem:[                                // 客观题的答案
         ],                              
-        program_problem:[                                 // 编程题的答案
-          {
-            id:0,                                           // 题目编号
-            type:0,                                         // 题目类型 0选择题，1填空题，2判断题，3编程题
-            answer:' '                                      // 答题结果
-          }
+        program_problem:[                               // 编程题的答案
         ],
         userId:0 ,                                       // 用户ID   
         examId:0                                        // 试卷ID
@@ -165,7 +150,7 @@ export default {
       },  
       examProgram_problem:{                             // 一道编程题的答案
         id:0,                                           // 题目编号
-        type:0,                                         // 题目类型 0选择题，1填空题，2判断题，3编程题
+        type:3,                                         // 题目类型 0选择题，1填空题，2判断题，3编程题
         answer:' '                                      // 答题结果
       },
       examObject_problemTemp:{                          // 暂时存储数据，用来比较答案
@@ -203,7 +188,7 @@ export default {
         dataInit: function() {
             this.exam.problem = this.exam_AllProblem.object_problem[this.current_answerSheet.id - 1];
             this.exam.type    = this.exam_AllProblem.object_problem[this.current_answerSheet.id - 1].type;
-            //this.show.front   = false;                                     // 初始化设置上一题按钮不可见
+            this.show.front   = false;                                     // 初始化设置上一题按钮不可见
         },
         /**
          * 函数描述：点击下一题时，改变题目内容，保存答案。
@@ -211,37 +196,62 @@ export default {
          * 时间：2019/11/18
          */
          nextProblem: function() {
-            let defineNum = 999;                                          // 约定999数字客观题阀值，为客观题转编程题做辅助。
-            this.show.front = true;
+            this.show.front = true;               // 你点击下一题时必定会显示上一题的按钮
+            // 如果当前题目ID刚好等于客观题最后的ID号，那么将题目类型改成编程题，题目ID改成1
             if(this.current_answerSheet.id == this.exam_AllProblem.object_problem.length) {
                   this.current_answerSheet.type = 1;                
                   this.current_answerSheet.id = 1;       
-            }           
+            }
+            // 如果当前题的ID不等于最后的ID号，那么将题目ID+1        
             else {
                 this.current_answerSheet.id ++;
+                // 如果当前题目ID刚好是编程题最后的ID号，隐藏下一题的按钮
                 if(this.current_answerSheet.id == this.exam_AllProblem.program_problem.length && this.current_answerSheet.type == 1) {
                   this.show.next = false;                
                 } 
             }                   
          },
-          /**
+        /**
          * 函数描述：点击下一题时，改变题目内容，保存答案。
          * 作者：许浩培
          * 时间：2019/11/18
          */
          frontProblem: function() {
-            let defineNum = 999;                                          // 约定999数字客观题阀值，为客观题转编程题做辅助。
-            this.show.next = true;
+            this.show.next = true;   // 你点击上一题时必定会显示下一题的按钮
+            // 如果当前题目ID刚好等于编程题的第一道题的ID号，那么将题目类型改成客观题，题目ID为客观题最后的ID号
             if(this.current_answerSheet.id == 1 && this.current_answerSheet.type == 1) {
                   this.current_answerSheet.type = 0;                
                   this.current_answerSheet.id = this.exam_AllProblem.object_problem.length;       
-            }           
+            }
+            // 如果当前题的ID不等于第一道题的ID号，那么将题目ID-1              
             else {
                 this.current_answerSheet.id --;
+                 // 如果当前题目ID刚好是客观题的第一道题的ID号，隐藏上一题的按钮
                 if(this.current_answerSheet.id == 1 && this.current_answerSheet.type == 0) {
                   this.show.front = false;                
                 } 
             }                   
+         },
+        /**
+         * 函数描述：获取当天题目的ID，类型，答案。
+         * 作者：许浩培
+         * 时间：2019/11/18
+         */
+         pushOneProblem: function(type) {
+            // 如果提交的题目是客观题
+            switch(Number(this.current_answerSheet.type)) {
+              // 如果提交的题目是客观题
+              case 0:
+                this.examObject_problem.id =  this.current_answerSheet.id;
+                this.examObject_problem.type = type;
+                this.examObject_problem.answer= type;
+                this.examAnswer.object_problem[this.examObject_problem.id] = this.examObject_problem;
+                
+                break;
+              // 如果提交的题目是编程题
+              case 1:
+                break;
+            }
          }
   },
   created () {
@@ -261,11 +271,21 @@ export default {
         if(this.current_answerSheet.type == 0) {
             this.exam.problem = this.exam_AllProblem.object_problem[this.current_answerSheet.id - 1];
             this.exam.type    = this.exam_AllProblem.object_problem[this.current_answerSheet.id - 1].type;
+            // 如果是答题卡客观题的第一道题，隐藏上一道题，显示下一道题
+            if(this.current_answerSheet.id == 1) {
+              this.show.next = true;
+              this.show.front = false;
+            }
         }
         // 答题卡点击的是编程题
         else {
             this.exam.problem = this.exam_AllProblem.program_problem[this.current_answerSheet.id - 1];
             this.exam.type    = 3;
+            // 如果是答题卡客观题的最后一道题，隐藏下一道题，显示上一道题
+            if(this.current_answerSheet.id == this.exam_AllProblem.program_problem.length) {
+              this.show.next = false;
+              this.show.front = true;
+            }         
         }
       }
     }

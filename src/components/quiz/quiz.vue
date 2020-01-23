@@ -284,9 +284,14 @@ export default {
     'current_answerSheet': {
       deep: true,
       handler: function() {
-        //this.$emit("update:current_answerSheet",this.data.current_answerSheet);
-       // this.data.answerSheet_problem[this.current_answerSheet.type].sum[this.current_answerSheet.id - 2].status = 2; // 将上一题改成无状态2
-        //this.data.answerSheet_problem[this.current_answerSheet.type].sum[this.current_answerSheet.id - 1].status = 1; // 将当前题目改成状态1
+        /* 这两个for循环，将所有状态全都变成无(2) */
+        for(let i = 0; i < this.data.answerSheet_problem[0].sum.length; i ++) {
+          this.data.answerSheet_problem[0].sum[i].status = 2;
+        }
+        for(let i = 0; i < this.data.answerSheet_problem[1].sum.length; i ++) {
+          this.data.answerSheet_problem[1].sum[i].status = 2;
+        }        
+        this.data.answerSheet_problem[this.current_answerSheet.type].sum[this.current_answerSheet.id - 1].status = 1; // 将当前题目的状态改成有（1）
       }
     }
   },
