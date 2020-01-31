@@ -98,13 +98,13 @@ current_answerSheet:
           </div>
         </div>
         <div class='program_problem-answer'>
-          <editor  v-model="content" @init="editorInit" lang="java" theme="chrome" width="100%" height="100%" ></editor>
+          <editor  v-model="examProgram_problemTemp.answer" @init="editorInit" lang="java" theme="chrome" width="100%" height="100%" ></editor>
         </div>
       </div>
 
     </div>
     <div class = 'control_problem'>
-        <div class = 'btn btn-origin'>提交试卷</div>
+        <div class = 'btn btn-origin' v-on:click="commitAllProblem">提交试卷</div>
         <div class = 'btn btn-blue' v-show="show.front"  v-on:click="frontProblem">上一题</div>
         <div class = 'btn btn-blue' v-show="show.next" v-on:click="nextProblem">下一题</div>
     </div>
@@ -123,24 +123,23 @@ export default {
   },
   data () {
     return {
-      content:"package xu;\n"+
+     /* content:"package xu;\n"+
               "public class Main {\n"+
               "       public static void main(String[] args) {\n"+
               "         xhpShowLayout xhp = new xhpShowLayout();\n"+
               "         xhp.setTitle(\"两个界面组合起来使用:许浩培2017035144038广技师1班\");\n"+
               "       }\n"+
-              "}",
+              "}",*/
       exam_Titles:["选择题","填空题","判断题","编程题"],  // 设置题目类型的标题 
       exam:{                                            // 一道题的数据
         type:0,                                         // 题目类型 0选择题，1填空题，2判断题，3编程题
         problem:Object                                  // 题目数据  
       },
       examAnswer:{                                      // 一整张试卷提交的答案
-        object_problem:[                                // 客观题的答案
-        ],                              
+        object_problem:[],                            // 客观题的答案],                              
         program_problem:[                               // 编程题的答案
         ],
-        userId:0 ,                                       // 用户ID   
+        userId:0 ,                                      // 用户ID   
         examId:0                                        // 试卷ID
       },
       examObject_problem:{                              // 一道客观题的答案
@@ -153,10 +152,13 @@ export default {
         type:3,                                         // 题目类型 0选择题，1填空题，2判断题，3编程题
         answer:' '                                      // 答题结果
       },
-      examObject_problemTemp:{                          // 暂时存储数据，用来比较答案
+      examObject_problemTemp:{                          // 暂时存储客观题数据，用来上传答案
         answerSelect:'',                                // 存储选择题
         answerTiankong:'',                              // 存储填空题
         answerJuedge:''                                 // 存储判断题
+      },
+      examProgram_problemTemp:{                         // 暂时存储编程题数据，用来上传答案
+        answer:''                                      // 存储选择题
       },
       show:{                                            // 组件的显示
         next:true,                                  // 下一题按钮的显示
@@ -196,7 +198,8 @@ export default {
          * 时间：2019/11/18
          */
          nextProblem: function() {
-            this.show.front = true;               // 你点击下一题时必定会显示上一题的按钮
+            this.pushOneProblem(this.exam.type);        // 提交一道题的答案
+            this.show.front = true;                     // 你点击下一题时必定会显示上一题的按钮
             // 如果当前题目ID刚好等于客观题最后的ID号，那么将题目类型改成编程题，题目ID改成1
             if(this.current_answerSheet.id == this.exam_AllProblem.object_problem.length) {
                   this.current_answerSheet.type = 1;                
@@ -209,7 +212,7 @@ export default {
                 if(this.current_answerSheet.id == this.exam_AllProblem.program_problem.length && this.current_answerSheet.type == 1) {
                   this.show.next = false;                
                 } 
-            }                   
+            }               
          },
         /**
          * 函数描述：点击下一题时，改变题目内容，保存答案。
@@ -217,6 +220,7 @@ export default {
          * 时间：2019/11/18
          */
          frontProblem: function() {
+            this.pushOneProblem(this.exam.type);        // 提交一道题的答案
             this.show.next = true;   // 你点击上一题时必定会显示下一题的按钮
             // 如果当前题目ID刚好等于编程题的第一道题的ID号，那么将题目类型改成客观题，题目ID为客观题最后的ID号
             if(this.current_answerSheet.id == 1 && this.current_answerSheet.type == 1) {
@@ -233,26 +237,58 @@ export default {
             }                   
          },
         /**
-         * 函数描述：获取当天题目的ID，类型，答案。
+         * 函数描述：获取当前题目的ID，类型，答案。
+         * 输入参数:type(题目类型，类型有0选择题，1填空题，2判断题，3编程题) 
          * 作者：许浩培
          * 时间：2019/11/18
          */
          pushOneProblem: function(type) {
-            // 如果提交的题目是客观题
-            switch(Number(this.current_answerSheet.type)) {
-              // 如果提交的题目是客观题
+           let exam_problem;
+            switch(Number(type)) {
+              // 如果提交的题目是选择题
               case 0:
-                this.examObject_problem.id =  this.current_answerSheet.id;
-                this.examObject_problem.type = type;
-                this.examObject_problem.answer= type;
-                this.examAnswer.object_problem[this.examObject_problem.id] = this.examObject_problem;
-                
+                exam_problem = new this.createExam_problem(this.current_answerSheet.id,type,this.examObject_problemTemp.answerSelect);
+                this.examAnswer.object_problem[exam_problem.id - 1] = exam_problem;
+                break;
+              // 如果提交的题目是填空题
+              case 1:
+                exam_problem = new this.createExam_problem(this.current_answerSheet.id,type,this.examObject_problemTemp.answerTiankong);
+                this.examAnswer.object_problem[exam_problem.id - 1] = exam_problem;
+                break;
+              // 如果提交的题目是判断题
+              case 2:
+                exam_problem = new this.createExam_problem(this.current_answerSheet.id,type,this.examObject_problemTemp.answerJuedge);
+                this.examAnswer.object_problem[exam_problem.id - 1] = exam_problem;
                 break;
               // 如果提交的题目是编程题
-              case 1:
+              case 3:
+                exam_problem = new this.createExam_problem(this.current_answerSheet.id,type,this.examProgram_problemTemp.answer);
+                this.examAnswer.program_problem[exam_problem.id - 1] = exam_problem;
                 break;
+              default: 
             }
-         }
+            
+         },
+        /**
+         * 函数描述：提交一整张试卷的答案给后端。
+         * 作者：许浩培
+         * 时间：2019/11/18
+         */
+         commitAllProblem: function() {
+           this.pushOneProblem(this.exam.type);        // 提交一道题的答案
+           window.console.log(this.examAnswer);
+         },
+        /**
+         * 函数描述：作为创建一个exam_problem对象的类,创建的对象来存储一道题的答案。注意 必须使用这种方式来存储多道数据，这里面涉及道数据内存的问题。
+         * 参数: id(题目编号)，type(题目类型)，answer(题目答案)
+         * 作者：许浩培
+         * 时间：2019/11/18
+         */
+        createExam_problem:function(id,type,answer) {
+          this.id = id;
+          this.type = type;
+          this.answer = answer;
+        }       
   },
   created () {
         this.dataInit();                // 初始化题目默认显示答题卡中的客观题中的第一道题
