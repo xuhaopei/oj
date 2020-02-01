@@ -99,7 +99,6 @@ export default {
         this.$emit('update:needCloseLogin', this.mNeedCloseLogin)
         // 保存token
         localStorage.setItem("token", this.responseData.data)
-        
         // const userInfo = {
         //   isLogin: true,
         //   name: this.validateForm.name,

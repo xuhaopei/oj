@@ -52,9 +52,8 @@ export default {
   },
   data () {
     return {
-      data: this.answerSheet_problem,
+      data: this.answerSheet_problem,                 // 答题表的数据
       current_answerSheet:{type:0,id:1,statu:2},      // 初始化
-      test:1
     }
   },
   methods: {
@@ -84,11 +83,9 @@ export default {
         this.current_answerSheet.id = id;                           // 题目
         this.current_answerSheet.statu = problem.sum[id-1].status;  // 题目状态
         // 将点击的题号暂时修改成蓝色的状态
-        //problem.sum[id-1].status = 1; 
         this.data[problem.type].sum[id - 1].status = 1;                             
         // 发送当前题号信息给父组件
         this.$emit('update:current_answerSheet', this.current_answerSheet);
-        this.test--;
     },
     /*
     * 函数描述：鼠标左键时，执行组件动画的效果。

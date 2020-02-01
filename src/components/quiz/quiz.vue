@@ -67,7 +67,6 @@ export default {
           object_problem:[]           // 存储客观题的所有题目数据（包括选择题、客观题、判断题）
         },                           
         answerSheet_problem:[],       // 答题卡  
-        //current_problem:{}            // 当前题目信息（传递给answerSheet组件）
       },
       current_answerSheet:{type:0,id:1,statu:2},    // 当前的题号信息， type为题目类型，ID为题号，statu为题号的背景颜色
     

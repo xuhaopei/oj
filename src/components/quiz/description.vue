@@ -123,34 +123,17 @@ export default {
   },
   data () {
     return {
-     /* content:"package xu;\n"+
-              "public class Main {\n"+
-              "       public static void main(String[] args) {\n"+
-              "         xhpShowLayout xhp = new xhpShowLayout();\n"+
-              "         xhp.setTitle(\"两个界面组合起来使用:许浩培2017035144038广技师1班\");\n"+
-              "       }\n"+
-              "}",*/
       exam_Titles:["选择题","填空题","判断题","编程题"],  // 设置题目类型的标题 
       exam:{                                            // 一道题的数据
         type:0,                                         // 题目类型 0选择题，1填空题，2判断题，3编程题
         problem:Object                                  // 题目数据  
       },
       examAnswer:{                                      // 一整张试卷提交的答案
-        object_problem:[],                            // 客观题的答案],                              
+        object_problem:[],                              // 客观题的答案],                              
         program_problem:[                               // 编程题的答案
         ],
         userId:0 ,                                      // 用户ID   
         examId:0                                        // 试卷ID
-      },
-      examObject_problem:{                              // 一道客观题的答案
-        id:0,                                           // 题目编号
-        type:0,                                         // 题目类型 0选择题，1填空题，2判断题，3编程题
-        answer:0                                        // 答题结果 1正确 0错误
-      },  
-      examProgram_problem:{                             // 一道编程题的答案
-        id:0,                                           // 题目编号
-        type:3,                                         // 题目类型 0选择题，1填空题，2判断题，3编程题
-        answer:' '                                      // 答题结果
       },
       examObject_problemTemp:{                          // 暂时存储客观题数据，用来上传答案
         answerSelect:'',                                // 存储选择题
@@ -189,8 +172,10 @@ export default {
          */
         dataInit: function() {
             this.exam.problem = this.exam_AllProblem.object_problem[this.current_answerSheet.id - 1];
-            this.exam.type    = this.exam_AllProblem.object_problem[this.current_answerSheet.id - 1].type;
+            this.exam.type    = this.exam_AllProblem.object_problem[this.current_answerSheet.id - 1].type;  // 设置当前题目的类型 0为选择，1为填空，2为判断，3为编程
             this.show.front   = false;                                     // 初始化设置上一题按钮不可见
+            this.examAnswer.examId = this.$route.params.id;                // 获取试卷ID
+            this.examAnswer.userId = null;                                 // 获取用户ID
         },
         /**
          * 函数描述：点击下一题时，改变题目内容，保存答案。
@@ -267,7 +252,8 @@ export default {
                 break;
               default: 
             }
-            
+            this.examObject_problemTemp.answerTiankong = '';      // 清空填空题页面填写的数据
+            this.examProgram_problemTemp.answer = '';             // 清空编程题页面填写的数据
          },
         /**
          * 函数描述：提交一整张试卷的答案给后端。
@@ -276,7 +262,8 @@ export default {
          */
          commitAllProblem: function() {
            this.pushOneProblem(this.exam.type);        // 提交一道题的答案
-           window.console.log(this.examAnswer);
+           let test = JSON.stringify(this.examAnswer)  // 将js对象转换成字符串数据，方便传递给后台。
+           window.console.log(test);
          },
         /**
          * 函数描述：作为创建一个exam_problem对象的类,创建的对象来存储一道题的答案。注意 必须使用这种方式来存储多道数据，这里面涉及道数据内存的问题。
