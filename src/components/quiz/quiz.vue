@@ -146,8 +146,8 @@ export default {
                     "gmt_modified": 1571541039000,
                     "submit_times": 0,
                     "status": 0
-                  },
-                  {
+                },
+                {
                       "gmt_create": 1555938245000,
                       "ac_times": 0,
                       "is_deleted": 0,
@@ -158,7 +158,7 @@ export default {
                       "gmt_modified": 1556014876000,
                       "submit_times": 0,
                       "status": 0
-                  }
+                }
                 ];
                 that.data.exam_AllProblem.program_problem = [
                   {

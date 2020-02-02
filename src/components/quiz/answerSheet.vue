@@ -98,6 +98,7 @@ export default {
   },
   created () {
    this.init();
+
   },
   mounted () {
     document.getElementById('pageBtn').parentNode.onclick = this.animationShow;

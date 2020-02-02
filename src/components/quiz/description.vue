@@ -24,13 +24,14 @@ current_answerSheet:
     <div class = 'object_problem' v-if="current_answerSheet.type == 0">
       <h2 style="margin-left:10px" class = "description_title" v-if="current_answerSheet.type == 0">{{exam_Titles[exam_AllProblem.object_problem[current_answerSheet.id - 1].type]}}</h2>
       <div class = 'description_hr' ></div>
+      <!--选择题的显示-->
       <div v-if ="exam.type == 0"      class = "object_problem_select" >
         <h2>{{exam.problem.description.des}}</h2>
         <ul class = "_ul">
           <label v-for="(value,key,index) in exam.problem.description" v-bind:key="index" v-show="index != 0"><li class = "_ul_li"><input class="_ul_li_input" type="radio" name='singleSelect' v-bind:value="key" v-model="examObject_problemTemp.answerSelect">{{value}}</li></label>
         </ul>
-        {{examObject_problemTemp.answerSelect}}
       </div>
+      <!--填空题的显示-->
       <div v-else-if ="exam.type == 1" class = "object_problem_tiankong" >
           <div class = 'object_problem_tiankong-contend' v-html="exam.problem.description.des"></div>
           <div class = 'object_problem_tiankong-input'>
@@ -38,26 +39,27 @@ current_answerSheet:
             <input type="text" v-model="examObject_problemTemp.answerTiankong">
           </div>
       </div>
+      <!--判断题的显示-->
       <div v-else                      class = "object_problem_juedge">
           <div class = 'object_problem_juedge-contend' v-html="exam.problem.description.des"></div>
           <div class = 'object_problem_juedge-input'>
             <ul class = "_ul">
               <label>
                 <li class ="_ul_li">
-                  <input class ="_ul_li_input" type="radio" name='singleSelect' value="true"  v-model="examObject_problemTemp.answerSelect">True
+                  <input class ="_ul_li_input" type="radio" name='singleSelect' value="true"  v-model="examObject_problemTemp.answerJuedge">True
                 </li>
               </label>
               <label>
                 <li class ="_ul_li">
-                  <input class ="_ul_li_input" type="radio" name='singleSelect' value="false" v-model="examObject_problemTemp.answerSelect">False
+                  <input class ="_ul_li_input" type="radio" name='singleSelect' value="false" v-model="examObject_problemTemp.answerJuedge">False
                 </li>
               </label>
-              {{examObject_problemTemp.answerSelect}}
             </ul>
           </div>
       </div>
       
     </div>
+    <!--编程题的显示-->
     <div class = 'program_problem' v-else>
       <div class = "progam_problem_title" style = "width:100%" >
           <h2 style="margin-left:2%;" >{{exam_Titles[exam.type]}}</h2>
@@ -104,7 +106,7 @@ current_answerSheet:
 
     </div>
     <div class = 'control_problem'>
-        <div class = 'btn btn-origin' v-on:click="commitAllProblem">提交试卷</div>
+        <div class = 'btn btn-origin' v-on:click="submitWarnMsg">提交试卷</div>
         <div class = 'btn btn-blue' v-show="show.front"  v-on:click="frontProblem">上一题</div>
         <div class = 'btn btn-blue' v-show="show.next" v-on:click="nextProblem">下一题</div>
     </div>
@@ -112,6 +114,7 @@ current_answerSheet:
 </template>
 
 <script>
+import jwtDecode from "jwt-decode";         // 解析token需要用到，如何使用 请用百度 “使用jwt解析token”即可
 export default {
   name: 'description',
   props: {
@@ -124,12 +127,12 @@ export default {
   data () {
     return {
       exam_Titles:["选择题","填空题","判断题","编程题"],  // 设置题目类型的标题 
-      exam:{                                            // 一道题的数据
+      exam:{                                            // 当前一道题的数据
         type:0,                                         // 题目类型 0选择题，1填空题，2判断题，3编程题
         problem:Object                                  // 题目数据  
       },
       examAnswer:{                                      // 一整张试卷提交的答案
-        object_problem:[],                              // 客观题的答案],                              
+        object_problem:[],                              // 客观题的答案,                              
         program_problem:[                               // 编程题的答案
         ],
         userId:0 ,                                      // 用户ID   
@@ -141,7 +144,7 @@ export default {
         answerJuedge:''                                 // 存储判断题
       },
       examProgram_problemTemp:{                         // 暂时存储编程题数据，用来上传答案
-        answer:''                                      // 存储选择题
+        answer:''                                       // 存储选择题
       },
       show:{                                            // 组件的显示
         next:true,                                  // 下一题按钮的显示
@@ -168,14 +171,14 @@ export default {
         /**
          * 函数描述：初始化题目默认显示答题卡中的客观题中的第一道题
          * 作者：许浩培
-         * 时间：2019/11/18
+         * 时间：2020/1/2
          */
         dataInit: function() {
             this.exam.problem = this.exam_AllProblem.object_problem[this.current_answerSheet.id - 1];
             this.exam.type    = this.exam_AllProblem.object_problem[this.current_answerSheet.id - 1].type;  // 设置当前题目的类型 0为选择，1为填空，2为判断，3为编程
-            this.show.front   = false;                                     // 初始化设置上一题按钮不可见
-            this.examAnswer.examId = this.$route.params.id;                // 获取试卷ID
-            this.examAnswer.userId = null;                                 // 获取用户ID
+            this.show.front   = false;                                              // 初始化设置上一题按钮不可见
+            this.examAnswer.examId = this.$route.params.id;                         // 获取试卷ID
+            this.examAnswer.userId = jwtDecode(localStorage.getItem("token")).uid;  // 获取用户ID
         },
         /**
          * 函数描述：点击下一题时，改变题目内容，保存答案。
@@ -202,7 +205,7 @@ export default {
         /**
          * 函数描述：点击下一题时，改变题目内容，保存答案。
          * 作者：许浩培
-         * 时间：2019/11/18
+         * 时间：2020/2/2
          */
          frontProblem: function() {
             this.pushOneProblem(this.exam.type);        // 提交一道题的答案
@@ -225,29 +228,29 @@ export default {
          * 函数描述：获取当前题目的ID，类型，答案。
          * 输入参数:type(题目类型，类型有0选择题，1填空题，2判断题，3编程题) 
          * 作者：许浩培
-         * 时间：2019/11/18
+         * 时间：2020/2/2
          */
          pushOneProblem: function(type) {
            let exam_problem;
             switch(Number(type)) {
               // 如果提交的题目是选择题
               case 0:
-                exam_problem = new this.createExam_problem(this.current_answerSheet.id,type,this.examObject_problemTemp.answerSelect);
+                exam_problem = new this.createExam_problem(this.current_answerSheet.id,type,this.examObject_problemTemp.answerSelect,this.exam);
                 this.examAnswer.object_problem[exam_problem.id - 1] = exam_problem;
                 break;
               // 如果提交的题目是填空题
               case 1:
-                exam_problem = new this.createExam_problem(this.current_answerSheet.id,type,this.examObject_problemTemp.answerTiankong);
+                exam_problem = new this.createExam_problem(this.current_answerSheet.id,type,this.examObject_problemTemp.answerTiankong,this.exam);
                 this.examAnswer.object_problem[exam_problem.id - 1] = exam_problem;
                 break;
               // 如果提交的题目是判断题
               case 2:
-                exam_problem = new this.createExam_problem(this.current_answerSheet.id,type,this.examObject_problemTemp.answerJuedge);
+                exam_problem = new this.createExam_problem(this.current_answerSheet.id,type,this.examObject_problemTemp.answerJuedge,this.exam);
                 this.examAnswer.object_problem[exam_problem.id - 1] = exam_problem;
                 break;
               // 如果提交的题目是编程题
               case 3:
-                exam_problem = new this.createExam_problem(this.current_answerSheet.id,type,this.examProgram_problemTemp.answer);
+                exam_problem = new this.createExam_problem(this.current_answerSheet.id,type,this.examProgram_problemTemp.answer,this.exam);
                 this.examAnswer.program_problem[exam_problem.id - 1] = exam_problem;
                 break;
               default: 
@@ -258,24 +261,67 @@ export default {
         /**
          * 函数描述：提交一整张试卷的答案给后端。
          * 作者：许浩培
-         * 时间：2019/11/18
+         * 时间：2020/2/2
          */
          commitAllProblem: function() {
            this.pushOneProblem(this.exam.type);        // 提交一道题的答案
            let test = JSON.stringify(this.examAnswer)  // 将js对象转换成字符串数据，方便传递给后台。
            window.console.log(test);
+           // 功能还未完成 没有传递给后台
+           this.$router.push({name:"begin"});          // 提交完试卷跳回公告界面 表示退出考试
          },
         /**
          * 函数描述：作为创建一个exam_problem对象的类,创建的对象来存储一道题的答案。注意 必须使用这种方式来存储多道数据，这里面涉及道数据内存的问题。
-         * 参数: id(题目编号)，type(题目类型)，answer(题目答案)
+         * 参数: id(题目编号)，type(题目类型)，answer(题目答案), exam（当前一道题目的数据）
          * 作者：许浩培
-         * 时间：2019/11/18
+         * 时间：2020/2/2
          */
-        createExam_problem:function(id,type,answer) {
+        createExam_problem:function(id,type,answer,exam) {
           this.id = id;
           this.type = type;
-          this.answer = answer;
-        }       
+          // 如果是编程题直接赋值答案
+          if(type == 3) {
+            this.answer = answer;
+          }
+          // 如果是客观题判断答案 
+          else {
+            // 如果是选择题     tip:为什么这样写，因为这是后台给的数据格式，我只能这样写了。怪后台
+            if(type == 0) {
+              var opt = {opt1:"A",opt2:"B",opt3:"C",opt4:"D"};
+              this.answe = (opt[answer]==exam.problem.answer) ? true:false;
+            }
+            // 如果是填空题 判断题
+            else {
+              this.answe = (answer.replace(/\s+/g,"")==exam.problem.answer) ? true:false;
+            }
+
+          }
+          
+        },
+        /**
+         * 函数描述：确认是否提交试卷。 这是饿了么组件 使用直接参考官方文档
+         * 作者：许浩培
+         * 时间：2020/2/2
+         */ 
+        submitWarnMsg() {
+          this.$confirm('是否提交试卷?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.$message({
+              type: 'success',
+              message: '提交成功!'
+            });
+            this.commitAllProblem();
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消'
+            });          
+          });
+        }
+             
   },
   created () {
         this.dataInit();                // 初始化题目默认显示答题卡中的客观题中的第一道题
