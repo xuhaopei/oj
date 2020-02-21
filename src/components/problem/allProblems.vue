@@ -6,13 +6,13 @@
   <div class="allProblems main-view center-div">
     <div class="center-item">
       <div class="display">
-        <div class="display-item-left" >
+        <div class="display-item-left">
           <mu-tabs inverse color="#000000" indicator-color='#93989c' text-color="rgba(0, 0, 0, .54)" 
             :value.sync="active">
             <!-- <mu-tab>全部</mu-tab> -->
             <mu-tab>编程</mu-tab>
-            <!--<mu-tab>填空</mu-tab>-->
-            <!--<mu-tab>选择</mu-tab>-->
+            <!-- <mu-tab>填空</mu-tab> -->
+            <!-- <mu-tab>选择</mu-tab> -->
           </mu-tabs>
           <div class="show-problems">
             <div v-if="active===0">
@@ -84,11 +84,6 @@
               </div>
             </div>
             <div v-if="active===1">
-              <div style="width: 100%;">
-                <completion-problems :tag="filter.auxiTagList"></completion-problems>
-              </div>
-            </div>
-            <div v-if="active===2">
               <div style="width: 100%;">
                 <completion-problems :tag="filter.auxiTagList"></completion-problems>
               </div>
@@ -209,7 +204,6 @@ export default {
           2: ['中等', 'primary'],
           3: ['困难', 'danger'],
         },
-        year:123
         // active: {
         //   0: 'codeProblemsList',
         //   1: 'completionProblemsList',
@@ -229,7 +223,7 @@ export default {
         query: null,
         tagList: null,
         uid: this.$_env.testUserInfo.uid,
-      };
+      }
       await Promise.all([
         this.getData(),
         this.getFilterTag(),
@@ -238,10 +232,6 @@ export default {
     }
   },
   methods: {
-    changeShow(){
-      this.filter.show = !this.filter.show;
-      alert(1);
-    },
     testc () {
       this.test.push(5)
     },
@@ -317,13 +307,17 @@ export default {
             }),
           ])
           if (!this.$store.state.n[0].success) return
-          for (const i of this.$store.state.n[0].data.data) {
+          // eslint-disable-next-line no-console
+          console.log('this.$store.state.n[0].data.content', this.$store.state.n[0].data.content);
+          
+          for (const i of this.$store.state.n[0].data.content) {
             i._difficult = i.difficult?this.talbe.codeDifficult[i.difficult][0]:'无'
             i._difficultFlag = i.difficult?this.talbe.codeDifficult[i.difficult][1]:'primary'
             i._percentage = (i.ac_times / i.submit_times)
+            // eslint-disable-next-line use-isnan
             i._percentage = i._percentage!==NaN?'0.00':i._percentage.toFixed(2)
           }
-          this.data.codeProblemsList.list = this.$store.state.n[0].data.data
+          this.data.codeProblemsList.list = this.$store.state.n[0].data.content
           this.data.codeProblemsList.total = this.$store.state.n[0].data.total
           this.$nextTick(function () {
             this.subReady.codeProblemsList = true
@@ -331,14 +325,16 @@ export default {
           break;
         }
         case 1: {
-          this.subReady.completionProblemsList = false;
-          this.filter.tag = [];
+          this.subReady.completionProblemsList = false
+          this.filter.tag = []
           // 只获取标签列表
           // 然后交给子组件
-          this.subReady.completionProblemsList = true;
-          this.filter.show = false;
-          break;
+          this.subReady.completionProblemsList = true
+          this.filter.show = false
         }
+        // eslint-disable-next-line no-fallthrough
+        default:
+          break;
       }
     },
     // 多标签

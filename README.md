@@ -68,6 +68,20 @@ this.$store.state.n[flag].data
 
 [1]: /vue.config.js
 
+### 用户信息获取
+
+var token =  localStorage.getItem("token")
+
+百度jwt解析token
+
+import jwtDecode from "jwt-decode";
+
+token = jwtDecode (token )
+
+console.log(token)
+
+
+
 ### 项目完成情况见此脑图：
 
 https://naotu.baidu.com/file/55c39a262cab5f0f0ff25743a15a0d9c?token=52e1810aabc4bdbf

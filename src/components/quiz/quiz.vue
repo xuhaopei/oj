@@ -89,16 +89,16 @@ export default {
           var that = this;
           this.loading = true;
           await Promise.all([
-                axios.get("http://localhost:8080/exam/"+id,({
+                axios.get("http://47.115.54.133:8080/exam/"+id,({
 
                 })).then(function (response) {
                 if(response.status != 200){
                     throw "获取数据失败!";
                 }
-               // that.data.exam_AllProblem = response.data;
+                that.data.exam_AllProblem = response.data;
                // that.data.object_problem = response.data.object_problem;  // 获取试卷的客观题（选择题0、填空题1、判断题2）
                // that.data.program_problem = response.data.program_problem;//  获取试卷的编程题
-                that.data.exam_AllProblem.object_problem = [
+               /* that.data.exam_AllProblem.object_problem = [
                 {
                     "gmt_create": 1571541020000,
                     "ac_times": 0,
@@ -205,7 +205,8 @@ export default {
                       "output_format": "{\"insert\": \"输出一行，包含一个整数，表示Fn除以10007的余数。\\n\"}",
                       "status": 0
                   }
-                ];
+                ];*/
+                
                 that.initAnswerSheet_type(that.data.exam_AllProblem.object_problem.length,'客观题');      // 设置答题卡标题为客观题，题目数量为length
                 that.initAnswerSheet_type(that.data.exam_AllProblem.program_problem.length,'编程题');     // 设置答题卡标题为编程题，题目数量为length
                 that.show.answerSheet = true;
@@ -224,7 +225,7 @@ export default {
      * 时间：2019/12/2
      */
     openError () {
-        this.$message.error('加载数据失败');
+        this.$message.error('加载试卷数据失败');
     },
     /**
      * 函数描述：根据problemLength,name来设置答题卡各个模块的信息
