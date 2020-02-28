@@ -6,12 +6,12 @@ answerSheet_problem:
 [
   {
     name:'客观题',
-    sum:[{id:1,status:2},     // 存储这个类型题的答题信息
+    sum:[{id:1,status:2,problemId:0}],     // 存储这个类型题的答题信息
     type:0                    // 0代表客观题 1代表编程题
   },
   {
     name:'编程题',
-    sum:[{id:1,status:2},     
+    sum:[{id:1,status:2,problemId:0},     
     type:1
   }....
 ]
@@ -20,7 +20,8 @@ current_answerSheet:
 {
   type:0,                     // 0 代表客观题，1代表编程题 
   id:1,                       // 题目数字
-  statu:1                     // 题目状态,1 当前激活 2 非当前 3 已完成
+  statu:1,                     // 题目状态,1 当前激活 2 非当前 3 已完成
+  problemId:0,                // 题目在后台的实际位置
 }
 作者：许浩培
 完成时间：2019/11/29
@@ -53,7 +54,7 @@ export default {
   data () {
     return {
       data: this.answerSheet_problem,                 // 答题表的数据
-      current_answerSheet:{type:0,id:1,statu:2},      // 初始化
+      current_answerSheet:{type:0,id:1,statu:2,problemId:0},      // 初始化
     }
   },
   methods: {
@@ -82,6 +83,7 @@ export default {
         this.current_answerSheet.type = problem.type;               // 题目类型
         this.current_answerSheet.id = id;                           // 题目
         this.current_answerSheet.statu = problem.sum[id-1].status;  // 题目状态
+        this.current_answerSheet.problemId = problem.sum[id-1].problemId;  // 保存题号在后台的位置
         // 将点击的题号暂时修改成蓝色的状态
         this.data[problem.type].sum[id - 1].status = 1;                             
         // 发送当前题号信息给父组件

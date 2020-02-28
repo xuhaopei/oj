@@ -49,7 +49,7 @@ export default {
             var that = this;
             this.lodaing = true;
             await Promise.all([
-                axios.get("http://47.115.54.133:8080/sys/cate/tree.json",({
+                axios.get("/sys/cate/tree.json",({
 
                 })).then(function (response) {
                 if(response.status != 200){

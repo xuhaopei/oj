@@ -120,10 +120,9 @@ export default {
         this.Loading = true;
         const that = this;
         await Promise.all([
-          axios.get("http://47.115.54.133:8080/exam/page/"+ this.params.page_num + "/" + this.params.page_size,{
+          axios.get("/exam/page/"+ this.params.page_num + "/" + this.params.page_size,{
           }).then(function(response){
           that.data1 = response.data.data;
-          window.console.log(that.data1);
           }).catch(function (error) {
             that.openError();
           }),
