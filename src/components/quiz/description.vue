@@ -21,7 +21,7 @@ current_answerSheet:
 完成时间：2020/1/22
 -->
 <template>
-  <div class="description" id="description">
+  <div class="description" id="description" v-loading="loading">
     <div class="object_problem" v-if="current_answerSheet.type == 0">
       <h2
         style="margin-left:10px"
@@ -66,7 +66,7 @@ current_answerSheet:
       <div v-else class="object_problem_juedge">
         <div
           class="object_problem_juedge-contend"
-          v-html="exam.description.des"
+          v-html="exam.problem.description.des"
         ></div>
         <div class="object_problem_juedge-input">
           <ul class="_ul">
@@ -78,7 +78,7 @@ current_answerSheet:
                   name="singleSelect"
                   value="true"
                   v-model="examObject_problemTemp.answerJuedge"
-                />True
+                />true
               </li>
             </label>
             <label>
@@ -89,7 +89,7 @@ current_answerSheet:
                   name="singleSelect"
                   value="false"
                   v-model="examObject_problemTemp.answerJuedge"
-                />False
+                />false
               </li>
             </label>
           </ul>
@@ -181,7 +181,6 @@ export default {
         problem: {} // 题目数据
       },
       examAnswer: {
-
         // 一整张试卷提交的答案
         problem_list:[],
         userId: 0, // 用户ID
@@ -202,7 +201,7 @@ export default {
         next: true, // 下一题按钮的显示
         front: true // 上一题按钮的显示
       },
-      loading: true // 控制请求数据时，出现加载符号
+      loading: false // 控制请求数据时，出现加载符号
     };
   },
   methods: {
@@ -228,7 +227,8 @@ export default {
      * 时间：2020/1/2
      */
     dataInit: function() {
-      this.getData(0, this.current_answerSheet.problemId);
+      this.exam.problem.description= " ";         // 避免浏览器报错
+      this.getData(0, this.current_answerSheet.problemId);  // 初始化第一题
       this.show.front = false; // 初始化设置上一题按钮不可见
       this.examAnswer.examId = this.$route.params.id; // 获取试卷ID
       this.examAnswer.userId = jwtDecode(localStorage.getItem("token")).uid; // 获取用户ID
@@ -263,6 +263,7 @@ export default {
                 this.openError();
               })
           ]);
+          this.returnShowProblem(this.current_answerSheet.id,this.exam.type);
           break;
         // 编程题
         case 1:
@@ -281,6 +282,7 @@ export default {
                 this.openError();
               })
           ]);
+          this.returnShowProblem(this.current_answerSheet.id,this.exam.type);
           break;
       }
       this.loading = false;
@@ -372,18 +374,15 @@ export default {
           exam_problem = new this.createExam_problem(
             this.current_answerSheet.problemId,
             type,
-            this.examObject_problemTemp.answerSelect,
-            this.exam
+            this.examObject_problemTemp.answerSelect
           );
-        //  this.examAnswer.object_problem[exam_problem.id - 1] = exam_problem;
           break;
         // 如果提交的题目是填空题
         case 1:
           exam_problem = new this.createExam_problem(
             this.current_answerSheet.problemId,
             type,
-            this.examObject_problemTemp.answerTiankong,
-            this.exam
+            this.examObject_problemTemp.answerTiankong
           );
           break;
         // 如果提交的题目是判断题
@@ -391,8 +390,7 @@ export default {
           exam_problem = new this.createExam_problem(
             this.current_answerSheet.problemId,
             type,
-            this.examObject_problemTemp.answerJuedge,
-            this.exam
+            this.examObject_problemTemp.answerJuedge
           );
           break;
         // 如果提交的题目是编程题
@@ -400,30 +398,38 @@ export default {
           exam_problem = new this.createExam_problem(
             this.current_answerSheet.problemId,
             type,
-            this.examProgram_problemTemp.answer,
-            this.exam
+            this.examProgram_problemTemp.answer
           );
           break;
         default:
       }
-      let index = type==3 ? this.current_answerSheet.id + this.exam_AllProblem.singleProblemIdList.length : this.current_answerSheet.id;
+      let index = type==3 ? this.current_answerSheet.id + this.exam_AllProblem.singleProblemIdList.length : this.current_answerSheet.id; // 存放长度
       this.examAnswer.problem_list[index-1]=exam_problem;  // 将答案填写进去
-      this.examObject_problemTemp.answerSelect = "";    //   清空选择题页面填写的数据
-      this.examObject_problemTemp.answerTiankong = ""; // 清空填空题页面填写的数据
-      this.examObject_problemTemp.answerJuedge = ""; // 清空填空题页面填写的数据
-      this.examProgram_problemTemp.answer = ""; // 清空编程题页面填写的数据
     },
     /**
      * 函数描述：提交一整张试卷的答案给后端。
      * 作者：许浩培
      * 时间：2020/2/2
      */
-    commitAllProblem: function() {
+   async commitAllProblem() {
       this.pushOneProblem(this.exam.type); // 提交一道题的答案
-      let test = JSON.stringify(this.examAnswer); // 将js对象转换成字符串数据，方便传递给后台。
-      window.console.log(test);
-      // 功能还未完成 没有传递给后台
-      this.$router.push({ name: "begin" }); // 提交完试卷跳回公告界面 表示退出考试
+      this.loading = true;         // 开始数据加载图标的显示
+      await Promise.all([
+                axios.post("/sys/examjudge",this.examAnswer).then((response)=> {
+                if(response.status != 200){
+                    throw "GGG!";
+                }
+                this.$message({
+                  type: "success",
+                  message: "提交成功!"
+                });
+                this.$router.push({ name: "begin" }); // 提交完试卷跳回公告界面 表示退出考试
+                }).catch(()=> {
+                    this.openError();
+                })
+      ]);
+      this.loading = false;         // 停止数据加载图标的显示
+      
     },
     /**
      * 函数描述：作为创建一个exam_problem对象的类,创建的对象来存储一道题的答案。注意 必须使用这种方式来存储多道数据，这里面涉及道数据内存的问题。
@@ -431,23 +437,28 @@ export default {
      * 作者：许浩培
      * 时间：2020/2/2
      */
-    createExam_problem: function(id, type, answer, exam) {
+    createExam_problem: function(id, type, answer) {
       this.id = id;
-      this.type = type;
       // 如果是编程题直接赋值答案
       if (type == 3) {
         this.answer = answer;
+        this.type = 1;
       }
-      // 如果是客观题判断答案
+      // 如果是客观题
       else {
+        this.type = 2;
         // 如果是选择题     tip:为什么这样写，因为这是后台给的数据格式，我只能这样写了。怪后台
         if (type == 0) {
-          var opt = { opt1: "A", opt2: "B", opt3: "C", opt4: "D" };
-          this.answe = opt[answer] == exam.answer ? true : false;
+          var opt = { opt3: "A", opt4: "B", opt1: "C", opt2: "D" };
+          this.answer = opt[answer];
         }
-        // 如果是填空题 判断题
-        else {
-          this.answe = answer.replace(/\s+/g, "") == exam.answer ? true : false;
+        // 如果是填空题 
+        else if(type == 1) {
+          this.answer = answer.replace(/\s+/g, "");
+        }
+        // 如果是判断题
+        else if(type == 2) {
+          this.answer = answer;
         }
       }
     },
@@ -456,7 +467,6 @@ export default {
      * 作者：许浩培
      * 时间：2020/2/2
      */
-
     submitWarnMsg() {
       this.$confirm("是否提交试卷?", "提示", {
         confirmButtonText: "确定",
@@ -464,10 +474,6 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.$message({
-            type: "success",
-            message: "提交成功!"
-          });
           this.commitAllProblem();
         })
         .catch(() => {
@@ -476,6 +482,37 @@ export default {
             message: "已取消"
           });
         });
+    },
+    /**
+     * 函数描述: 当点回题目的时候，会显示之前填写的答案
+     * 作者：许浩培
+     * 时间：2020/2/28
+     * 参数：ID页面上显示的题目序号，type题目类型0选择题1填空题2判断题3编程题
+     */
+    returnShowProblem(id,type) {
+      let index =  this.exam_AllProblem.singleProblemIdList.length;
+      let abcd = { A: "opt3", B: "opt4", C: "opt1", D: "opt2" };
+      try {
+        switch(type){
+          case 0:
+            this.examObject_problemTemp.answerSelect=abcd[this.examAnswer.problem_list[id-1].answer];
+            break;
+          case 1:
+            this.examObject_problemTemp.answerTiankong=this.examAnswer.problem_list[id-1].answer;
+            break;
+          case 2:
+            this.examObject_problemTemp.answerJuedge=this.examAnswer.problem_list[id-1].answer;
+            break;
+          case 3:
+            this.examProgram_problemTemp.answer=this.examAnswer.problem_list[id-1+index].answer;
+            break;    
+        }
+      } catch (error) {
+         this.examObject_problemTemp.answerSelect = " ";
+         this.examObject_problemTemp.answerTiankong = " ";
+         this.examObject_problemTemp.answerJuedge = " ";
+         this.examProgram_problemTemp.answer = " ";
+      }
     }
   },
   created() {
@@ -491,7 +528,6 @@ export default {
       handler: function() {
         // 答题卡点击的是客观题
         if (this.current_answerSheet.type == 0) {
-          this.exam.problem.description = " ";
           this.getData(0, this.current_answerSheet.problemId);
           // 如果是答题卡客观题的第一道题，隐藏上一道题，显示下一道题
           if (this.current_answerSheet.id == 1) {
@@ -501,8 +537,8 @@ export default {
         }
         // 答题卡点击的是编程题
         else {
-          this.exam.problem.input_format = " ";
-          this.exam.problem.output_format = " ";
+          this.exam.problem.input_format = " ";       // 避免浏览器报错
+          this.exam.problem.output_format = " ";      // 避免浏览器报错
           this.getData(1, this.current_answerSheet.problemId);
           // 如果是答题卡客观题的最后一道题，隐藏下一道题，显示上一道题
           if (

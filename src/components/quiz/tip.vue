@@ -9,7 +9,7 @@
 -->
 <template>
 <transition name="fade">
-  <div class = 'tip' v-if="show"  v-on:click ="show=false" id = 'tip'>
+  <div class = 'tip tip_Animation' v-if="show"  id = 'tip'>
       <h2>温馨提示</h2>
       <ul>
           <li>考试时间</li>
@@ -36,12 +36,15 @@ export default {
         }
     },
     methods: {
-    
+
     },
     created () {
     },
     mounted () {
-        
+       let tip  =   document.getElementsByClassName("tip_Animation")[0];
+       tip.addEventListener('click',()=>{
+           this.show = false;
+       },false);
     }
 }
 </script>

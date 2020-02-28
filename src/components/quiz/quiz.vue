@@ -45,7 +45,7 @@ description：data.exam_AllProblem
 完成时间：2019/11/28
 -->
 <template>
-  <div class="quiz main-view center-div" v-loading="loading" element-loading-text="考试内容加载中,请稍等" v-on:click='show.description=true'>
+  <div class="quiz main-view center-div" v-loading="0" element-loading-text="考试内容加载中,请稍等" v-on:click='show.description=true'>
     <answerSheet v-if='show.answerSheet'  :answerSheet_problem.sync="data.answerSheet_problem"  :current_answerSheet.sync="current_answerSheet"></answerSheet>
     <tip v-if='show.tip'></tip>
     <transition name="fade">
@@ -85,7 +85,7 @@ export default {
         answerSheet:false,            // 控制答题表模块的显示
         description:false             // 控制编程题模快的显示
       },
-      loading:true                    // 控制请求数据时，出现加载符号
+      loading:false                    // 控制请求数据时，出现加载符号
     }
   },
   methods: {
@@ -95,8 +95,8 @@ export default {
      * 时间：2019/12/2
      */
     async getData() {
-          const id = this.$route.params.id;
-          this.loading = true;
+          const id = this.$route.params.id; 
+          this.loading = true;         // 开始数据加载图标的显示
           await Promise.all([
                 axios.get("/backStageExamination/"+id,({
 
@@ -159,16 +159,7 @@ export default {
      */
     setCurrent_problem (problem) {
       this.data.exam_AllProblem = problem;
-      // 将数据对象里面客观题中的文本数据类型转换成JSON数据，不然答题内容的数据显示会异常。
-      // for(let i = 0; i < problem.object_problem.length; i++) {    // 客观题
-      //     this.data.exam_AllProblem.object_problem[i].description = JSON.parse(problem.object_problem[i].description);  
-      // }
-      // for(let i = 0; i < problem.program_problem.length; i++) {   // 编程题
-      //     this.data.exam_AllProblem.program_problem[i].description = JSON.parse(problem.program_problem[i].description);
-      //     this.data.exam_AllProblem.program_problem[i].input_format = JSON.parse(problem.program_problem[i].input_format);
-      //     this.data.exam_AllProblem.program_problem[i].output_format = JSON.parse(problem.program_problem[i].output_format);
-      //     this.data.exam_AllProblem.program_problem[i].samples = JSON.parse(problem.program_problem[i].samples);
-      // }
+      window.console.log(problem);
       this.$emit("update:exam_AllProblem",this.data.exam_AllProblem);
     }
   },
