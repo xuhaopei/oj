@@ -2,6 +2,11 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import types from './mutationsTypes'
 import axios from 'axios'
+let axios_Base = axios.create({
+	baseURL: 'http://47.115.54.133:8080',
+	timeout: 1000,
+	headers: {'X-Custom-Header': 'foobar'}
+  });
 // import util from '../util'
 Vue.use(Vuex)
 export default new Vuex.Store({
@@ -81,7 +86,7 @@ export default new Vuex.Store({
 			}
 			let _d = state.userInfo
 			try {
-				let u = await axios.get('/account/token', 
+				let u = await axios_Base.get(`/account/token`, 
 					{ headers: {Authorization: localStorage.token} }
 				)
 				_d = {...state.userInfo, ...{
@@ -108,14 +113,14 @@ export default new Vuex.Store({
 			try {
 				switch (data.method) {
 					case 'get':{
-						d = await axios.get(
+						d = await axios_Base.get(
 							data.url, 
 							{ params: data.params, headers: data.headers},
 						)
 						break
 					}
 					case 'post':{
-						d = await axios.post(
+						d = await axios_Base.post(
 							data.url, 
 							data.params, 
 							{headers: data.headers}

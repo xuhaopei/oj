@@ -1,5 +1,5 @@
 <template>
-  <!-- 
+  <!--
     这个文件与子组件的耦合度极高，如果要改，建议重构
     实在不想承认，这是因为年轻而犯下的错
   -->
@@ -7,7 +7,7 @@
     <div class="center-item">
       <div class="display">
         <div class="display-item-left">
-          <mu-tabs inverse color="#000000" indicator-color='#93989c' text-color="rgba(0, 0, 0, .54)" 
+          <mu-tabs inverse color="#000000" indicator-color='#93989c' text-color="rgba(0, 0, 0, .54)"
             :value.sync="active">
             <!-- <mu-tab>全部</mu-tab> -->
             <mu-tab>编程</mu-tab>
@@ -102,7 +102,7 @@
           </div>
           <div class="filter-row-tag">
             <div v-if="subReady.filter">
-              <el-badge class="tag-badge" v-for="(item, idx) in filter.tag" :key='idx' 
+              <el-badge class="tag-badge" v-for="(item, idx) in filter.tag" :key='idx'
                 :value="item.used_times" type="primary">
                 <el-tag @click="handleTagClick(item)" :class="`${item.isSelected?'tag-selected':'tag-unselected'}`">
                   {{item.tag_name}}
@@ -110,7 +110,7 @@
               </el-badge>
             </div>
             <div class='filter-row-tag' v-else>
-              <div v-for="item in data.noneFilter" :key='item' 
+              <div v-for="item in data.noneFilter" :key='item'
                 class='item skeleton-screen nofilter'>
               </div>
             </div>
@@ -197,7 +197,7 @@ export default {
         auxiTagList: [],
       },
       active: 0,
-      talbe: {
+      table: {
         codeDifficult: {
           0: ['无', 'primary'],
           1: ['简单', 'success'],
@@ -284,6 +284,7 @@ export default {
       this.subReady.screen = false
     },
     async getData () {
+
       switch (this.active) {
         case 0: {
           this.filter.show = true
@@ -307,12 +308,11 @@ export default {
             }),
           ])
           if (!this.$store.state.n[0].success) return
-          // eslint-disable-next-line no-console
-          console.log('this.$store.state.n[0].data.content', this.$store.state.n[0].data.content);
-          
+          // window.console.log("///////////////////////////////")
+          // window.console.log(this.$store.state.n[0].data.content)
           for (const i of this.$store.state.n[0].data.content) {
-            i._difficult = i.difficult?this.talbe.codeDifficult[i.difficult][0]:'无'
-            i._difficultFlag = i.difficult?this.talbe.codeDifficult[i.difficult][1]:'primary'
+            i._difficult = i.difficult?this.table.codeDifficult[i.difficult][0]:'无'
+            i._difficultFlag = i.difficult?this.table.codeDifficult[Number(i.difficult)][1]:'primary'
             i._percentage = (i.ac_times / i.submit_times)
             // eslint-disable-next-line use-isnan
             i._percentage = i._percentage!==NaN?'0.00':i._percentage.toFixed(2)
@@ -429,12 +429,12 @@ export default {
     width: 80px;
     height: 32px;
   }
-  
+
   .allProblems .display .display-item-right .filter-row-tag .item .tag-content {
     margin-right: 5px;
   }
   .t {
-    
+
     background-color: #bebebe
   }
   .show-problems {

@@ -56,7 +56,6 @@ description：data.exam_AllProblem
 </template>
 
 <script>
-import axios from 'axios';
 import answerSheet from './answerSheet.vue'       // 导入答题表模块
 import description from './description.vue'       // 导入答题内容模块
 import tip from './tip.vue'                       // 导入提示模块
@@ -98,7 +97,7 @@ export default {
           const id = this.$route.params.id; 
           this.loading = true;         // 开始数据加载图标的显示
           await Promise.all([
-                axios.get("/backStageExamination/"+id,({
+                this.$axios.get(`/backStageExamination/`+id,({
 
                 })).then((response)=> {
                 if(response.status != 200){
@@ -159,7 +158,6 @@ export default {
      */
     setCurrent_problem (problem) {
       this.data.exam_AllProblem = problem;
-      window.console.log(problem);
       this.$emit("update:exam_AllProblem",this.data.exam_AllProblem);
     }
   },

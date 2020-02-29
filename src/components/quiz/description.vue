@@ -161,7 +161,6 @@ current_answerSheet:
 </template>
 
 <script>
-import axios from "axios";
 import jwtDecode from "jwt-decode"; // 解析token需要用到，如何使用 请用百度 “使用jwt解析token”即可
 export default {
   name: "description",
@@ -250,8 +249,8 @@ export default {
         // 客观题
         case 0:
           await Promise.all([
-            axios
-              .get("/object-problem/" + id, {})
+            this.$axios
+              .get(`/object-problem/` + id, {})
               .then(response => {
                 if (response.status != 200) {
                   throw "网络错误!";
@@ -268,7 +267,7 @@ export default {
         // 编程题
         case 1:
           await Promise.all([
-            axios
+            this.$axios
               .get("/backStageClassProgramProblem/" + id, {})
               .then(response => {
                 if (response.status != 200) {
@@ -415,7 +414,7 @@ export default {
       this.pushOneProblem(this.exam.type); // 提交一道题的答案
       this.loading = true;         // 开始数据加载图标的显示
       await Promise.all([
-                axios.post("/sys/examjudge",this.examAnswer).then((response)=> {
+                this.$axios.post("/sys/examjudge",this.examAnswer).then((response)=> {
                 if(response.status != 200){
                     throw "GGG!";
                 }

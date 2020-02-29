@@ -48,7 +48,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 export default {
   name: 'quizList',
   props: {
@@ -120,7 +119,7 @@ export default {
         this.Loading = true;
         const that = this;
         await Promise.all([
-          axios.get("/exam/page/"+ this.params.page_num + "/" + this.params.page_size,{
+          this.$axios.get(`/exam/page/`+ this.params.page_num + "/" + this.params.page_size,{
           }).then(function(response){
           that.data1 = response.data.data;
           }).catch(function (error) {

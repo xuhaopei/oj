@@ -17,13 +17,18 @@ import util from './util'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 Vue.use(ElementUI);
-
+import axios from 'axios'
+let axios_Base = axios.create({
+	baseURL: 'http://47.115.54.133:8080',
+	timeout: 1000,
+	headers: {'X-Custom-Header': 'foobar'}
+  });
+Vue.prototype.$axios = axios_Base;      // 为上线服务。
 // 测试环境
 import testenv from './testenv.js'
 Vue.prototype.$types = types
 Vue.prototype.$_env = testenv
 Vue.prototype.$util = util
-
 Vue.use(Helpers)
 Vue.use(router)
 Vue.use(MuseUI)

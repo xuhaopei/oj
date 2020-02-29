@@ -6,7 +6,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import problemSubmissions from './problem/problemSubmissions.vue'
 //import codeEditor from './common/codeEditor.vue'
 export default {
@@ -49,7 +48,7 @@ export default {
       // })
       // const s = 'https://cdn.eagleoj.com/2019/4/18/712bcfe0-af33-47c2-beff-e11cbf8a52e9.java'
       const s = '/noLogin/readImageFile'
-      let d = await axios.get(s)
+      let d = await this.$axios.get(s)
       // console.log('d is ', d.data);
       this.data.codeInfo.code = d.data
 			// const sleep = (ms) => {

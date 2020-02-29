@@ -27,7 +27,6 @@
     </div>
 </template>
 <script>
-import axios from 'axios';
 export default {
     name:'listChapter',
     props:{},
@@ -49,7 +48,7 @@ export default {
             var that = this;
             this.lodaing = true;
             await Promise.all([
-                axios.get("/sys/cate/tree.json",({
+                this.$axios.get(`/sys/cate/tree.json`,({
 
                 })).then(function (response) {
                 if(response.status != 200){
