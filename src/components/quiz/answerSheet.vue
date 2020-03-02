@@ -103,7 +103,6 @@ export default {
 
   },
   mounted () {
-   // document.getElementById('pageBtn').parentNode.onclick = this.animationShow;
    document.getElementById('pageBtn').parentNode.addEventListener("click",this.animationShow,true);
   },
   watch: {

@@ -41,7 +41,7 @@ export default {
     created () {
     },
     mounted () {
-       let tip  =   document.getElementsByClassName("tip_Animation")[0];
+       let tip  =   document.getElementsByClassName("tip_Animation")[0].parentNode;
        tip.addEventListener('click',()=>{
            this.show = false;
        },false);

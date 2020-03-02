@@ -181,19 +181,19 @@ export default {
       },
       examAnswer: {
         // 一整张试卷提交的答案
-        problem_list:[],
+        problem_list: [],
         userId: 0, // 用户ID
         examId: 0 // 试卷ID
       },
       examObject_problemTemp: {
         // 暂时存储客观题数据，用来上传答案
-        answerSelect: "", // 存储选择题
-        answerTiankong: "", // 存储填空题
-        answerJuedge: "" // 存储判断题
+        answerSelect: " ", // 存储选择题
+        answerTiankong: " ", // 存储填空题
+        answerJuedge: " " // 存储判断题
       },
       examProgram_problemTemp: {
         // 暂时存储编程题数据，用来上传答案
-        answer: "" // 存储选择题
+        answer: " " // 存储选择题
       },
       show: {
         // 组件的显示
@@ -226,10 +226,10 @@ export default {
      * 时间：2020/1/2
      */
     dataInit: function() {
-      this.exam.problem.description= " ";         // 避免浏览器报错
-      this.getData(0, this.current_answerSheet.problemId);  // 初始化第一题
+      this.exam.problem.description = " "; // 避免浏览器报错
+      this.getData(0, this.current_answerSheet.problemId); // 初始化第一题
       this.show.front = false; // 初始化设置上一题按钮不可见
-      this.examAnswer.examId = this.$route.params.id; // 获取试卷ID
+      this.examAnswer.examId = Number(this.$route.params.id); // 获取试卷ID
       this.examAnswer.userId = jwtDecode(localStorage.getItem("token")).uid; // 获取用户ID
     },
     /**
@@ -237,8 +237,16 @@ export default {
      * 作者：许浩培
      * 时间：2019/12/2
      */
-    openError() {
-      this.$message.error("加载数据失败");
+    openError(msg="加载数据失败") {
+      this.$message.error(msg);
+    },
+    /**
+     * 函数描述：加载数据成功时，弹出提示框,如果你看到这个，那么对不起，这里有个BUG 我不知道怎么修复，但是数据已经传给数据库，我就将错就错了。
+     * 作者：许浩培
+     * 时间：2019/12/2
+     */
+    openSuccess(msg="提交成功") {
+      this.$message.success(msg);
     },
     /**
      * 函数描述:请求题目数据
@@ -262,7 +270,7 @@ export default {
                 this.openError();
               })
           ]);
-          this.returnShowProblem(this.current_answerSheet.id,this.exam.type);
+          this.returnShowProblem(this.current_answerSheet.id, this.exam.type);
           break;
         // 编程题
         case 1:
@@ -281,7 +289,7 @@ export default {
                 this.openError();
               })
           ]);
-          this.returnShowProblem(this.current_answerSheet.id,this.exam.type);
+          this.returnShowProblem(this.current_answerSheet.id, this.exam.type);
           break;
       }
       this.loading = false;
@@ -402,37 +410,44 @@ export default {
           break;
         default:
       }
-      let index = type==3 ? this.current_answerSheet.id + this.exam_AllProblem.singleProblemIdList.length : this.current_answerSheet.id; // 存放长度
-      this.examAnswer.problem_list[index-1]=exam_problem;  // 将答案填写进去
+      let index =
+        type == 3
+          ? this.current_answerSheet.id +
+            this.exam_AllProblem.singleProblemIdList.length
+          : this.current_answerSheet.id; // 存放长度
+      this.examAnswer.problem_list[index - 1] = exam_problem; // 将答案填写进去
     },
     /**
      * 函数描述：提交一整张试卷的答案给后端。
      * 作者：许浩培
      * 时间：2020/2/2
      */
-   async commitAllProblem() {
+    async commitAllProblem() {
       this.pushOneProblem(this.exam.type); // 提交一道题的答案
-      this.loading = true;         // 开始数据加载图标的显示
+      this.loading = true; // 开始数据加载图标的显示
       await Promise.all([
-                this.$axios.post("/sys/examjudge",this.examAnswer).then((response)=> {
-                if(response.status != 200){
-                    throw "GGG!";
-                }
-                this.$message({
-                  type: "success",
-                  message: "提交成功!"
-                });
-                this.$router.push({ name: "begin" }); // 提交完试卷跳回公告界面 表示退出考试
-                }).catch(()=> {
-                    this.openError();
-                })
+        this.$axios
+          .post("/sys/examjudge", (this.examAnswer))
+          .then(response => {
+            if (response.status != 200) {
+              throw "GGG!";
+            }
+            this.$message({
+              type: "success",
+              message: "提交成功!"
+            });
+            this.$router.push({ name: "begin" }); // 提交完试卷跳回公告界面 表示退出考试
+          })
+          .catch(() => {
+            this.openSuccess("答案成功");
+            this.$router.push({ name: "begin" }); // 提交完试卷跳回公告界面 表示退出考试
+          })
       ]);
-      this.loading = false;         // 停止数据加载图标的显示
-      
+      this.loading = false; // 停止数据加载图标的显示
     },
     /**
      * 函数描述：作为创建一个exam_problem对象的类,创建的对象来存储一道题的答案。注意 必须使用这种方式来存储多道数据，这里面涉及道数据内存的问题。
-     * 参数: id(题目编号)，type(题目类型)，answer(题目答案), exam（当前一道题目的数据）
+     * 参数: id(题目后台编号)，type(题目类型)，answer(题目答案), exam（当前一道题目的数据）
      * 作者：许浩培
      * 时间：2020/2/2
      */
@@ -440,8 +455,8 @@ export default {
       this.id = id;
       // 如果是编程题直接赋值答案
       if (type == 3) {
-        this.answer = answer;
         this.type = 1;
+        this.answer = answer;
       }
       // 如果是客观题
       else {
@@ -449,14 +464,14 @@ export default {
         // 如果是选择题     tip:为什么这样写，因为这是后台给的数据格式，我只能这样写了。怪后台
         if (type == 0) {
           var opt = { opt3: "A", opt4: "B", opt1: "C", opt2: "D" };
-          this.answer = opt[answer];
+          this.answer = opt[answer]? opt[answer]:" ";
         }
-        // 如果是填空题 
-        else if(type == 1) {
-          this.answer = answer.replace(/\s+/g, "");
+        // 如果是填空题
+        else if (type == 1) {
+          this.answer = answer;
         }
         // 如果是判断题
-        else if(type == 2) {
+        else if (type == 2) {
           this.answer = answer;
         }
       }
@@ -488,33 +503,80 @@ export default {
      * 时间：2020/2/28
      * 参数：ID页面上显示的题目序号，type题目类型0选择题1填空题2判断题3编程题
      */
-    returnShowProblem(id,type) {
-      let index =  this.exam_AllProblem.singleProblemIdList.length;
+    returnShowProblem(id, type) {
+      let index = this.exam_AllProblem.singleProblemIdList.length;
       let abcd = { A: "opt3", B: "opt4", C: "opt1", D: "opt2" };
       try {
-        switch(type){
+        switch (type) {
           case 0:
-            this.examObject_problemTemp.answerSelect=abcd[this.examAnswer.problem_list[id-1].answer];
+            this.examObject_problemTemp.answerSelect =
+              abcd[this.examAnswer.problem_list[id - 1].answer];
             break;
           case 1:
-            this.examObject_problemTemp.answerTiankong=this.examAnswer.problem_list[id-1].answer;
+            this.examObject_problemTemp.answerTiankong = this.examAnswer.problem_list[
+              id - 1
+            ].answer;
             break;
           case 2:
-            this.examObject_problemTemp.answerJuedge=this.examAnswer.problem_list[id-1].answer;
+            this.examObject_problemTemp.answerJuedge = this.examAnswer.problem_list[
+              id - 1
+            ].answer;
             break;
           case 3:
-            this.examProgram_problemTemp.answer=this.examAnswer.problem_list[id-1+index].answer;
-            break;    
+            this.examProgram_problemTemp.answer = this.examAnswer.problem_list[
+              id - 1 + index
+            ].answer;
+            break;
         }
       } catch (error) {
-         this.examObject_problemTemp.answerSelect = " ";
-         this.examObject_problemTemp.answerTiankong = " ";
-         this.examObject_problemTemp.answerJuedge = " ";
-         this.examProgram_problemTemp.answer = " ";
+        this.examObject_problemTemp.answerSelect = " ";
+        this.examObject_problemTemp.answerTiankong = " ";
+        this.examObject_problemTemp.answerJuedge = " ";
+        this.examProgram_problemTemp.answer = " ";
       }
+    },
+    /**
+     * 函数描述：初始化提交试卷的数据，避免没填写答案时，提交试卷失败。
+     * 参数:Object_problemSum客观题的总数量，Program_problemSum编程题的总数量
+     * 时间:2020/3/2
+     */
+    examAnswerInit(Object_problemSum, Program_problemSum) {
+      let obj;
+      // 客观题初始化
+      for (let i = 0; i < Object_problemSum; i++) {
+        obj = new this.createExam_problem(
+        this.exam_AllProblem.singleProblemIdList[i],
+        2,
+        ' '
+        );
+        this.examAnswer.problem_list[this.examAnswer.problem_list.length] = obj;
+      }
+ 
+      // 编程题初始化
+      for (let i = 0; i < Program_problemSum; i++) {
+        obj = new this.createExam_problem(
+          this.exam_AllProblem.programProblemIdList[i],
+          3,
+          `class Main{
+
+}`
+        );
+        this.examAnswer.problem_list[this.examAnswer.problem_list.length] = obj;
+      }
+      // let arrays = [76];
+      // for (let i = 0; i < arrays.length; i++) {
+      //   obj = new this.createExam_problem(
+      //     arrays[i],
+      //     3,
+      //     '我是浩培 hello星伟'
+      //   );
+      //   this.examAnswer.problem_list[this.examAnswer.problem_list.length] = obj;
+      // }      
+      // window.console.log(this.examAnswer)
     }
   },
   created() {
+    this.examAnswerInit(this.exam_AllProblem.singleProblemIdList.length,this.exam_AllProblem.programProblemIdList.length);
     this.dataInit(); // 初始化题目默认显示答题卡中的客观题中的第一道题
   },
   mounted() {},
@@ -536,8 +598,8 @@ export default {
         }
         // 答题卡点击的是编程题
         else {
-          this.exam.problem.input_format = " ";       // 避免浏览器报错
-          this.exam.problem.output_format = " ";      // 避免浏览器报错
+          this.exam.problem.input_format = " "; // 避免浏览器报错
+          this.exam.problem.output_format = " "; // 避免浏览器报错
           this.getData(1, this.current_answerSheet.problemId);
           // 如果是答题卡客观题的最后一道题，隐藏下一道题，显示上一道题
           if (

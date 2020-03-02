@@ -20,8 +20,10 @@ Vue.use(ElementUI);
 import axios from 'axios'
 let axios_Base = axios.create({
 	baseURL: 'http://47.115.54.133:8080',
-	timeout: 1000,
-	headers: {'X-Custom-Header': 'foobar'}
+  timeout: 1000,
+  responseType: 'json',
+	headers: {
+  }
   });
 Vue.prototype.$axios = axios_Base;      // 为上线服务。
 // 测试环境

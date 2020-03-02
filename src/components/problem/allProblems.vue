@@ -92,7 +92,7 @@
         </div>
         <div v-show="filter.show" class="display-item-right">
           <div class="filter-row">
-            <mu-button v-loading="subReady.screen" @click="screen" color="primary">筛选</mu-button>
+            <mu-button v-loading="subReady.screen" @click="screen" color="primary">全部难度</mu-button>
             <mu-select @change="getData" class="pageSizeSelect" label="" v-model="data.difficult" full-width>
               <mu-option v-for="(option,index) in options.difficult" :key="index" :label="option.label" :value="option.value"></mu-option>
             </mu-select>
@@ -162,20 +162,20 @@ export default {
         pageSize: [20, 50],
         difficult: [
           {
-            label: '全部难度',
-            value: 1,
+            label: '无',
+            value: 0,
           },
           {
             label: '简单',
-            value: 2,
+            value: 1,
           },
           {
             label: '中等',
-            value: 3,
+            value: 2,
           },
           {
             label: '困难',
-            value: 4,
+            value: 3,
           },
         ]
       },
@@ -282,8 +282,9 @@ export default {
       this.subReady.screen = true
       await this.getData()
       this.subReady.screen = false
+      window.console.log("////////////")
     },
-    async getData () {
+    async getData (difficult="") {
 
       switch (this.active) {
         case 0: {
@@ -300,7 +301,7 @@ export default {
               params: {
                 page_num: this.params.program.page_num,
                 page_size: this.params.program.page_size,
-                difficult: this.params.program.difficult,
+                difficult: difficult,
                 query: this.filter.keyword,
                 tag_list: this.params.program.tagList,
                 uid: this.$_env.testUserInfo.uid,
