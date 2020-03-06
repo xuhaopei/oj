@@ -92,6 +92,10 @@ export default {
       this.data.list = temp
       this.ready = true
     },
+    /**
+     * 函数描述：根据试卷ID进入试卷展示模块
+     * 参数：exam_id 试卷ID
+     */
     toQuiz (exam_id) {
       this.$router.push({
         name: 'quiz',

@@ -18,14 +18,14 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 Vue.use(ElementUI);
 import axios from 'axios'
-let axios_Base = axios.create({
-	baseURL: 'http://47.115.54.133:8080',
+let axios_Base = axios.create({          // 设置axios的基本格式
+	baseURL: 'http://47.115.54.133:8080',  // 设置请求映射 例如你发出请求的url为(/api)，那么它在页面上就会进行转换，转换成 http://47.115.54.133:8080/api。如果没有设置则会转换成http://localhost:8080/api 这是为上线服务的。
   timeout: 1000,
   responseType: 'json',
 	headers: {
   }
   });
-Vue.prototype.$axios = axios_Base;      // 为上线服务。
+Vue.prototype.$axios = axios_Base;      // 将该对象注入Vue，全局调用。
 // 测试环境
 import testenv from './testenv.js'
 Vue.prototype.$types = types
