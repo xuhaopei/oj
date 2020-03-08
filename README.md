@@ -317,6 +317,10 @@ console.log(token)；
 	重启项目：pm2 restart 自定义名称/或者ID
 	删除项目：pm2 delete  自定义名称/或者ID
 
+# 项目gitHub地址：
+
+https://github.com/xuhaopei/oj
+
 # 掉坑总结
 
 1. 开发页面的时候要想好总体的设计再进行开发
