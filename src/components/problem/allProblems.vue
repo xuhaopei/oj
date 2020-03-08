@@ -358,6 +358,7 @@ export default {
           i.isSelected = false
         }
       }
+      window.console.log("点击了标签!!!");
       this.getData()
     },
 

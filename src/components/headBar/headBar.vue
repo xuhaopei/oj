@@ -211,7 +211,7 @@ export default {
 
       this.isShowlistChapter();
       
-      this.isLogin();
+      //this.isLogin();
      
       //console.log(this.$route.path);   获取地址
       //console.log(this.$route.params); 获取地址参数
