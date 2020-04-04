@@ -14,6 +14,9 @@
         <div>
           {{data.detail.description.insert}}
         </div>
+        <div >
+          {{data.detail.description.des}}
+        </div>
       </div>
       <div class="description-item">
         <div>

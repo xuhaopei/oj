@@ -154,8 +154,8 @@ export default {
         }),
       ])
       if (!this.$store.state.n[2].success) return
-      
-      this.data.list = this.$store.state.n[2].data.data
+      //this.data.list = this.$store.state.n[2].data.data
+      this.data.list = this.$store.state.n[2].data.content
       this.data.total = this.$store.state.n[2].data.total
       for(const i of this.data.list) {
         const d = new Date(i.submit_time)

@@ -97,6 +97,7 @@ export default {
     needCommit: async function () {
       this.subReady.committing = true
       if (this.commitType === 2) {
+        
         await Promise.all([
           this.$store.dispatch('n', {
             flag: 0,

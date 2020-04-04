@@ -35,6 +35,7 @@ Vue.use(Helpers)
 Vue.use(router)
 Vue.use(MuseUI)
 // Vue.use(Loading)
+
 Vue.config.productionTip = false
 new Vue({
   render: h => h(App),
