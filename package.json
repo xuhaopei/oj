@@ -8,7 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "codemirror": "^5.45.0",
     "element-ui": "^2.8.2",
     "jsonwebtoken": "^8.5.1",
