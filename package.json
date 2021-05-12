@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "codemirror": "^5.45.0",
+    "codemirror": "^5.58.2",
     "element-ui": "^2.8.2",
     "jsonwebtoken": "^8.5.1",
     "jsx": "^0.9.89",
